@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 1   
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE SIGNAL
@@ -62,7 +62,7 @@ line level    source
   52   1      }
   53          //========================================================================
   54          // 函数: u8 xihuo(SignalLineTypeDef *pSignalLine)
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 2   
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 2   
 
   55          // 描述: 获取车辆熄火状态,关联启动信号，着车之前必须出现启动信号。
   56          //       可使用开关量或则发动机转速评判熄火     
@@ -126,7 +126,7 @@ line level    source
  114   1      }
  115          //========================================================================
  116          // 函数: u8 anquandai(SignalLineTypeDef *pSignalLine)
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 3   
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 3   
 
  117          // 描述: 获取安全带信号
  118          // 参数：pSignalLine，
@@ -190,7 +190,7 @@ line level    source
  176   1        u8 lb_pin = BSP_ReadInputDataBit(&pSignalLine->lb);//读取输入状态
  177   1        
  178   1        return lb_pin;  
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 4   
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 4   
 
  179   1        
  180   1      }
@@ -254,7 +254,7 @@ line level    source
  238          {
  239   1        
  240   1        u8 yg_pin = BSP_ReadInputDataBit(&pSignalLine->yg);//读取输入状态
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 5   
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 5   
 
  241   1        
  242   1        return yg_pin;  
@@ -318,7 +318,7 @@ line level    source
  300   1        u8 ys_pin = BSP_ReadInputDataBit(&pSignalLine->ys);//读取输入状态
  301   1        
  302   1        return ys_pin;  
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 6   
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 6   
 
  303   1        
  304   1      }
@@ -382,7 +382,7 @@ line level    source
  362   1        return zytj_pin;  
  363   1        
  364   1      }
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 7   
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 7   
 
  365          //========================================================================
  366          // 函数: u8 dangwei(SignalLineTypeDef *pSignalLine)
@@ -446,7 +446,7 @@ line level    source
  424   1      
  425   1        
  426   1      }
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 8   
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 8   
 
  427          //========================================================================
  428          // 函数: u8 zuoyiyali(SignalLineTypeDef *pSignalLine)
@@ -510,7 +510,7 @@ line level    source
  486   1      }
  487          //========================================================================
  488          // 函数: u8 chuangdong(SignalLineTypeDef *pSignalLine)
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 9   
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 9   
 
  489          // 描述: 获取起步时闯动信号
  490          // 参数：pSignalLine，
@@ -574,7 +574,7 @@ line level    source
  548   1        if(dangwei(pSignalLine) != FALSE)
  549   1            return TURE;
  550   1        else 
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 10  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 10  
 
  551   1            return FALSE;
  552   1        
@@ -638,7 +638,7 @@ line level    source
  610   1      }
  611          //========================================================================
  612          // 函数: u8 DBQ_RightRear(SignalLineTypeDef *pSignalLine)
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 11  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 11  
 
  613          // 描述: 获取单边桥传感器右后轮信号
  614          // 参数：pSignalLine，
@@ -702,7 +702,7 @@ line level    source
  672   2          TL0 = 0;//清零  
  673   2          if ((count == 0) && (pSignalLine->zs.init_value == 1))
  674   2          {
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 12  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 12  
 
  675   3            count = 800;  //贵州特殊要求
  676   3          }
@@ -766,7 +766,7 @@ line level    source
  734          // 版本: V1.0, 2022-10-17
  735          //========================================================================
  736          static u8 zuojiaotaban(SignalLineTypeDef *pSignalLine)    //摩托车左脚踏板
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 13  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 13  
 
  737          {
  738   1        u8 zjtb_pin = BSP_ReadInputDataBit(&pSignalLine->zjtb);//读取输入状态
@@ -830,7 +830,7 @@ line level    source
  796   3                //printf("value = %h04X\r\n",value);
  797   3                
  798   3                for (i = 0 ; i< pole->bump[group_i].count;i++)
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 14  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 14  
 
  799   3                {   
  800   4                  valuebit  = (u16)(value >> i) & (0x0001);//取出碰杆位
@@ -894,7 +894,7 @@ line level    source
  858          //========================================================================
  859          // 函数: u8 Get24GShockSensor_value(u8 Tilt_usart)
  860          // 描述: 获取2.4碰杆传感器的值
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 15  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 15  
 
  861          // 参数：u8 bump_usart，2.4G模块与主板之间连接的串口号
  862          // 返回: 
@@ -958,7 +958,7 @@ line level    source
  920          
  921          //========================================================================
  922          // 函数: void GetTilt_Adjust_vaule(u8 Tilt_usart,u8 *TiltSensorTypeDef pTilt) //获取摩托车倾角传感器校准值
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 16  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 16  
 
  923          // 描述: 获取倾角传感器的基准值
  924          // 参数：u8 Tilt_usart，传感器与主板之间连接的串口号，pTilt指向数据保存的指针
@@ -1022,7 +1022,7 @@ line level    source
  982   1          if(pSignalLine->zz.pin == 0)      pSignalLine->zz.pin   = D1;   //左转,默认端口为D1
  983   1          if(pSignalLine->yz.pin == 0)      pSignalLine->yz.pin   = D2;   //右转,默认端口为D2
  984   1          if(pSignalLine->xh.pin == 0)      pSignalLine->xh.pin   = D3;   //发电机,默认端口为D3
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 17  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 17  
 
  985   1          if(pSignalLine->ss.pin == 0)      pSignalLine->ss.pin   = D4;   //手刹,默认端口为D4
  986   1          if(pSignalLine->aqd.pin == 0)     pSignalLine->aqd.pin  = D5;   //安全带,默认端口为D5 
@@ -1086,7 +1086,7 @@ line level    source
 1044   1            Get24GShockSensor_value(BUMP_24G_USART);//更新碰杆数据
 1045   1            GetTiltSensor_value(TILT_Q_USART,&Tilt[PLACE_Q_AXLE]);//采集前轴数据
 1046   1            GetTiltSensor_value(TILT_H_USART,&Tilt[PLACE_H_AXLE]);//采集后轴数据
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 18  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 18  
 
 1047   1            GetTiltSensor_value(TILT_G_USART,&Tilt[PLACE_G_AXLE]);//采集挂轴数据
 1048   1            GetTiltSensor_value(TILT_MTC_USART,&Tilt[PLACE_MTC_AXLE]);  //采集二轮摩托车倾角数据
@@ -1150,7 +1150,7 @@ line level    source
 1106   1            pDatabuf[22]  = 0;      //汽车后轴右侧超声波传感器对地面的距离（单位厘米）
 1107   1            pDatabuf[23]  = 0;      //牵引车中轴左侧超声波传感器对地面的距离（单位厘米）
 1108   1            pDatabuf[24]  = 0;      //牵引车中轴右侧超声波传感器对地面的距离（单位厘米）
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 19  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 19  
 
 1109   1            
 1110   1            pDatabuf[25]  = 0;        //训练圈数计数高位
@@ -1214,7 +1214,7 @@ line level    source
 1163   1      //      pDatabuf[52]    =   localid[4];
 1164   1      //      pDatabuf[53]    =   localid[5];
 1165   1      //      pDatabuf[54]    =   localid[6];
-C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 13:44:46 PAGE 20  
+C51 COMPILER V9.56.0.0   SIGNAL                                                            11/15/2022 14:33:07 PAGE 20  
 
 1166   1      
 1167   1            pDatabuf[55]    |=  (guanchayibiao(&SignalLine) << 0);//观察仪表盘

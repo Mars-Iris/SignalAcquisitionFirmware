@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 13:44:45 PAGE 1   
+C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 14:33:06 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE BSP_USART
@@ -62,7 +62,7 @@ line level    source
   52          //========================================================================
   53          char putchar(char ch)  //函数默认的，在使用printf函数时自动调用
   54          {
-C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 13:44:45 PAGE 2   
+C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 14:33:06 PAGE 2   
 
   55   1        USART_SendData(CONSOLE_USART,(char)ch);
   56   1        return ch;
@@ -126,7 +126,7 @@ line level    source
  113   2        }
  114   1        COMx_InitStructure.UART_BaudRate  = bote;             //波特率, 一般 110 ~ 115200
  115   1        COMx_InitStructure.UART_Interrupt = ENABLE;           //中断允许,   ENABLE或DISABLE
-C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 13:44:45 PAGE 3   
+C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 14:33:06 PAGE 3   
 
  116   1        USART_Configuration(USARTx, &COMx_InitStructure);     //初始化串口1 USART1,USART2
  117   1      }
@@ -190,7 +190,7 @@ line level    source
  175   3            *pRxBuffer++ = *(Rx[USARTx-1].pStart+i);  
  176   3          }
  177   2          
-C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 13:44:45 PAGE 4   
+C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 14:33:06 PAGE 4   
 
  178   2        }
  179   1        
@@ -254,7 +254,7 @@ line level    source
  236   1        pTemp = (u8 *)(pStart + lenth);
  237   1        
  238   1        while (pTemp  < Rx[USARTx-1].pIn)
-C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 13:44:45 PAGE 5   
+C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 14:33:06 PAGE 5   
 
  239   1        {
  240   2            *pStart++ = *pTemp++;    //将剩下的数据移到缓存区的首地址 
@@ -318,7 +318,7 @@ line level    source
  298   2        }
  299   1        #endif
  300   1        else 
-C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 13:44:45 PAGE 6   
+C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 14:33:06 PAGE 6   
 
  301   1        {
  302   2          return;
@@ -382,7 +382,7 @@ line level    source
  360          // 参数：name为打印出来的数组名称,pbuffer为数组名称，lenth为打印数组前多少个元素
  361          // 版本: V1.0, 2022-10-17
  362          //========================================================================
-C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 13:44:45 PAGE 7   
+C51 COMPILER V9.56.0.0   BSP_USART                                                         11/15/2022 14:33:06 PAGE 7   
 
  363          #ifdef DEBUG1
               void printf_buffer(const char *name,const u8 *pbuffer,u16 lenth)

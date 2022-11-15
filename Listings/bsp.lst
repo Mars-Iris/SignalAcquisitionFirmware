@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   BSP                                                               11/15/2022 13:44:44 PAGE 1   
+C51 COMPILER V9.56.0.0   BSP                                                               11/15/2022 14:33:05 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE BSP
@@ -62,7 +62,7 @@ line level    source
                   BSP_Usart_Init(BUMP_24G_USART,BUMP_24G_BAUDRATE);   //初2.4G接收模块（碰杆传感器）与主板之间连接的串口
                 #endif
   54   1        
-C51 COMPILER V9.56.0.0   BSP                                                               11/15/2022 13:44:44 PAGE 2   
+C51 COMPILER V9.56.0.0   BSP                                                               11/15/2022 14:33:05 PAGE 2   
 
   55   1      
   56   1      #endif

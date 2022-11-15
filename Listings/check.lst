@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 1   
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE CHECK
@@ -62,7 +62,7 @@ line level    source
                 
                 char code Serial_id[] = "D17E01A3B89335,D17E0133B8930E,D17E0133B892F6,D17E01F1B89336,D17E01A3B89334,\
                                         D17E01B2B89320,D17E01B2B89338,D17E01F1B8931D,D17E01A3B8934D,D17E01B2B8933A,\
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 2   
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 2   
 
                                         D17E0133B8930F,D17E01F1B89337,D17E01F1B8931E,D17E01F1B8931C,D17E0165B88CAD,\
                                         D17E0133B892F5,D17E01A3B89359,D17E01A3B8934C,D17E01A3B89336,D17E01B2B89339,\
@@ -126,7 +126,7 @@ line level    source
                 
               #elif(BOARD_NO  ==  GZ_QNZ_HSJD_KM2)   //贵州省黔南州惠水金都科目二 131
               
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 3   
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 3   
 
                 char code Serial_id[] = "D17E45EB017F7E,D17E45EC017F7C,D17E45EA017F6D,D17E45F3017F67,D17E00D402F3EC,\
                                         D17E8165195A92,D17E81331954D0,D17E8133195406,D17E81CD205EE2,D17E44B201E279,\
@@ -190,7 +190,7 @@ line level    source
                 
                 char code Serial_id[] = "D17E84B24E34E5,D17E84B24E54E5,D17E84894E54E4,D17E81E7196C13,D17E45F3017F68,\
                                         D17E45EB017F80,D17E45EA017F6F,D17E45EB017F7F,D17E817C198978,D17E0144001084,\
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 4   
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 4   
 
                                         D17E8168169CDF,D17E81E7196C13,D17E440701E1A1,D17E440701E225,D17E44B201E1A6,\
                                         D17E8139169C9C,D17E0139FDB367,D17E0168001075,D17E8139169D05,D17EC5F1045292";
@@ -254,7 +254,7 @@ line level    source
                                         D17E44A101E27E,D17E440701E277,D17E448901E228,D17E440701E277";
                 
               #elif(BOARD_NO  ==  GZ_GY_JYCX_KM2)        //贵州省贵阳市金阳诚信驾校科目二        158
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 5   
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 5   
 
                 
                 char code Serial_id[] = "D17E440701E1FF,D17E448901E279,D17E44B201E203,D17E44B201E257,D17E440701E253,\
@@ -318,7 +318,7 @@ line level    source
                                         D17E448901E19C,D17E440701E199,D17E44B201E19F,D17E44A101E1A0,D17E440701E198,\
                                         D17E448901E19B,D17E4489029FDD,D17E4407029FB9,D17E440702A066,D17E440702A0A4,\
                                         D17E44B2029FD4,D17E44A1029FF3,D17E440702A063,D17E448902A058,D17E44B2029E5B,\
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 6   
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 6   
 
                                         D17E44B202A04C,D17E4489029FDE";
                 
@@ -382,7 +382,7 @@ line level    source
                 
                 char code Serial_id[] = "D17E45F0016878,D17E45F2016864,D17E45F1016875,D17E45F001686C";
                 
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 7   
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 7   
 
               #elif(BOARD_NO  ==  GZ_QNZ_WAYL_KM2)      //贵州省黔南州瓮安县云岭驾校科目二  188
                 
@@ -446,7 +446,7 @@ line level    source
               
               #elif(BOARD_NO  ==  GZ_QNZ_DSXSD_KM2)   //贵州省黔南州独山兴盛达科目二  200 
                 
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 8   
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 8   
 
                 char code Serial_id[] = "D17E01398579D3,D17E016800112A,D17E013400112A,D17E0139001128,D17E016800112B,\
                                         D17E014400111C,D17E01390013B9";
@@ -510,7 +510,7 @@ line level    source
                 
                 char code Serial_id[] = "D17E81951D1DBB,D17E8133195691,D17E81CD205EE0,D17E817C1989BB,D17E81E7196DBD,\
                                         D17E81CD205EE1,D17E8133195664,D17E81E7196E07,D17E81F81AD9D6,D17E01F1B89594,\
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 9   
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 9   
 
                                         D17E84B24E54E3,D17E81CD206139,D17E81E7196DDE,D17E813D5738C7,D17E81F81AD9BA,\
                                         D17E81E7196DBF,D17E81951D1DBA,D17E01440012D3,D17E01680012DB,D17E01440012D1,\
@@ -574,7 +574,7 @@ line level    source
  548          //========================================================================
  549          // 函数: void ByteToHexStr(const char* source, unsigned char* dest, int sourceLen)
  550          // 描述: 将字节流转换为十六进制字符串。
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 10  
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 10  
 
  551          // 参数：source数据源地址  dest转换后保存的目标地址  sourceLen转换长度 
  552          // 返回: 无
@@ -638,7 +638,7 @@ line level    source
                         printf("DEBUG checkid,ok!\r\n");  
                       #endif
  612   2              return;
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 11  
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 11  
 
  613   2            }
  614   1            else 
@@ -702,7 +702,7 @@ line level    source
  672   2            while((*psrc == *pdes) && (dlen > 0))
  673   2            {
  674   3              psrc++;
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 12  
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 12  
 
  675   3              pdes++; 
  676   3              dlen--;       
@@ -766,7 +766,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----      25
    IDATA SIZE       =   ----    ----
-C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 13:44:47 PAGE 13  
+C51 COMPILER V9.56.0.0   CHECK                                                             11/15/2022 14:33:08 PAGE 13  
 
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
