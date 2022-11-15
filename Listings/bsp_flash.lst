@@ -1,0 +1,896 @@
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE BSP_FLASH
+OBJECT MODULE PLACED IN .\Objects\bsp_flash.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Bsp\bsp_flash.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\bsp_flash.lst) TABS(2) OBJECT(.\Objects\bsp_flash.obj)
+
+line level    source
+
+   1          #include "./User/includes.h"
+   2          
+   3          xdata SignalLineTypeDef FlashCacheBuf;//ÓÃÓÚÐÞ¸ÄflashÖµÊ±£¬»º´æÍ¬ÉÈÇøµÄÊý¾Ý
+   4          //========================================================================
+   5          // º¯Êý:BSP_GetFlashConfig(SignalLineTotalTypeDef *pSignalLine)
+   6          // ÃèÊö: ¶ÁÈ¡flashÀïÃæµÄÅäÖÃ²ÎÊý
+   7          // ²ÎÊý£º*pSignalLineÖ¸ÏòÐèÒª±£´æÊý¾ÝµÄÄÚ´æÊ×µØÖ·3
+   8          // °æ±¾: V1.0, 2022-10-17
+   9          //========================================================================
+  10          void BSP_GetFlashConfig(SignalLineTypeDef *pSignalLine)
+  11          {
+  12   1            //×ùÒÎ¿ª¹Ø£¨µ÷½Ú£©
+  13   1            pSignalLine->zytj.pin             =     IapReadByte(FLASH_ADDR_ZYTJ_PIN);           //×ùÒÎ¿ª¹Ø£¨µ÷½Ú£©ÊäÈë¹Ü
+             -½ÅÎ»ÖÃ
+  14   1            pSignalLine->zytj.modle           =     IapReadByte(FLASH_ADDR_ZYTJ_MODEL);         //×ùÒÎ¿ª¹Ø£¨µ÷½Ú£©Êä
+             -ÈëÄ£Ê½
+  15   1            pSignalLine->zytj.rising_ed       =     IapReadByte(FLASH_ADDR_ZYTJ_RISING_ED);     //×ùÒÎ¿ª¹Ø£¨µ÷½Ú£©ÉÏ
+             -ÉýÑØÏû¶¶
+  16   1            pSignalLine->zytj.falling_ed      =     IapReadByte(FLASH_ADDR_ZYTJ_FALLING_ED);    //×ùÒÎ¿ª¹Ø£¨µ÷½Ú£©ÏÂ
+             -½µÑØÏû¶¶
+  17   1            pSignalLine->zytj.type            =     IapReadByte(FLASH_ADDR_ZYTJ_TYPE);          //×ùÒÎ¿ª¹Ø£¨µ÷½Ú£©ÆÀÅÐÀàÐÍ
+             -ºÍ·½Ê½
+  18   1            //ÊÖÉ²¿ª¹Ø
+  19   1            pSignalLine->ss.pin               =     IapReadByte(FLASH_ADDR_SS_PIN);             //ÊÖÉ²¿ª¹ØÊäÈë¹Ü½Å
+             -Î»ÖÃ
+  20   1            pSignalLine->ss.modle             =     IapReadByte(FLASH_ADDR_SS_MODEL);           //ÊÖÉ²¿ª¹ØÊäÈëÄ£Ê½
+  21   1            pSignalLine->ss.rising_ed         =     IapReadByte(FLASH_ADDR_SS_RISING_ED);       //ÊÖÉ²¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  22   1            pSignalLine->ss.falling_ed        =     IapReadByte(FLASH_ADDR_SS_FALLING_ED);      //ÊÖÉ²¿ª¹ØÏÂ½µÑØÏû¶¶
+  23   1            pSignalLine->ss.type              =     IapReadByte(FLASH_ADDR_SS_TYPE);            //ÊÖÉ²¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  24   1            //×ó×ª¿ª¹Ø
+  25   1            pSignalLine->zz.pin               =     IapReadByte(FLASH_ADDR_ZZ_PIN);             //×ó×ª¿ª¹ØÊäÈë¹Ü½ÅÎ
+             -»ÖÃ
+  26   1            pSignalLine->zz.modle             =     IapReadByte(FLASH_ADDR_ZZ_MODEL);           //×ó×ª¿ª¹ØÊäÈëÄ£Ê½
+  27   1            pSignalLine->zz.rising_ed         =     IapReadByte(FLASH_ADDR_ZZ_RISING_ED);       //×ó×ª¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  28   1            pSignalLine->zz.falling_ed        =     IapReadByte(FLASH_ADDR_ZZ_FALLING_ED);      //×ó×ª¿ª¹ØÏÂ½µÑØÏû¶¶
+  29   1            pSignalLine->zz.type              =     IapReadByte(FLASH_ADDR_ZZ_TYPE);            //×ó×ª¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  30   1            //ÓÒ×ª¿ª¹Ø
+  31   1            pSignalLine->yz.pin               =     IapReadByte(FLASH_ADDR_YZ_PIN);             //ÓÒ×ª¿ª¹ØÊäÈë¹Ü½ÅÎ»
+             -ÖÃ
+  32   1            pSignalLine->yz.modle             =     IapReadByte(FLASH_ADDR_YZ_MODEL);           //ÓÒ×ª¿ª¹ØÊäÈëÄ£Ê½
+  33   1            pSignalLine->yz.rising_ed         =     IapReadByte(FLASH_ADDR_YZ_RISING_ED);       //ÓÒ×ª¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  34   1            pSignalLine->yz.falling_ed        =     IapReadByte(FLASH_ADDR_YZ_FALLING_ED);      //ÓÒ×ª¿ª¹ØÏÂ½µÑØÏû¶¶
+  35   1            pSignalLine->yz.type              =     IapReadByte(FLASH_ADDR_YZ_TYPE);            //ÓÒ×ª¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  36   1            //Ô¶¹â¿ª¹Ø
+  37   1            pSignalLine->yg.pin               =     IapReadByte(FLASH_ADDR_YG_PIN);             //Ô¶¹â¿ª¹ØÊäÈë¹Ü½ÅÎ»
+             -ÖÃ
+  38   1            pSignalLine->yg.modle             =     IapReadByte(FLASH_ADDR_YG_MODEL);           //Ô¶¹â¿ª¹ØÊäÈëÄ£Ê½
+  39   1            pSignalLine->yg.rising_ed         =     IapReadByte(FLASH_ADDR_YG_RISING_ED);       //Ô¶¹â¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  40   1            pSignalLine->yg.falling_ed        =     IapReadByte(FLASH_ADDR_YG_FALLING_ED);      //Ô¶¹â¿ª¹ØÏÂ½µÑØÏû¶¶
+  41   1            pSignalLine->yg.type              =     IapReadByte(FLASH_ADDR_YG_TYPE);            //Ô¶¹â¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 2   
+
+  42   1            //½ü¹â¿ª¹Ø
+  43   1            pSignalLine->jg.pin               =     IapReadByte(FLASH_ADDR_JG_PIN);             //½ü¹â¿ª¹ØÊäÈë¹Ü½ÅÎ»
+             -ÖÃ
+  44   1            pSignalLine->jg.modle             =     IapReadByte(FLASH_ADDR_JG_MODEL);           //½ü¹â¿ª¹ØÊäÈëÄ£Ê½
+  45   1            pSignalLine->jg.rising_ed         =     IapReadByte(FLASH_ADDR_JG_RISING_ED);       //½ü¹â¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  46   1            pSignalLine->jg.falling_ed        =     IapReadByte(FLASH_ADDR_JG_FALLING_ED);      //½ü¹â¿ª¹ØÏÂ½µÑØÏû¶¶
+  47   1            pSignalLine->jg.type              =     IapReadByte(FLASH_ADDR_JG_TYPE);            //½ü¹â¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  48   1            //ÀëºÏ¿ª¹Ø
+  49   1            pSignalLine->lh.pin               =     IapReadByte(FLASH_ADDR_LH_PIN);             //ÀëºÏ¿ª¹ØÊäÈë¹Ü½ÅÎ
+             -»ÖÃ
+  50   1            pSignalLine->lh.modle             =     IapReadByte(FLASH_ADDR_LH_MODEL);           //ÀëºÏ¿ª¹ØÊäÈëÄ£Ê½
+  51   1            pSignalLine->lh.rising_ed         =     IapReadByte(FLASH_ADDR_LH_RISING_ED);       //ÀëºÏ¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  52   1            pSignalLine->lh.falling_ed        =     IapReadByte(FLASH_ADDR_LH_FALLING_ED);      //ÀëºÏ¿ª¹ØÏÂ½µÑØÏû¶¶
+  53   1            pSignalLine->lh.type              =     IapReadByte(FLASH_ADDR_LH_TYPE);            //ÀëºÏ¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  54   1            //½ÅÉ²¿ª¹Ø
+  55   1            pSignalLine->js.pin               =     IapReadByte(FLASH_ADDR_JS_PIN);             //½ÅÉ²¿ª¹ØÊäÈë¹Ü½Å
+             -Î»ÖÃ
+  56   1            pSignalLine->js.modle             =     IapReadByte(FLASH_ADDR_JS_MODEL);           //½ÅÉ²¿ª¹ØÊäÈëÄ£Ê½
+  57   1            pSignalLine->js.rising_ed         =     IapReadByte(FLASH_ADDR_JS_RISING_ED);       //½ÅÉ²¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  58   1            pSignalLine->js.falling_ed        =     IapReadByte(FLASH_ADDR_JS_FALLING_ED);      //½ÅÉ²¿ª¹ØÏÂ½µÑØÏû¶
+             -¶
+  59   1            pSignalLine->js.type              =     IapReadByte(FLASH_ADDR_JS_TYPE);            //½ÅÉ²¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  60   1            //Ï¨»ð¿ª¹Ø
+  61   1            pSignalLine->xh.pin               =     IapReadByte(FLASH_ADDR_XH_PIN);             //Ï¨»ð¿ª¹ØÊäÈë¹Ü½Å
+             -Î»ÖÃ
+  62   1            pSignalLine->xh.modle             =     IapReadByte(FLASH_ADDR_XH_MODEL);           //Ï¨»ð¿ª¹ØÊäÈëÄ£Ê½
+  63   1            pSignalLine->xh.rising_ed         =     IapReadByte(FLASH_ADDR_XH_RISING_ED);       //Ï¨»ð¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  64   1            pSignalLine->xh.falling_ed        =     IapReadByte(FLASH_ADDR_XH_FALLING_ED);      //Ï¨»ð¿ª¹ØÏÂ½µÑØÏû¶¶
+  65   1            pSignalLine->xh.type              =     IapReadByte(FLASH_ADDR_XH_TYPE);            //Ï¨»ð¿ª¹ØÆÀÅÐ·½Ê½
+  66   1            //Æô¶¯¿ª¹Ø
+  67   1            pSignalLine->qd.pin               =     IapReadByte(FLASH_ADDR_QD_PIN);             //Æô¶¯¿ª¹ØÊäÈë¹Ü½Å
+             -Î»ÖÃ
+  68   1            pSignalLine->qd.modle             =     IapReadByte(FLASH_ADDR_QD_MODEL);           //Æô¶¯¿ª¹ØÊäÈëÄ£Ê½
+  69   1            pSignalLine->qd.rising_ed         =     IapReadByte(FLASH_ADDR_QD_RISING_ED);       //Æô¶¯¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  70   1            pSignalLine->qd.falling_ed        =     IapReadByte(FLASH_ADDR_QD_FALLING_ED);      //Æô¶¯¿ª¹ØÏÂ½µÑØÏû¶¶
+  71   1            pSignalLine->qd.type              =     IapReadByte(FLASH_ADDR_QD_TYPE);            //Æô¶¯·½Ê½  
+  72   1            //°²È«´ø¿ª¹Ø
+  73   1            pSignalLine->aqd.pin              =     IapReadByte(FLASH_ADDR_AQD_PIN);            //°²È«´ø¿ª¹ØÊäÈë¹Ü½
+             -ÅÎ»ÖÃ
+  74   1            pSignalLine->aqd.modle            =     IapReadByte(FLASH_ADDR_AQD_MODEL);          //°²È«´ø¿ª¹ØÊäÈëÄ£Ê½
+  75   1            pSignalLine->aqd.rising_ed        =     IapReadByte(FLASH_ADDR_AQD_RISING_ED);      //°²È«´ø¿ª¹ØÉÏÉýÑØÏ
+             -û¶¶
+  76   1            pSignalLine->aqd.falling_ed       =     IapReadByte(FLASH_ADDR_AQD_FALLING_ED);     //°²È«´ø¿ª¹ØÏÂ½µÑØÏ
+             -û¶¶
+  77   1            pSignalLine->aqd.type             =     IapReadByte(FLASH_ADDR_AQD_TYPE);           //°²È«´ø¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  78   1            //Ð¡µÆ¿ª¹Ø
+  79   1            pSignalLine->xd.pin               =     IapReadByte(FLASH_ADDR_XD_PIN);             //Ð¡µÆ¿ª¹ØÊäÈë¹Ü½ÅÎ»
+             -ÖÃ
+  80   1            pSignalLine->xd.modle             =     IapReadByte(FLASH_ADDR_XD_MODEL);           //Ð¡µÆ¿ª¹ØÊäÈëÄ£Ê½
+  81   1            pSignalLine->xd.rising_ed         =     IapReadByte(FLASH_ADDR_XD_RISING_ED);       //Ð¡µÆ¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  82   1            pSignalLine->xd.falling_ed        =     IapReadByte(FLASH_ADDR_XD_FALLING_ED);      //Ð¡µÆ¿ª¹ØÏÂ½µÑØÏû¶¶
+  83   1            pSignalLine->xd.type              =     IapReadByte(FLASH_ADDR_XD_TYPE);            //Ð¡µÆ¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  84   1            //À®°È¿ª¹Ø
+  85   1            pSignalLine->lb.pin               =     IapReadByte(FLASH_ADDR_LB_PIN);             //À®°È¿ª¹ØÊäÈë¹Ü½ÅÎ
+             -»ÖÃ
+  86   1            pSignalLine->lb.modle             =     IapReadByte(FLASH_ADDR_LB_MODEL);           //À®°È¿ª¹ØÊäÈëÄ£Ê½
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 3   
+
+  87   1            pSignalLine->lb.rising_ed         =     IapReadByte(FLASH_ADDR_LB_RISING_ED);       //À®°È¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  88   1            pSignalLine->lb.falling_ed        =     IapReadByte(FLASH_ADDR_LB_FALLING_ED);      //À®°È¿ª¹ØÏÂ½µÑØÏû¶¶
+  89   1            pSignalLine->lb.type              =     IapReadByte(FLASH_ADDR_LB_TYPE);            //À®°È¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  90   1            //³µÃÅ¿ª¹Ø
+  91   1            pSignalLine->cm.pin               =     IapReadByte(FLASH_ADDR_CM_PIN);             //³µÃÅ¿ª¹ØÊäÈë¹Ü½ÅÎ
+             -»ÖÃ
+  92   1            pSignalLine->cm.modle             =     IapReadByte(FLASH_ADDR_CM_MODEL);           //³µÃÅ¿ª¹ØÊäÈëÄ£Ê½
+  93   1            pSignalLine->cm.rising_ed         =     IapReadByte(FLASH_ADDR_CM_RISING_ED);       //³µÃÅ¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+  94   1            pSignalLine->cm.falling_ed        =     IapReadByte(FLASH_ADDR_CM_FALLING_ED);      //³µÃÅ¿ª¹ØÏÂ½µÑØÏû¶¶
+  95   1            pSignalLine->cm.type              =     IapReadByte(FLASH_ADDR_CM_TYPE);            //³µÃÅ¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+  96   1            //µ²Î»´«¸ÐÆ÷
+  97   1            pSignalLine->dw.pin1              =     IapReadByte(FLASH_ADDR_DW_PIN1);            //µ²Î»´«¸ÐÆ÷ÐÅºÅÏß1
+             -ÊäÈë¹Ü½ÅÎ»ÖÃ
+  98   1            pSignalLine->dw.pin2              =     IapReadByte(FLASH_ADDR_DW_PIN2);            //µ²Î»´«¸ÐÆ÷ÐÅºÅÏß2ÊäÈ
+             -ë¹Ü½ÅÎ»ÖÃ
+  99   1            pSignalLine->dw.pin3              =     IapReadByte(FLASH_ADDR_DW_PIN3);            //µ²Î»´«¸ÐÆ÷ÐÅºÅÏß3ÊäÈë¹
+             -Ü½ÅÎ»ÖÃ
+ 100   1            pSignalLine->dw.pin4              =     IapReadByte(FLASH_ADDR_DW_PIN4);            //µ²Î»´«¸ÐÆ÷ÐÅºÅÏß4ÊäÈë¹Ü½
+             -ÅÎ»ÖÃ
+ 101   1            pSignalLine->dw.modle             =     IapReadByte(FLASH_ADDR_DW_MODEL);           //µ²Î»´«¸ÐÆ÷ÊäÈëÄ£Ê½
+ 102   1            pSignalLine->dw.rising_ed         =     IapReadByte(FLASH_ADDR_DW_RISING_ED);       //µ²Î»´«¸ÐÆ÷ÉÏÉýÑØÏû
+             -¶¶
+ 103   1            pSignalLine->dw.falling_ed        =     IapReadByte(FLASH_ADDR_DW_FALLING_ED);      //µ²Î»´«¸ÐÆ÷ÏÂ½µÑØÏû
+             -¶¶
+ 104   1            pSignalLine->dw.type              =     IapReadByte(FLASH_ADDR_DW_TYPE);            //µ²Î»´«¸ÐÆ÷ÀàÐÍ
+ 105   1            //×óºóÊÓ¿ª¹Ø
+ 106   1            pSignalLine->zhs.pin              =     IapReadByte(FLASH_ADDR_ZHS_PIN);            //×óºóÊÓ¿ª¹ØÊäÈë¹Ü½Å
+             -Î»ÖÃ
+ 107   1            pSignalLine->zhs.modle            =     IapReadByte(FLASH_ADDR_ZHS_MODEL);          //×óºóÊÓ¿ª¹ØÊäÈëÄ£Ê½
+ 108   1            pSignalLine->zhs.rising_ed        =     IapReadByte(FLASH_ADDR_ZHS_RISING_ED);      //×óºóÊÓ¿ª¹ØÉÏÉýÑØÏ
+             -û¶¶
+ 109   1            pSignalLine->zhs.falling_ed       =     IapReadByte(FLASH_ADDR_ZHS_FALLING_ED);     //×óºóÊÓ¿ª¹ØÏÂ½µÑØÏû
+             -¶¶
+ 110   1            pSignalLine->zhs.type             =     IapReadByte(FLASH_ADDR_ZHS_TYPE);           //×óºóÊÓ¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+ 111   1            //ÄÚºóÊÓ¿ª¹Ø
+ 112   1            pSignalLine->nhs.pin              =     IapReadByte(FLASH_ADDR_NHS_PIN);            //ÄÚºóÊÓ¿ª¹ØÊäÈë¹Ü½Å
+             -Î»ÖÃ
+ 113   1            pSignalLine->nhs.modle            =     IapReadByte(FLASH_ADDR_NHS_MODEL);          //ÄÚºóÊÓ¿ª¹ØÊäÈëÄ£Ê½
+ 114   1            pSignalLine->nhs.rising_ed        =     IapReadByte(FLASH_ADDR_NHS_RISING_ED);      //ÄÚºóÊÓ¿ª¹ØÉÏÉýÑØÏ
+             -û¶¶
+ 115   1            pSignalLine->nhs.falling_ed       =     IapReadByte(FLASH_ADDR_NHS_FALLING_ED);     //ÄÚºóÊÓ¿ª¹ØÏÂ½µÑØÏû
+             -¶¶
+ 116   1            pSignalLine->nhs.type             =     IapReadByte(FLASH_ADDR_NHS_TYPE);           //ÄÚºóÊÓ¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+ 117   1            //¸±É²¿ª¹Ø
+ 118   1            pSignalLine->fsc.pin              =     IapReadByte(FLASH_ADDR_FSC_PIN);            //¸±É²¿ª¹ØÊäÈë¹Ü½ÅÎ
+             -»ÖÃ
+ 119   1            pSignalLine->fsc.modle            =     IapReadByte(FLASH_ADDR_FSC_MODEL);          //¸±É²¿ª¹ØÊäÈëÄ£Ê½
+ 120   1            pSignalLine->fsc.rising_ed        =     IapReadByte(FLASH_ADDR_FSC_RISING_ED);      //¸±É²¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+ 121   1            pSignalLine->fsc.falling_ed       =     IapReadByte(FLASH_ADDR_FSC_FALLING_ED);     //¸±É²¿ª¹ØÏÂ½µÑØÏû¶
+             -¶
+ 122   1            pSignalLine->fsc.type             =     IapReadByte(FLASH_ADDR_FSC_TYPE);           //¸±É²¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+ 123   1            //ÎíµÆ¿ª¹Ø
+ 124   1            pSignalLine->wd.pin               =     IapReadByte(FLASH_ADDR_WD_PIN);             //ÎíµÆ¿ª¹ØÊäÈë¹Ü½ÅÎ»
+             -ÖÃ
+ 125   1            pSignalLine->wd.modle             =     IapReadByte(FLASH_ADDR_WD_MODEL);           //ÎíµÆ¿ª¹ØÊäÈëÄ£Ê½
+ 126   1            pSignalLine->wd.rising_ed         =     IapReadByte(FLASH_ADDR_WD_RISING_ED);       //ÎíµÆ¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+ 127   1            pSignalLine->wd.falling_ed        =     IapReadByte(FLASH_ADDR_WD_FALLING_ED);      //ÎíµÆ¿ª¹ØÏÂ½µÑØÏû¶¶
+ 128   1            pSignalLine->wd.type              =     IapReadByte(FLASH_ADDR_WD_TYPE);            //ÎíµÆ¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 4   
+
+ 129   1            //ÓêË¢¿ª¹Ø
+ 130   1            pSignalLine->ys.pin               =     IapReadByte(FLASH_ADDR_YS_PIN);             //ÓêË¢¿ª¹ØÊäÈë¹Ü½Å
+             -Î»ÖÃ
+ 131   1            pSignalLine->ys.modle             =     IapReadByte(FLASH_ADDR_YS_MODEL);           //ÓêË¢¿ª¹ØÊäÈëÄ£Ê½
+ 132   1            pSignalLine->ys.rising_ed         =     IapReadByte(FLASH_ADDR_YS_RISING_ED);       //ÓêË¢¿ª¹ØÉÏÉýÑØÏû¶
+             -¶
+ 133   1            pSignalLine->ys.falling_ed        =     IapReadByte(FLASH_ADDR_YS_FALLING_ED);      //ÓêË¢¿ª¹ØÏÂ½µÑØÏû¶¶
+ 134   1            pSignalLine->ys.type              =     IapReadByte(FLASH_ADDR_YS_TYPE);            //ÓêË¢¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+ 135   1            //µ¹³µµÆ¿ª¹Ø
+ 136   1            pSignalLine->dcd.pin              =     IapReadByte(FLASH_ADDR_DCD_PIN);            //µ¹³µµÆ¿ª¹ØÊäÈë¹Ü½
+             -ÅÎ»ÖÃ
+ 137   1            pSignalLine->dcd.modle            =     IapReadByte(FLASH_ADDR_DCD_MODEL);          //µ¹³µµÆ¿ª¹ØÊäÈëÄ£Ê½
+ 138   1            pSignalLine->dcd.rising_ed        =     IapReadByte(FLASH_ADDR_DCD_RISING_ED);      //µ¹³µµÆ¿ª¹ØÉÏÉýÑØÏ
+             -û¶¶
+ 139   1            pSignalLine->dcd.falling_ed       =     IapReadByte(FLASH_ADDR_DCD_FALLING_ED);     //µ¹³µµÆ¿ª¹ØÏÂ½µÑØÏ
+             -û¶¶
+ 140   1            pSignalLine->dcd.type             =     IapReadByte(FLASH_ADDR_DCD_TYPE);           //µ¹³µµÆ¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+ 141   1            //Ô¿³×ÃÅ¿ª¹Ø
+ 142   1            pSignalLine->ysm.pin              =     IapReadByte(FLASH_ADDR_YSM_PIN);            //Ô¿³×ÃÅ¿ª¹ØÊäÈë¹Ü½Å
+             -Î»ÖÃ
+ 143   1            pSignalLine->ysm.modle            =     IapReadByte(FLASH_ADDR_YSM_MODEL);          //Ô¿³×ÃÅ¿ª¹ØÊäÈëÄ£Ê½
+ 144   1            pSignalLine->ysm.rising_ed        =     IapReadByte(FLASH_ADDR_YSM_RISING_ED);      //Ô¿³×ÃÅ¿ª¹ØÉÏÉýÑØÏû
+             -¶¶
+ 145   1            pSignalLine->ysm.falling_ed       =     IapReadByte(FLASH_ADDR_YSM_FALLING_ED);     //Ô¿³×ÃÅ¿ª¹ØÏÂ½µÑØÏû
+             -¶¶
+ 146   1            pSignalLine->ysm.type             =     IapReadByte(FLASH_ADDR_YSM_TYPE);           //Ô¿³×ÃÅ¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+ 147   1            //ÈÆ³µ¿ª¹Ø1
+ 148   1            pSignalLine->rc.pin1              =     IapReadByte(FLASH_ADDR_RC_PIN1);            //ÈÆ³µ1ºÅ¿ª¹ØÊäÈë¹
+             -Ü½ÅÎ»ÖÃ
+ 149   1            pSignalLine->rc.pin2              =     IapReadByte(FLASH_ADDR_RC_PIN2);            //ÈÆ³µ2ºÅ¿ª¹ØÊäÈë¹Ü½ÅÎ
+             -»ÖÃ
+ 150   1            pSignalLine->rc.pin3              =     IapReadByte(FLASH_ADDR_RC_PIN3);            //ÈÆ³µ3ºÅ¿ª¹ØÊäÈë¹Ü½ÅÎ»ÖÃ
+ 151   1            pSignalLine->rc.modle             =     IapReadByte(FLASH_ADDR_RC_MODEL);           //ÈÆ³µ¿ª¹ØÊäÈëÄ£Ê½
+ 152   1            pSignalLine->rc.rising_ed         =     IapReadByte(FLASH_ADDR_RC_RISING_ED);       //ÈÆ³µ¿ª¹ØÉÏÉýÑØÏû¶¶
+ 153   1            pSignalLine->rc.falling_ed        =     IapReadByte(FLASH_ADDR_RC_FALLING_ED);      //ÈÆ³µ¿ª¹ØÏÂ½µÑØÏû¶¶
+ 154   1            pSignalLine->rc.type              =     IapReadByte(FLASH_ADDR_RC_TYPE);            //ÈÆ³µ¿ª¹Ø1ÀàÐÍ
+ 155   1            //´³¶¯¿ª¹Ø
+ 156   1            pSignalLine->cd.pin               =     IapReadByte(FLASH_ADDR_CD_PIN);             //´³¶¯¿ª¹ØÊäÈë¹Ü½ÅÎ»
+             -ÖÃ
+ 157   1            pSignalLine->cd.modle             =     IapReadByte(FLASH_ADDR_CD_MODEL);           //´³¶¯¿ª¹ØÊäÈëÄ£Ê½
+ 158   1            pSignalLine->cd.rising_ed         =     IapReadByte(FLASH_ADDR_CD_RISING_ED);       //´³¶¯¿ª¹ØÉÏÉýÑØÏû¶¶
+ 159   1            pSignalLine->cd.falling_ed        =     IapReadByte(FLASH_ADDR_CD_FALLING_ED);      //´³¶¯¿ª¹ØÏÂ½µÑØÏû¶¶
+ 160   1            pSignalLine->cd.type              =     IapReadByte(FLASH_ADDR_CD_TYPE);            //´³¶¯¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+ 161   1            //×ùÒÎ¿ª¹Ø£¨Ñ¹Á¦£©
+ 162   1            pSignalLine->zyyl.pin             =     IapReadByte(FLASH_ADDR_ZYYL_PIN);           //×ùÒÎ¿ª¹Ø£¨Ñ¹Á¦£©
+             -ÊäÈë¹Ü½ÅÎ»ÖÃ
+ 163   1            pSignalLine->zyyl.modle           =     IapReadByte(FLASH_ADDR_ZYYL_MODEL);         //×ùÒÎ¿ª¹Ø£¨Ñ¹Á¦£©Êä
+             -ÈëÄ£Ê½
+ 164   1            pSignalLine->zyyl.rising_ed       =     IapReadByte(FLASH_ADDR_ZYYL_RISING_ED);     //×ùÒÎ¿ª¹Ø£¨Ñ¹Á¦£©É
+             -ÏÉýÑØÏû¶¶
+ 165   1            pSignalLine->zyyl.falling_ed      =     IapReadByte(FLASH_ADDR_ZYYL_FALLING_ED);    //×ùÒÎ¿ª¹ØÏÂ½µÑØÏû¶
+             -¶
+ 166   1            pSignalLine->zyyl.type            =     IapReadByte(FLASH_ADDR_ZYYL_TYPE);          //×ùÒÎ¿ª¹ØÆÀÅÐÀàÐÍºÍ·½Ê½
+ 167   1            //¹Û²ìÒÇ±íÅÌ
+ 168   1            pSignalLine->gcybp.pin            =     IapReadByte(FLASH_ADDR_GCYBP_PIN);          //¹Û²ìÒÇ±íÅÌÊäÈë¹Ü
+             -½ÅÎ»ÖÃ
+ 169   1            pSignalLine->gcybp.modle          =     IapReadByte(FLASH_ADDR_GCYBP_MODEL);        //¹Û²ìÒÇ±íÅÌÊäÈëÄ£Ê
+             -½
+ 170   1            pSignalLine->gcybp.rising_ed      =     IapReadByte(FLASH_ADDR_GCYBP_RISING_ED);    //¹Û²ìÒÇ±íÅÌÉÏÉýÑØÏ
+             -û¶¶
+ 171   1            pSignalLine->gcybp.falling_ed     =     IapReadByte(FLASH_ADDR_GCYBP_FALLING_ED);   //¹Û²ìÒÇ±íÅÌÏÂ½µÑØÏ
+             -û¶¶
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 5   
+
+ 172   1            pSignalLine->gcybp.type           =     IapReadByte(FLASH_ADDR_GCYBP_TYPE);         //¹Û²ìÒÇ±íÅÌÆÀÅÐÀàÐÍºÍ·½Ê
+             -½
+ 173   1            //×ªËÙ
+ 174   1            pSignalLine->zs.pin               =     IapReadByte(FLASH_ADDR_ZS_PIN);              //×ªËÙÊäÈë¹Ü½ÅÎ»ÖÃ
+ 175   1            pSignalLine->zs.min               =     IapReadByte(FLASH_ADDR_ZS_IDLIN_MIN);        //×ªËÙµ¡ËÙ×îÐ¡Âö³å¼Æ
+             -Êý
+ 176   1            pSignalLine->zs.bs                =     IapReadByte(FLASH_ADDR_ZS_BS);               //×ªËÙÂö³å¼ÆÊý·Å´ó±¶Êý
+ 177   1            pSignalLine->zs.sampling_time     =     IapReadByte(FLASH_ADDR_ZS_SAMPLING_TIME);    //×ªËÙÂö³å²ÉÑùÊ±¼ä
+ 178   1            pSignalLine->zs.init_value        =     IapReadByte(FLASH_ADDR_ZS_INIT_VALUE);       //³õÊ¼×ªËÙ 0=Ä¬ÈÏ0£¬1=
+             -Ä¬ÈÏ800
+ 179   1            //µ¥±ßÇÅ´«¸ÐÆ÷
+ 180   1            pSignalLine->dbq.pin1             =     IapReadByte(FLASH_ADDR_DBQ_PIN1);             //µ¥±ßÇÅÐÅºÅÊäÈë¹Ü½
+             -ÅÎ»ÖÃ1
+ 181   1            pSignalLine->dbq.pin2             =     IapReadByte(FLASH_ADDR_DBQ_PIN2);             //µ¥±ßÇÅÐÅºÅÊäÈë¹Ü½Å
+             -Î»ÖÃ2
+ 182   1            pSignalLine->dbq.pin3             =     IapReadByte(FLASH_ADDR_DBQ_PIN3);             //µ¥±ßÇÅÐÅºÅÊäÈë¹Ü½ÅÎ»ÖÃ
+             -3
+ 183   1            pSignalLine->dbq.pin4             =     IapReadByte(FLASH_ADDR_DBQ_PIN4);             //µ¥±ßÇÅÐÅºÅÊäÈë¹Ü½ÅÎ»ÖÃ4
+ 184   1            pSignalLine->dbq.pin5             =     IapReadByte(FLASH_ADDR_DBQ_PIN5);             //µ¥±ßÇÅÐÅºÅÊäÈë¹Ü½ÅÎ»ÖÃ5
+ 185   1            pSignalLine->dbq.pin6             =     IapReadByte(FLASH_ADDR_DBQ_PIN6);             //µ¥±ßÇÅÐÅºÅÊäÈë¹Ü½
+             -ÅÎ»ÖÃ6
+ 186   1            pSignalLine->dbq.modle            =     IapReadByte(FLASH_ADDR_DBQ_MODEL);            //µ¥±ßÇÅÐÅºÅÊäÈëÄ£Ê½
+ 187   1            pSignalLine->dbq.rising_ed        =     IapReadByte(FLASH_ADDR_DBQ_RISING_ED);        //µ¥±ßÇÅÐÅºÅÊäÈëÉÏÉý
+             -ÑØÏû¶¶Ê±¼ä
+ 188   1            pSignalLine->dbq.falling_ed       =     IapReadByte(FLASH_ADDR_DBQ_FALLING_ED);       //µ¥±ßÇÅÐÅºÅÊäÈëÏÂ½
+             -µÑØÏû¶¶Ê±¼ä
+ 189   1            pSignalLine->dbq.type             =     IapReadByte(FLASH_ADDR_DBQ_TYPE);             //µ¥±ßÇÅÐÅºÅÊäÈë´«¸ÐÆ÷ÀàÐÍ
+             -    
+ 190   1      #ifdef  STC15W4K48S4      
+ 191   1            //Ä¦ÍÐ³µÍ·¿ø´«¸ÐÆ÷
+ 192   1            pSignalLine->tk.pin               =       IapReadByte(FLASH_ADDR_TK_PIN);               //Ä¦ÍÐ³µÍ·¿ø¿ª¹Ø£¨
+             -Ñ¹Á¦£©ÊäÈë¹Ü½ÅÎ»ÖÃ
+ 193   1            pSignalLine->tk.modle             =       IapReadByte(FLASH_ADDR_TK_MODEL);             //Ä¦ÍÐ³µÍ·¿ø¿ª¹Ø£¨Ñ¹
+             -Á¦£©ÊäÈëÄ£Ê½
+ 194   1            pSignalLine->tk.rising_ed         =       IapReadByte(FLASH_ADDR_TK_RISING_ED);         //Ä¦ÍÐ³µÍ·¿ø¿ª¹Ø£¨Ñ
+             -¹Á¦£©ÉÏÉýÑØÏû¶¶
+ 195   1            pSignalLine->tk.falling_ed        =       IapReadByte(FLASH_ADDR_TK_FALLING_ED);        //Ä¦ÍÐ³µÍ·¿ø¿ª¹ØÏÂ½
+             -µÑØÏû¶¶
+ 196   1            pSignalLine->tk.type              =       IapReadByte(FLASH_ADDR_TK_TYPE);              //Ä¦ÍÐ³µÍ·¿ø¿ª¹ØÆÀÅÐÀàÐÍºÍ
+             -·½Ê½  
+ 197   1            
+ 198   1            //Ä¦ÍÐ³µ×ó°ÑÊÖ´«¸ÐÆ÷
+ 199   1            pSignalLine->zbs.pin              =       IapReadByte(FLASH_ADDR_ZBS_PIN);              //Ä¦ÍÐ³µ×ó°ÑÊÖ¿ª¹
+             -Ø£¨Ñ¹Á¦£©ÊäÈë¹Ü½ÅÎ»ÖÃ
+ 200   1            pSignalLine->zbs.modle            =       IapReadByte(FLASH_ADDR_ZBS_MODEL);            //Ä¦ÍÐ³µ×ó°ÑÊÖ¿ª¹Ø
+             -£¨Ñ¹Á¦£©ÊäÈëÄ£Ê½
+ 201   1            pSignalLine->zbs.rising_ed        =       IapReadByte(FLASH_ADDR_ZBS_RISING_ED);        //Ä¦ÍÐ³µ×ó°ÑÊÖ¿ª¹
+             -Ø£¨Ñ¹Á¦£©ÉÏÉýÑØÏû¶¶
+ 202   1            pSignalLine->zbs.falling_ed       =       IapReadByte(FLASH_ADDR_ZBS_FALLING_ED);       //Ä¦ÍÐ³µ×ó°ÑÊÖ¿ª¹Ø
+             -ÏÂ½µÑØÏû¶¶
+ 203   1            pSignalLine->zbs.type             =       IapReadByte(FLASH_ADDR_ZBS_TYPE);             //Ä¦ÍÐ³µ×ó°ÑÊÖ¿ª¹ØÆÀÅÐÀàÐ
+             -ÍºÍ·½Ê½  
+ 204   1            
+ 205   1            //Ä¦ÍÐ³µÓÒ°ÑÊÖ´«¸ÐÆ÷
+ 206   1            pSignalLine->ybs.pin              =       IapReadByte(FLASH_ADDR_YBS_PIN);              //Ä¦ÍÐ³µÓÒ°ÑÊÖ¿ª¹
+             -Ø£¨Ñ¹Á¦£©ÊäÈë¹Ü½ÅÎ»ÖÃ
+ 207   1            pSignalLine->ybs.modle            =       IapReadByte(FLASH_ADDR_YBS_MODEL);            //Ä¦ÍÐ³µÓÒ°ÑÊÖ¿ª¹Ø
+             -£¨Ñ¹Á¦£©ÊäÈëÄ£Ê½
+ 208   1            pSignalLine->ybs.rising_ed        =       IapReadByte(FLASH_ADDR_YBS_RISING_ED);        //Ä¦ÍÐ³µÓÒ°ÑÊÖ¿ª¹
+             -Ø£¨Ñ¹Á¦£©ÉÏÉýÑØÏû¶¶
+ 209   1            pSignalLine->ybs.falling_ed       =       IapReadByte(FLASH_ADDR_YBS_FALLING_ED);       //Ä¦ÍÐ³µÓÒ°ÑÊÖ¿ª¹Ø
+             -ÏÂ½µÑØÏû¶¶
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 6   
+
+ 210   1            pSignalLine->ybs.type             =       IapReadByte(FLASH_ADDR_YBS_TYPE);             //Ä¦ÍÐ³µÓÒ°ÑÊÖ¿ª¹ØÆÀÅÐÀàÐ
+             -ÍºÍ·½Ê½  
+ 211   1            
+ 212   1            //Ä¦ÍÐ³µ×óÌ¤°å´«¸ÐÆ÷
+ 213   1            pSignalLine->zjtb.pin             =       IapReadByte(FLASH_ADDR_ZJTB_PIN);             //Ä¦ÍÐ³µ×óÌ¤°å¿ª
+             -¹Ø£¨Ñ¹Á¦£©ÊäÈë¹Ü½ÅÎ»ÖÃ
+ 214   1            pSignalLine->zjtb.modle           =       IapReadByte(FLASH_ADDR_ZJTB_MODEL);           //Ä¦ÍÐ³µ×óÌ¤°å¿ª¹Ø
+             -£¨Ñ¹Á¦£©ÊäÈëÄ£Ê½
+ 215   1            pSignalLine->zjtb.rising_ed       =       IapReadByte(FLASH_ADDR_ZJTB_RISING_ED);       //Ä¦ÍÐ³µ×óÌ¤°å¿ª¹
+             -Ø£¨Ñ¹Á¦£©ÉÏÉýÑØÏû¶¶
+ 216   1            pSignalLine->zjtb.falling_ed      =       IapReadByte(FLASH_ADDR_ZJTB_FALLING_ED);      //Ä¦ÍÐ³µ×óÌ¤°å¿ª¹
+             -ØÏÂ½µÑØÏû¶¶
+ 217   1            pSignalLine->zjtb.type            =       IapReadByte(FLASH_ADDR_ZJTB_TYPE);            //Ä¦ÍÐ³µ×óÌ¤°å¿ª¹ØÆÀÅÐÀà
+             -ÐÍºÍ·½Ê½  
+ 218   1            
+ 219   1            //Ä¦ÍÐ³µÓÒÌ¤°å´«¸ÐÆ÷
+ 220   1            pSignalLine->yjtb.pin             =       IapReadByte(FLASH_ADDR_YJTB_PIN);             //Ä¦ÍÐ³µÓÒÌ¤°å¿ª
+             -¹Ø£¨Ñ¹Á¦£©ÊäÈë¹Ü½ÅÎ»ÖÃ
+ 221   1            pSignalLine->yjtb.modle           =       IapReadByte(FLASH_ADDR_YJTB_MODEL);           //Ä¦ÍÐ³µÓÒÌ¤°å¿ª¹Ø
+             -£¨Ñ¹Á¦£©ÊäÈëÄ£Ê½
+ 222   1            pSignalLine->yjtb.rising_ed       =       IapReadByte(FLASH_ADDR_YJTB_RISING_ED);       //Ä¦ÍÐ³µÓÒÌ¤°å¿ª¹
+             -Ø£¨Ñ¹Á¦£©ÉÏÉýÑØÏû¶¶
+ 223   1            pSignalLine->yjtb.falling_ed      =       IapReadByte(FLASH_ADDR_YJTB_FALLING_ED);      //Ä¦ÍÐ³µÓÒÌ¤°å¿ª¹
+             -ØÏÂ½µÑØÏû¶¶
+ 224   1            pSignalLine->yjtb.type            =       IapReadByte(FLASH_ADDR_YJTB_TYPE);            //Ä¦ÍÐ³µÓÒÌ¤°å¿ª¹ØÆÀÅÐÀà
+             -ÐÍºÍ·½Ê½  
+ 225   1            
+ 226   1            //Åö¸Ë½ÓÊÕ
+ 227   1            pSignalLine->pgjs.pin             =       IapReadByte(FLASH_ADDR_PGJS_PIN);             //Åö¸ËÏîÄ¿¹Ü½ÅÎ»
+             -ÖÃ
+ 228   1            pSignalLine->pgjs.modle           =       IapReadByte(FLASH_ADDR_PGJS_MODEL);           //Åö¸ËÏîÄ¿ÊäÈëÄ£Ê½
+ 229   1            pSignalLine->pgjs.rising_ed       =       IapReadByte(FLASH_ADDR_PGJS_RISING_ED);       //Åö¸ËÏîÄ¿ÉÏÉýÑØÏ
+             -û¶¶
+ 230   1            pSignalLine->pgjs.falling_ed      =       IapReadByte(FLASH_ADDR_PGJS_FALLING_ED);      //Åö¸ËÏîÄ¿ÏÂ½µÑØÏ
+             -û¶¶
+ 231   1            pSignalLine->pgjs.type            =       IapReadByte(FLASH_ADDR_PGJS_TYPE);            //Åö¸ËÏîÄ¿ÆÀÅÐÀàÐÍºÍ·½Ê½
+             -  
+ 232   1            
+ 233   1            //Åö¸ËÏîÄ¿1
+ 234   1            pSignalLine->bump[0].name           =       IapReadByte(FLASH_ADDR_PGJS_1_NAME);          //Åö¸ËÏîÄ¿Ãû³
+             -Æ
+ 235   1            pSignalLine->bump[0].number         =       IapReadByte(FLASH_ADDR_PGJS_1_N0);            //Åö¸ËÏîÄ¿±àºÅ
+ 236   1            pSignalLine->bump[0].count          =       IapReadByte(FLASH_ADDR_PGJS_1_COUNT);         //Åö¸ËÏîÄ¿¶ÔÓ¦¸Ëµ
+             -ÄÊýÁ¿
+ 237   1            pSignalLine->bump[0].type           =       IapReadByte(FLASH_ADDR_PGJS_1_TYPE);          //Åö¸ËÏîÄ¿¶ÔÓ¦´«¸Ð
+             -Æ÷ÀàÐÍ
+ 238   1            
+ 239   1            //Åö¸ËÏîÄ¿2
+ 240   1            pSignalLine->bump[1].name           =       IapReadByte(FLASH_ADDR_PGJS_2_NAME);          //Åö¸ËÏîÄ¿Ãû³
+             -Æ
+ 241   1            pSignalLine->bump[1].number         =       IapReadByte(FLASH_ADDR_PGJS_2_N0);            //Åö¸ËÏîÄ¿±àºÅ
+ 242   1            pSignalLine->bump[1].count          =       IapReadByte(FLASH_ADDR_PGJS_2_COUNT);         //Åö¸ËÏîÄ¿¶ÔÓ¦¸Ëµ
+             -ÄÊýÁ¿
+ 243   1            pSignalLine->bump[1].type           =       IapReadByte(FLASH_ADDR_PGJS_2_TYPE);          //Åö¸ËÏîÄ¿¶ÔÓ¦´«¸Ð
+             -Æ÷ÀàÐÍ
+ 244   1            
+ 245   1            //Åö¸ËÏîÄ¿3
+ 246   1            pSignalLine->bump[2].name           =       IapReadByte(FLASH_ADDR_PGJS_3_NAME);          //Åö¸ËÏîÄ¿Ãû³
+             -Æ
+ 247   1            pSignalLine->bump[2].number         =       IapReadByte(FLASH_ADDR_PGJS_3_N0);            //Åö¸ËÏîÄ¿±àºÅ
+ 248   1            pSignalLine->bump[2].count          =       IapReadByte(FLASH_ADDR_PGJS_3_COUNT);         //Åö¸ËÏîÄ¿¶ÔÓ¦¸Ëµ
+             -ÄÊýÁ¿
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 7   
+
+ 249   1            pSignalLine->bump[2].type           =       IapReadByte(FLASH_ADDR_PGJS_3_TYPE);          //Åö¸ËÏîÄ¿¶ÔÓ¦´«¸Ð
+             -Æ÷ÀàÐÍ
+ 250   1            
+ 251   1            //Åö¸ËÏîÄ¿4
+ 252   1            pSignalLine->bump[3].name           =       IapReadByte(FLASH_ADDR_PGJS_4_NAME);          //Åö¸ËÏîÄ¿Ãû³
+             -Æ
+ 253   1            pSignalLine->bump[3].number         =       IapReadByte(FLASH_ADDR_PGJS_4_N0);            //Åö¸ËÏîÄ¿±àºÅ
+ 254   1            pSignalLine->bump[3].count          =       IapReadByte(FLASH_ADDR_PGJS_4_COUNT);         //Åö¸ËÏîÄ¿¶ÔÓ¦¸Ëµ
+             -ÄÊýÁ¿
+ 255   1            pSignalLine->bump[3].type           =       IapReadByte(FLASH_ADDR_PGJS_4_TYPE);          //Åö¸ËÏîÄ¿¶ÔÓ¦´«¸Ð
+             -Æ÷ÀàÐÍ
+ 256   1      #endif
+ 257   1      }
+ 258          //========================================================================
+ 259          // º¯Êý: BPS_FlashWriteByte(u16 addr, u8 value)
+ 260          // ÃèÊö: °´ÕÕ×Ö½ÚÐ´Èëflash£¬Ð´ÈëÇ°ÏÈ±¸·ÝÊý¾Ý
+ 261          // ²ÎÊý£ºaddrÎªÒªÐ´Èë×Ö½ÚÊý¾ÝµÄµØÖ·£¬valueÎª×Ö½ÚÊý¾Ý
+ 262          // °æ±¾: V1.0, 2022-10-17
+ 263          //========================================================================
+ 264          void BSP_FlashWriteByte(u16 addr, u8 value)
+ 265          {
+ 266   1      
+ 267   1        BSP_GetFlashConfig(&FlashCacheBuf);//»º´æÍ¬ÉÈÇøµÄÊý¾Ý
+ 268   1        IapEraseSector(addr);//²Á³ýÉÈÇø
+ 269   1        //Ð´ÈëÊý¾Ý
+ 270   1        //×ùÒÎ¿ª¹Ø£¨µ÷½Ú£©
+ 271   1        addr == FLASH_ADDR_ZYTJ_PIN           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYTJ_PIN, FlashCach
+             -eBuf.zytj.pin);
+ 272   1        addr == FLASH_ADDR_ZYTJ_MODEL         ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYTJ_MODEL,FlashCa
+             -cheBuf.zytj.modle);
+ 273   1        addr == FLASH_ADDR_ZYTJ_RISING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYTJ_RISING_ED,F
+             -lashCacheBuf.zytj.rising_ed);
+ 274   1        addr == FLASH_ADDR_ZYTJ_FALLING_ED    ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYTJ_FALLING_ED
+             -,FlashCacheBuf.zytj.falling_ed);
+ 275   1        addr == FLASH_ADDR_ZYTJ_TYPE          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYTJ_TYPE, FlashCa
+             -cheBuf.zytj.type);
+ 276   1        //ÊÖÉ²¿ª¹Ø
+ 277   1        addr == FLASH_ADDR_SS_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_SS_PIN, FlashCacheBu
+             -f.ss.pin);
+ 278   1        addr == FLASH_ADDR_SS_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_SS_MODEL,FlashCache
+             -Buf.ss.modle);
+ 279   1        addr == FLASH_ADDR_SS_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_SS_RISING_ED,Flas
+             -hCacheBuf.ss.rising_ed);
+ 280   1        addr == FLASH_ADDR_SS_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_SS_FALLING_ED, F
+             -lashCacheBuf.ss.falling_ed);
+ 281   1        addr == FLASH_ADDR_SS_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_SS_TYPE, FlashCache
+             -Buf.ss.type);
+ 282   1        //×ó×ª¿ª¹Ø
+ 283   1        addr == FLASH_ADDR_ZZ_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZZ_PIN, FlashCacheBu
+             -f.zz.pin);
+ 284   1        addr == FLASH_ADDR_ZZ_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZZ_MODEL,FlashCache
+             -Buf.zz.modle);
+ 285   1        addr == FLASH_ADDR_ZZ_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZZ_RISING_ED,Flas
+             -hCacheBuf.zz.rising_ed);
+ 286   1        addr == FLASH_ADDR_ZZ_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZZ_FALLING_ED, F
+             -lashCacheBuf.zz.falling_ed);
+ 287   1        addr == FLASH_ADDR_ZZ_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZZ_TYPE, FlashCache
+             -Buf.zz.type);
+ 288   1        //ÓÒ×ª¿ª¹Ø
+ 289   1        addr == FLASH_ADDR_YZ_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YZ_PIN, FlashCacheBu
+             -f.yz.pin);
+ 290   1        addr == FLASH_ADDR_YZ_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YZ_MODEL,FlashCache
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 8   
+
+             -Buf.yz.modle);
+ 291   1        addr == FLASH_ADDR_YZ_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YZ_RISING_ED,Flas
+             -hCacheBuf.yz.rising_ed);
+ 292   1        addr == FLASH_ADDR_YZ_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YZ_FALLING_ED, F
+             -lashCacheBuf.yz.falling_ed);
+ 293   1        addr == FLASH_ADDR_YZ_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YZ_TYPE, FlashCache
+             -Buf.yz.type);
+ 294   1        //Ô¶¹â¿ª¹Ø
+ 295   1        addr == FLASH_ADDR_YG_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YG_PIN, FlashCacheBu
+             -f.yg.pin);
+ 296   1        addr == FLASH_ADDR_YG_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YG_MODEL,FlashCache
+             -Buf.yg.modle);
+ 297   1        addr == FLASH_ADDR_YG_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YG_RISING_ED,Flas
+             -hCacheBuf.yg.rising_ed);
+ 298   1        addr == FLASH_ADDR_YG_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YG_FALLING_ED, F
+             -lashCacheBuf.yg.falling_ed);
+ 299   1        addr == FLASH_ADDR_YG_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YZ_TYPE, FlashCache
+             -Buf.yg.type);
+ 300   1        //½ü¹â¿ª¹Ø
+ 301   1        addr == FLASH_ADDR_JG_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JG_PIN, FlashCacheBu
+             -f.jg.pin);
+ 302   1        addr == FLASH_ADDR_JG_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JG_MODEL,FlashCache
+             -Buf.jg.modle);
+ 303   1        addr == FLASH_ADDR_JG_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JG_RISING_ED,Flas
+             -hCacheBuf.jg.rising_ed);
+ 304   1        addr == FLASH_ADDR_JG_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JG_FALLING_ED, F
+             -lashCacheBuf.jg.falling_ed);
+ 305   1        addr == FLASH_ADDR_JG_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JG_TYPE, FlashCache
+             -Buf.jg.type);
+ 306   1        //ÀëºÏ¿ª¹Ø
+ 307   1        addr == FLASH_ADDR_LH_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LH_PIN, FlashCacheBu
+             -f.lh.pin);
+ 308   1        addr == FLASH_ADDR_LH_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LH_MODEL,FlashCache
+             -Buf.lh.modle);
+ 309   1        addr == FLASH_ADDR_LH_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LH_RISING_ED,Flas
+             -hCacheBuf.lh.rising_ed);
+ 310   1        addr == FLASH_ADDR_LH_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LH_FALLING_ED, F
+             -lashCacheBuf.lh.falling_ed);
+ 311   1        addr == FLASH_ADDR_LH_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LH_TYPE, FlashCache
+             -Buf.lh.type);
+ 312   1        //½ÅÉ²¿ª¹Ø
+ 313   1        addr == FLASH_ADDR_JS_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JS_PIN, FlashCacheBu
+             -f.js.pin);
+ 314   1        addr == FLASH_ADDR_JS_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JS_MODEL,FlashCache
+             -Buf.js.modle);
+ 315   1        addr == FLASH_ADDR_JS_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JS_RISING_ED,Flas
+             -hCacheBuf.js.rising_ed);
+ 316   1        addr == FLASH_ADDR_JS_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JS_FALLING_ED, F
+             -lashCacheBuf.js.falling_ed);
+ 317   1        addr == FLASH_ADDR_JS_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_JS_TYPE, FlashCache
+             -Buf.js.type);
+ 318   1        //Ï¨»ð¿ª¹Ø
+ 319   1        addr == FLASH_ADDR_XH_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XH_PIN, FlashCacheBu
+             -f.xh.pin);
+ 320   1        addr == FLASH_ADDR_XH_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XH_MODEL,FlashCache
+             -Buf.xh.modle);
+ 321   1        addr == FLASH_ADDR_XH_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XH_RISING_ED,Flas
+             -hCacheBuf.xh.rising_ed);
+ 322   1        addr == FLASH_ADDR_XH_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XH_FALLING_ED, F
+             -lashCacheBuf.xh.falling_ed);
+ 323   1        addr == FLASH_ADDR_XH_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XH_TYPE, FlashCache
+             -Buf.xh.type);
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 9   
+
+ 324   1        //Æô¶¯¿ª¹Ø
+ 325   1        addr == FLASH_ADDR_QD_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_QD_PIN, FlashCacheBu
+             -f.qd.pin);
+ 326   1        addr == FLASH_ADDR_QD_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_QD_MODEL,FlashCache
+             -Buf.qd.modle);
+ 327   1        addr == FLASH_ADDR_QD_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_QD_RISING_ED,Flas
+             -hCacheBuf.qd.rising_ed);
+ 328   1        addr == FLASH_ADDR_QD_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_QD_FALLING_ED, F
+             -lashCacheBuf.qd.falling_ed);
+ 329   1        addr == FLASH_ADDR_QD_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_QD_TYPE, FlashCache
+             -Buf.qd.type);
+ 330   1        //°²È«´ø¿ª¹Ø
+ 331   1        addr == FLASH_ADDR_AQD_PIN            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_AQD_PIN, FlashCache
+             -Buf.aqd.pin);
+ 332   1        addr == FLASH_ADDR_AQD_MODEL          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_AQD_MODEL,FlashCac
+             -heBuf.aqd.modle);
+ 333   1        addr == FLASH_ADDR_AQD_RISING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_AQD_RISING_ED,Fl
+             -ashCacheBuf.aqd.rising_ed);
+ 334   1        addr == FLASH_ADDR_AQD_FALLING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_AQD_FALLING_ED,  
+             -FlashCacheBuf.aqd.falling_ed);
+ 335   1        addr == FLASH_ADDR_AQD_TYPE           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_AQD_TYPE,  FlashCach
+             -eBuf.aqd.type);
+ 336   1        //Ð¡µÆ¿ª¹Ø
+ 337   1        addr == FLASH_ADDR_XD_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XD_PIN, FlashCacheBu
+             -f.xd.pin);
+ 338   1        addr == FLASH_ADDR_XD_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XD_MODEL,FlashCache
+             -Buf.xd.modle);
+ 339   1        addr == FLASH_ADDR_XD_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XD_RISING_ED,Flas
+             -hCacheBuf.xd.rising_ed);
+ 340   1        addr == FLASH_ADDR_XD_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XD_FALLING_ED, Fl
+             -ashCacheBuf.xd.falling_ed);
+ 341   1        addr == FLASH_ADDR_XD_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_XD_TYPE, FlashCache
+             -Buf.xd.type);
+ 342   1        //À®°È¿ª¹Ø
+ 343   1        addr == FLASH_ADDR_LB_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LB_PIN, FlashCacheBu
+             -f.lb.pin);
+ 344   1        addr == FLASH_ADDR_LB_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LB_MODEL,FlashCache
+             -Buf.lb.modle);
+ 345   1        addr == FLASH_ADDR_LB_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LB_RISING_ED,Flas
+             -hCacheBuf.lb.rising_ed);
+ 346   1        addr == FLASH_ADDR_LB_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LB_FALLING_ED, Fl
+             -ashCacheBuf.lb.falling_ed);
+ 347   1        addr == FLASH_ADDR_LB_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_LB_TYPE, FlashCache
+             -Buf.lb.type);
+ 348   1        //³µÃÅ¿ª¹Ø
+ 349   1        addr == FLASH_ADDR_CM_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CM_PIN, FlashCacheBu
+             -f.cm.pin);
+ 350   1        addr == FLASH_ADDR_CM_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CM_MODEL,FlashCache
+             -Buf.cm.modle);
+ 351   1        addr == FLASH_ADDR_CM_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CM_RISING_ED,Flas
+             -hCacheBuf.cm.rising_ed);
+ 352   1        addr == FLASH_ADDR_CM_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CM_FALLING_ED, Fl
+             -ashCacheBuf.cm.falling_ed);
+ 353   1        addr == FLASH_ADDR_CM_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CM_TYPE, FlashCache
+             -Buf.cm.type);
+ 354   1        //µ²Î»´«¸ÐÆ÷
+ 355   1        addr == FLASH_ADDR_DW_PIN1            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DW_PIN1,FlashCacheB
+             -uf.dw.pin1);
+ 356   1        addr == FLASH_ADDR_DW_PIN2            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DW_PIN2,FlashCacheB
+             -uf.dw.pin2);
+ 357   1        addr == FLASH_ADDR_DW_PIN3            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DW_PIN3,FlashCacheB
+             -uf.dw.pin3);
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 10  
+
+ 358   1        addr == FLASH_ADDR_DW_PIN4            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DW_PIN4,FlashCacheB
+             -uf.dw.pin4);
+ 359   1        addr == FLASH_ADDR_DW_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DW_MODEL,FlashCache
+             -Buf.dw.modle);
+ 360   1        addr == FLASH_ADDR_DW_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DW_RISING_ED,Flas
+             -hCacheBuf.dw.rising_ed);
+ 361   1        addr == FLASH_ADDR_DW_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DW_FALLING_ED,Fla
+             -shCacheBuf.dw.falling_ed);
+ 362   1        addr == FLASH_ADDR_DW_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DW_TYPE,FlashCacheBu
+             -f.dw.type);
+ 363   1        //×óºóÊÓ¿ª¹Ø
+ 364   1        addr == FLASH_ADDR_ZHS_PIN            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZHS_PIN, FlashCache
+             -Buf.zhs.pin);
+ 365   1        addr == FLASH_ADDR_ZHS_MODEL          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZHS_MODEL,FlashCac
+             -heBuf.zhs.modle);
+ 366   1        addr == FLASH_ADDR_ZHS_RISING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZHS_RISING_ED,Fl
+             -ashCacheBuf.zhs.rising_ed);
+ 367   1        addr == FLASH_ADDR_ZHS_FALLING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZHS_FALLING_ED,  
+             -FlashCacheBuf.zhs.falling_ed);
+ 368   1        addr == FLASH_ADDR_ZHS_TYPE           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZHS_TYPE,  FlashCach
+             -eBuf.zhs.type);
+ 369   1        //ÄÚºóÊÓ¿ª¹Ø
+ 370   1        addr == FLASH_ADDR_NHS_PIN            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_NHS_PIN, FlashCache
+             -Buf.nhs.pin);
+ 371   1        addr == FLASH_ADDR_NHS_MODEL          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_NHS_MODEL,FlashCac
+             -heBuf.nhs.modle);
+ 372   1        addr == FLASH_ADDR_NHS_RISING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_NHS_RISING_ED,Fl
+             -ashCacheBuf.nhs.rising_ed);
+ 373   1        addr == FLASH_ADDR_NHS_FALLING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_NHS_FALLING_ED,  
+             -FlashCacheBuf.nhs.falling_ed);
+ 374   1        addr == FLASH_ADDR_NHS_TYPE           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_NHS_TYPE,  FlashCach
+             -eBuf.nhs.type);
+ 375   1        //¸±É²¿ª¹Ø
+ 376   1        addr == FLASH_ADDR_FSC_PIN            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_FSC_PIN, FlashCache
+             -Buf.fsc.pin);
+ 377   1        addr == FLASH_ADDR_FSC_MODEL          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_FSC_MODEL,FlashCac
+             -heBuf.fsc.modle);
+ 378   1        addr == FLASH_ADDR_FSC_RISING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_FSC_RISING_ED,Fl
+             -ashCacheBuf.fsc.rising_ed);
+ 379   1        addr == FLASH_ADDR_FSC_FALLING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_FSC_FALLING_ED,  
+             -FlashCacheBuf.fsc.falling_ed);
+ 380   1        addr == FLASH_ADDR_FSC_TYPE           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_FSC_TYPE,  FlashCach
+             -eBuf.fsc.type);
+ 381   1        //ÎíµÆ¿ª¹Ø
+ 382   1        addr == FLASH_ADDR_WD_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_WD_PIN, FlashCacheBu
+             -f.wd.pin);
+ 383   1        addr == FLASH_ADDR_WD_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_WD_MODEL,FlashCache
+             -Buf.wd.modle);
+ 384   1        addr == FLASH_ADDR_WD_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_WD_RISING_ED,Flas
+             -hCacheBuf.wd.rising_ed);
+ 385   1        addr == FLASH_ADDR_WD_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_WD_FALLING_ED, Fl
+             -ashCacheBuf.wd.falling_ed);
+ 386   1        addr == FLASH_ADDR_WD_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_WD_TYPE, FlashCache
+             -Buf.wd.type);
+ 387   1        //ÓêË¢¿ª¹Ø
+ 388   1        addr == FLASH_ADDR_YS_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YS_PIN, FlashCacheBu
+             -f.ys.pin);
+ 389   1        addr == FLASH_ADDR_YS_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YS_MODEL,FlashCache
+             -Buf.ys.modle);
+ 390   1        addr == FLASH_ADDR_YS_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YS_RISING_ED,Flas
+             -hCacheBuf.ys.rising_ed);
+ 391   1        addr == FLASH_ADDR_YS_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YS_FALLING_ED, Fl
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 11  
+
+             -ashCacheBuf.ys.falling_ed);
+ 392   1        addr == FLASH_ADDR_YS_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YS_TYPE, FlashCache
+             -Buf.ys.type);
+ 393   1        //µ¹³µµÆ¿ª¹Ø
+ 394   1        addr == FLASH_ADDR_DCD_PIN            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DCD_PIN, FlashCache
+             -Buf.dcd.pin);
+ 395   1        addr == FLASH_ADDR_DCD_MODEL          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DCD_MODEL,FlashCac
+             -heBuf.dcd.modle);
+ 396   1        addr == FLASH_ADDR_DCD_RISING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DCD_RISING_ED,Fl
+             -ashCacheBuf.dcd.rising_ed);
+ 397   1        addr == FLASH_ADDR_DCD_FALLING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DCD_FALLING_ED,  
+             -FlashCacheBuf.dcd.falling_ed);
+ 398   1        addr == FLASH_ADDR_DCD_TYPE           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DCD_TYPE,  FlashCach
+             -eBuf.dcd.type);
+ 399   1        //Ô¿³×ÃÅ¿ª¹Ø
+ 400   1        addr == FLASH_ADDR_YSM_PIN            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YSM_PIN, FlashCache
+             -Buf.ysm.pin);
+ 401   1        addr == FLASH_ADDR_YSM_MODEL          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YSM_MODEL,FlashCac
+             -heBuf.ysm.modle);
+ 402   1        addr == FLASH_ADDR_YSM_RISING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YSM_RISING_ED,Fl
+             -ashCacheBuf.ysm.rising_ed);
+ 403   1        addr == FLASH_ADDR_YSM_FALLING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YSM_FALLING_ED,  
+             -FlashCacheBuf.ysm.falling_ed);
+ 404   1        addr == FLASH_ADDR_YSM_TYPE           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YSM_TYPE,  FlashCach
+             -eBuf.ysm.type);
+ 405   1        //ÈÆ³µ¿ª¹Ø1
+ 406   1        addr == FLASH_ADDR_RC_PIN1            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_RC_PIN1,FlashCacheB
+             -uf.rc.pin1);
+ 407   1        addr == FLASH_ADDR_RC_PIN2            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_RC_PIN2,FlashCacheB
+             -uf.rc.pin2);
+ 408   1        addr == FLASH_ADDR_RC_PIN3            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_RC_PIN3,FlashCacheB
+             -uf.rc.pin3);
+ 409   1        addr == FLASH_ADDR_RC_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_RC_MODEL,FlashCache
+             -Buf.rc.modle);
+ 410   1        addr == FLASH_ADDR_RC_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_RC_RISING_ED,Flas
+             -hCacheBuf.rc.rising_ed);
+ 411   1        addr == FLASH_ADDR_RC_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_RC_FALLING_ED, Fl
+             -ashCacheBuf.rc.falling_ed);
+ 412   1        addr == FLASH_ADDR_RC_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_RC_TYPE, FlashCacheB
+             -uf.rc.type);
+ 413   1        //´³¶¯¿ª¹Ø
+ 414   1        addr == FLASH_ADDR_CD_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CD_PIN, FlashCacheBu
+             -f.cd.pin);
+ 415   1        addr == FLASH_ADDR_CD_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CD_MODEL,FlashCache
+             -Buf.cd.modle);
+ 416   1        addr == FLASH_ADDR_CD_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CD_RISING_ED,Flas
+             -hCacheBuf.cd.rising_ed);
+ 417   1        addr == FLASH_ADDR_CD_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CD_FALLING_ED, Fl
+             -ashCacheBuf.cd.falling_ed);
+ 418   1        addr == FLASH_ADDR_CD_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_CD_TYPE, FlashCache
+             -Buf.cd.type);
+ 419   1        //×ùÒÎ¿ª¹Ø£¨Ñ¹Á¦)
+ 420   1        addr == FLASH_ADDR_ZYYL_PIN           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYYL_PIN, FlashCach
+             -eBuf.zyyl.pin);
+ 421   1        addr == FLASH_ADDR_ZYYL_MODEL         ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYYL_MODEL,FlashCa
+             -cheBuf.zyyl.modle);
+ 422   1        addr == FLASH_ADDR_ZYYL_RISING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYYL_RISING_ED,F
+             -lashCacheBuf.zyyl.rising_ed);
+ 423   1        addr == FLASH_ADDR_ZYYL_FALLING_ED    ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYYL_FALLING_ED,
+             -  FlashCacheBuf.zyyl.falling_ed);
+ 424   1        addr == FLASH_ADDR_ZYYL_TYPE          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYYL_TYPE, FlashCa
+             -cheBuf.zyyl.type);
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 12  
+
+ 425   1        //¹Û²ìÒÇ±íÅÌ
+ 426   1        addr == FLASH_ADDR_GCYBP_PIN          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_GCYBP_PIN, FlashCac
+             -heBuf.gcybp.pin);
+ 427   1        addr == FLASH_ADDR_GCYBP_MODEL        ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_GCYBP_MODEL,FlashC
+             -acheBuf.gcybp.modle);
+ 428   1        addr == FLASH_ADDR_GCYBP_RISING_ED    ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_GCYBP_RISING_ED,
+             -FlashCacheBuf.gcybp.rising_ed);
+ 429   1        addr == FLASH_ADDR_GCYBP_FALLING_ED   ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_GCYBP_FALLING_E
+             -D,  FlashCacheBuf.gcybp.falling_ed);
+ 430   1        addr == FLASH_ADDR_GCYBP_TYPE         ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_GCYBP_TYPE,  FlashC
+             -acheBuf.gcybp.type);
+ 431   1        //×ªËÙ
+ 432   1        addr == FLASH_ADDR_ZS_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZS_PIN, FlashCacheBu
+             -f.zs.pin);
+ 433   1        addr == FLASH_ADDR_ZS_IDLIN_MIN       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZS_IDLIN_MIN,Flas
+             -hCacheBuf.zs.min);
+ 434   1        addr == FLASH_ADDR_ZS_BS              ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZS_BS,FlashCacheBuf.z
+             -s.bs);
+ 435   1        addr == FLASH_ADDR_ZS_SAMPLING_TIME   ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZS_SAMPLING_TIM
+             -E,FlashCacheBuf.zs.sampling_time);
+ 436   1        addr == FLASH_ADDR_ZS_INIT_VALUE      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZS_INIT_VALUE, Fl
+             -ashCacheBuf.zs.init_value); 
+ 437   1      
+ 438   1        //µ¥±ßÇÅ´«¸ÐÆ÷
+ 439   1        addr == FLASH_ADDR_DBQ_PIN1           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_PIN1,FlashCache
+             -Buf.dbq.pin1);
+ 440   1        addr == FLASH_ADDR_DBQ_PIN2           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_PIN2,FlashCache
+             -Buf.dbq.pin2);
+ 441   1        addr == FLASH_ADDR_DBQ_PIN3           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_PIN3,FlashCache
+             -Buf.dbq.pin3);
+ 442   1        addr == FLASH_ADDR_DBQ_PIN4           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_PIN4,FlashCache
+             -Buf.dbq.pin4);
+ 443   1        addr == FLASH_ADDR_DBQ_PIN5           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_PIN5,FlashCache
+             -Buf.dbq.pin5);  
+ 444   1        addr == FLASH_ADDR_DBQ_PIN6           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_PIN6,FlashCache
+             -Buf.dbq.pin6);
+ 445   1        addr == FLASH_ADDR_DBQ_MODEL          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_MODEL,FlashCach
+             -eBuf.dbq.modle);
+ 446   1        addr == FLASH_ADDR_DBQ_RISING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_RISING_ED,Fla
+             -shCacheBuf.dbq.rising_ed);
+ 447   1        addr == FLASH_ADDR_DBQ_FALLING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_FALLING_ED,
+             -  FlashCacheBuf.dbq.falling_ed);
+ 448   1        addr == FLASH_ADDR_DBQ_TYPE           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_DBQ_TYPE,  FlashCach
+             -eBuf.dbq.type); 
+ 449   1        
+ 450   1      #ifdef  STC15W4K48S4  
+ 451   1        //Ä¦ÍÐ³µÍ·¿ø
+ 452   1        addr == FLASH_ADDR_TK_PIN             ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TK_PIN, FlashCacheBu
+             -f.tk.pin);
+ 453   1        addr == FLASH_ADDR_TK_MODEL           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TK_MODEL,FlashCache
+             -Buf.tk.modle);
+ 454   1        addr == FLASH_ADDR_TK_RISING_ED       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TK_RISING_ED,Flas
+             -hCacheBuf.tk.rising_ed);
+ 455   1        addr == FLASH_ADDR_TK_FALLING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TK_FALLING_ED, Fl
+             -ashCacheBuf.tk.falling_ed);
+ 456   1        addr == FLASH_ADDR_TK_TYPE            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TK_TYPE, FlashCache
+             -Buf.tk.type);
+ 457   1        
+ 458   1        //Ä¦ÍÐ³µ×ó°ÑÊÖ
+ 459   1        addr == FLASH_ADDR_ZBS_PIN            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZBS_PIN, FlashCacheB
+             -uf.zbs.pin);
+ 460   1        addr == FLASH_ADDR_ZBS_MODEL          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZBS_MODEL,FlashCach
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 13  
+
+             -eBuf.zbs.modle);
+ 461   1        addr == FLASH_ADDR_ZBS_RISING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZBS_RISING_ED,Fla
+             -shCacheBuf.zbs.rising_ed);
+ 462   1        addr == FLASH_ADDR_ZBS_FALLING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZBS_FALLING_ED,  
+             -FlashCacheBuf.zbs.falling_ed);
+ 463   1        addr == FLASH_ADDR_ZBS_TYPE           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZBS_TYPE,  FlashCach
+             -eBuf.zbs.type);
+ 464   1        
+ 465   1        //Ä¦ÍÐ³µÓÒ°ÑÊÖ
+ 466   1        addr == FLASH_ADDR_YBS_PIN            ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YBS_PIN, FlashCacheB
+             -uf.ybs.pin);
+ 467   1        addr == FLASH_ADDR_YBS_MODEL          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YBS_MODEL,FlashCach
+             -eBuf.ybs.modle);
+ 468   1        addr == FLASH_ADDR_YBS_RISING_ED      ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YBS_RISING_ED,Fla
+             -shCacheBuf.ybs.rising_ed);
+ 469   1        addr == FLASH_ADDR_YBS_FALLING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YBS_FALLING_ED,  
+             -FlashCacheBuf.ybs.falling_ed);
+ 470   1        addr == FLASH_ADDR_YBS_TYPE           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YBS_TYPE,  FlashCach
+             -eBuf.ybs.type);
+ 471   1        
+ 472   1        //Ä¦ÍÐ³µ×ó½ÅÌ¤°å
+ 473   1        addr == FLASH_ADDR_ZJTB_PIN           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZJTB_PIN, FlashCach
+             -eBuf.zjtb.pin);
+ 474   1        addr == FLASH_ADDR_ZJTB_MODEL         ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZJTB_MODEL,FlashCa
+             -cheBuf.zjtb.modle);
+ 475   1        addr == FLASH_ADDR_ZJTB_RISING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZJTB_RISING_ED,F
+             -lashCacheBuf.zjtb.rising_ed);
+ 476   1        addr == FLASH_ADDR_ZJTB_FALLING_ED    ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZJTB_FALLING_ED,
+             -  FlashCacheBuf.zjtb.falling_ed);
+ 477   1        addr == FLASH_ADDR_ZJTB_TYPE          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZJTB_TYPE, FlashCa
+             -cheBuf.zjtb.type);
+ 478   1        
+ 479   1        //Ä¦ÍÐ³µÓÒ½ÅÌ¤°å
+ 480   1        addr == FLASH_ADDR_YJTB_PIN           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YJTB_PIN, FlashCach
+             -eBuf.yjtb.pin);
+ 481   1        addr == FLASH_ADDR_YJTB_MODEL         ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YJTB_MODEL,FlashCa
+             -cheBuf.yjtb.modle);
+ 482   1        addr == FLASH_ADDR_YJTB_RISING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YJTB_RISING_ED,F
+             -lashCacheBuf.yjtb.rising_ed);
+ 483   1        addr == FLASH_ADDR_YJTB_FALLING_ED    ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YJTB_FALLING_ED,
+             -  FlashCacheBuf.yjtb.falling_ed);
+ 484   1        addr == FLASH_ADDR_YJTB_TYPE          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_YJTB_TYPE, FlashCa
+             -cheBuf.yjtb.type);
+ 485   1        
+ 486   1        //Åö¸Ë½ÓÊÕ
+ 487   1        addr == FLASH_ADDR_PGJS_PIN           ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_PIN, FlashCach
+             -eBuf.pgjs.pin);
+ 488   1        addr == FLASH_ADDR_PGJS_MODEL         ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_MODEL,FlashCa
+             -cheBuf.pgjs.modle);
+ 489   1        addr == FLASH_ADDR_PGJS_RISING_ED     ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_RISING_ED,F
+             -lashCacheBuf.pgjs.rising_ed);
+ 490   1        addr == FLASH_ADDR_PGJS_FALLING_ED    ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_FALLING_ED,
+             -  FlashCacheBuf.pgjs.falling_ed);
+ 491   1        addr == FLASH_ADDR_PGJS_TYPE          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_TYPE, FlashCa
+             -cheBuf.pgjs.type);
+ 492   1      
+ 493   1        //Åö¸ËÏîÄ¿1
+ 494   1        addr == FLASH_ADDR_PGJS_1_NAME        ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_1_NAME, Flash
+             -CacheBuf.bump[0].name);
+ 495   1        addr == FLASH_ADDR_PGJS_1_N0          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_1_N0,FlashCach
+             -eBuf.bump[0].number);
+ 496   1        addr == FLASH_ADDR_PGJS_1_COUNT       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_1_COUNT,Flas
+C51 COMPILER V9.56.0.0   BSP_FLASH                                                         11/15/2022 13:44:45 PAGE 14  
+
+             -hCacheBuf.bump[0].count);
+ 497   1        addr == FLASH_ADDR_PGJS_1_TYPE        ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_1_TYPE,FlashC
+             -acheBuf.bump[0].type);
+ 498   1        
+ 499   1        //Åö¸ËÏîÄ¿2
+ 500   1        addr == FLASH_ADDR_PGJS_2_NAME        ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_2_NAME, Flash
+             -CacheBuf.bump[1].name);
+ 501   1        addr == FLASH_ADDR_PGJS_2_N0          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_2_N0,FlashCach
+             -eBuf.bump[1].number);
+ 502   1        addr == FLASH_ADDR_PGJS_2_COUNT       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_2_COUNT,Flas
+             -hCacheBuf.bump[1].count);
+ 503   1        addr == FLASH_ADDR_PGJS_2_TYPE        ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_2_TYPE,FlashC
+             -acheBuf.bump[1].type);
+ 504   1        
+ 505   1        //Åö¸ËÏîÄ¿3
+ 506   1        addr == FLASH_ADDR_PGJS_3_NAME        ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_3_NAME, Flash
+             -CacheBuf.bump[2].name);
+ 507   1        addr == FLASH_ADDR_PGJS_3_N0          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_3_N0,FlashCach
+             -eBuf.bump[2].number);
+ 508   1        addr == FLASH_ADDR_PGJS_3_COUNT       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_3_COUNT,Flas
+             -hCacheBuf.bump[2].count);
+ 509   1        addr == FLASH_ADDR_PGJS_3_TYPE        ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_3_TYPE,FlashC
+             -acheBuf.bump[2].type);
+ 510   1        
+ 511   1        //Åö¸ËÏîÄ¿4
+ 512   1        addr == FLASH_ADDR_PGJS_4_NAME        ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_4_NAME, Flash
+             -CacheBuf.bump[3].name);
+ 513   1        addr == FLASH_ADDR_PGJS_4_N0          ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_4_N0,FlashCach
+             -eBuf.bump[3].number);
+ 514   1        addr == FLASH_ADDR_PGJS_4_COUNT       ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_4_COUNT,Flas
+             -hCacheBuf.bump[3].count);
+ 515   1        addr == FLASH_ADDR_PGJS_4_TYPE        ? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_PGJS_4_TYPE,FlashC
+             -acheBuf.bump[3].type);
+ 516   1      
+ 517   1      
+ 518   1      
+ 519   1      
+ 520   1      
+ 521   1      
+ 522   1      
+ 523   1      
+ 524   1      
+ 525   1      
+ 526   1      
+ 527   1      #endif
+ 528   1        
+ 529   1      }
+ 530          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   9510    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    300    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

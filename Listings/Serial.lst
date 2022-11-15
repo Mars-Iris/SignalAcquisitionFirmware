@@ -1,0 +1,661 @@
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE SERIAL
+OBJECT MODULE PLACED IN .\Objects\Serial.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE App\Serial.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listing
+                    -s\Serial.lst) TABS(2) OBJECT(.\Objects\Serial.obj)
+
+line level    source
+
+   1          #include <stdio.h>
+   2          #include <string.h>
+   3          #include  "./User/config.h"
+   4          #include  "./User/includes.h"
+   5          
+   6          #ifdef  STC12C5A60S2  
+                #define BUF_LENTH 32
+              #endif
+   9          
+  10          #ifdef  STC15W4K48S4  
+  11            
+  12            #define BUF_LENTH 512
+  13            
+  14            //#define BUF_LENTH 512
+  15            
+  16            #define OBD_LENTH  (BASEBOARD_SIZE * 2 + 2)  //Ä©Î²Ôö¼Ó/n¹²2¸ö×Ö·û
+  17              
+  18            code  u8 OBDHandbuffer[]="$ZBSJ,";
+  19            
+  20            xdata u8 OBDstrbuffer[OBD_LENTH];
+  21            
+  22            
+  23          #endif
+  24          
+  25          code  u8 Handbuffer[]={0x55,0xaa,0xfe,0x7c};
+  26          
+  27          xdata u8 BaseBoardBuffer[BASEBOARD_SIZE];//±£´æÖ÷°å´«Êä¸øÉÏÎ»»úµÄÊý¾Ý
+  28          
+  29          xdata volatile u8 start = FALSE;//¿ªÊ¼Ö¸Áî
+  30          
+  31          
+  32          xdata u8 Buffer[BUF_LENTH]; //½ÓÊÕ»º³å
+  33          
+  34          u8 code CMD_start[] = {0x55,0xaa,0x00,0x00,0x11,0x11};//¿ªÊ¼²É¼¯Ö¸Áî
+  35          u8 code CMD_stop[]  = {0x55,0xaa,0x00,0x00,0x00,0x00};//Í£Ö¹²É¼¯Ö¸Áî
+  36          u8 code CMD_writeflash[]  = {0x55,0xaa,0x49,0x4f,0x58,0x47};//Ð´flash
+  37          u8 code CMD_readflash[]   = {0x55,0xaa,0x49,0x4f,0x44,0x51};//¶Áflash
+  38          u8 code CMD_wflash_Ack[]  = {0x58,0x47,0x43,0x47};          //Ð´flashÓ¦´ð
+  39          u8 code CMD_rflash_Ack[]  = {0x44,0x51,0x43,0x47};          //¶ÁflashÓ¦´ð
+  40          
+  41          #ifdef  STC15W4K48S4
+  42          u8 code CMD_conf_gpssmobile[] = {0x55,0xAA,0x49,0x4F,0xff,0xff};      //ÅäÖÃgpsÒÆ¶¯Õ¾
+  43          u8 code CMD_conf_gpsbase[]    = {0x55,0xAA,0x49,0x4F,0xff,0xfe};      //ÅäÖÃGPS»ù×¼Õ¾
+  44          u8 code CMD_get_gpsbasepos[]  = {0x55,0xAA,0x49,0x4F,0xff,0xfc};      //»ñÈ¡GPS»ù×¼Õ¾×ø±ê
+  45          #endif
+  46          
+  47          #ifdef  STC15W4K48S4
+  48          //========================================================================
+  49          // º¯Êý:void InsertBaseboardDstaUpload(u8 gps_usart,u8 upload_usart)
+  50          // ÃèÊö: ²åÈëÖ÷°åÊý¾Ý(vtgÓï¾äÖ®Ç°)²¢ÉÏ´«£¬Èç»ñÈ¡²»µ½GPSÊý¾Ý£¬×Ô¶¯ÉÏ´«µ¥Ö÷°åÊý¾Ý
+  51          // ²ÎÊý£ºu8 gps_usartÎªgpsÓëÖ÷°åµÄ´®¿Ú,u8 upload_usartÉÏÎ»»úÓëÖ÷°åµÄ´®¿Ú
+  52          // °æ±¾: V1.0, 2022-10-17
+  53          //========================================================================
+  54          static void InsertBaseboardData(u8 gps_usart,u8 upload_usart)
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 2   
+
+  55          {
+  56   1         static u8 timeout = 0;//Á¬Ðø5´Î¶ÁÈ¡²»µ½VTGÊý¾Ý£¬×Ô¶¯ÉÏ´«µ¥Ö÷°åÊý¾Ý
+  57   1         static u8 vtg_flag = 0;//Á¬Ðø5´Î¶ÁÈ¡²»µ½VTGÊý¾Ý£¬×Ô¶¯ÉÏ´«µ¥Ö÷°åÊý¾Ý
+  58   1         xdata u8 *pvtg = NULL;
+  59   1         xdata u8 *pOut = (u8 *)Buffer;//Ö¸ÏòÊý¾ÝµÄ³ö¿Ú
+  60   1         xdata u16 lenth = 0;
+  61   1         xdata u8 cutstr[] ="\n";
+  62   1         xdata u8 i = 0;
+  63   1        
+  64   1        
+  65   1          if(vtg_flag == 0)//³öÏÖvtgÒ»´Î×ö²ÉÑù1´Î
+  66   1          {
+  67   2              vtg_flag = 1;
+  68   2            
+  69   2              memset(BaseBoardBuffer,0,sizeof(BaseBoardBuffer));  //Çå¿ÕÖ÷°åÊý¾Ý»º´æ
+  70   2              GetBaseBoardDataPack(BaseBoardBuffer,sizeof(BaseBoardBuffer));//»ñÈ¡Ö÷°åÊý¾Ý
+  71   2      
+  72   2              memset(OBDstrbuffer,0,sizeof(OBDstrbuffer));  //Çå¿ÕÖ÷°åÊý¾Ý»º´æ
+  73   2              HextoStr(BaseBoardBuffer,OBDstrbuffer,sizeof(BaseBoardBuffer));//Êý¾Ý×ª»» 
+  74   2          }
+  75   1      
+  76   1          memset(Buffer,0,sizeof(Buffer));  //Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
+  77   1          lenth = BSP_GetFormatRxBuffer(gps_usart,Buffer,sizeof(Buffer),cutstr,strlen(cutstr));//¶ÁÈ¡µÄ»º´æÊý¾Ý
+  78   1      
+  79   1          
+  80   1          if (lenth > 0)  //»º´æ²»Îª¿Õ
+  81   1          { 
+  82   2            timeout = 0;//OBDÄ£Ê½
+  83   2              
+  84   2            pvtg = strstr((char *)pOut,"VTG");//²éÕÒ×Ö·û´®
+  85   2            
+  86   2            while(pvtg != NULL)
+  87   2            {
+  88   3              pvtg = (u8 *)(pvtg - 3);//$GPVTG²éÕÒµ½VTGºóÍùÇ°ÒÆ¶¯3·Ö×Ö·û£¬Ö¸Ïò$·ûºÅ
+  89   3          
+  90   3              USART_Sendbuffer(upload_usart,(u8 *)pOut,(u16)(pvtg - pOut));//½«VTGÇ°ÃæµÄÊý¾ÝÏÈ·¢ËÍÍê
+  91   3              
+  92   3              vtg_flag = 0;//´ò¿ªÖ÷°å²ÉÑù
+  93   3              
+  94   3              USART_Sendbuffer(upload_usart,OBDHandbuffer,sizeof(OBDHandbuffer)-1);//²åÈëÖ÷°å×ÖÍ·Êý¾Ý
+  95   3              
+  96   3              USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//²åÈëÖ÷°åÊý¾Ý  
+  97   3              
+  98   3              pOut = pvtg;
+  99   3              
+ 100   3              pvtg = pvtg + 6;//Ìø¹ývtg²éÕÒÏÂÒ»¸ö
+ 101   3              
+ 102   3              pvtg = strstr((char *)pvtg,"VTG");//²éÕÒ×Ö·û´®//²éÕÒÏÂÒ»ÌõÊý¾Ý
+ 103   3            }
+ 104   2            
+ 105   2            USART_Sendbuffer(upload_usart,(u8 *)pOut,(lenth-(u16)(pOut-Buffer)));//ÉÏ´«Ê£ÓàÊý¾Ý
+ 106   2      
+ 107   2          }
+ 108   1          else
+ 109   1          {
+ 110   2            if(timeout >= 10)
+ 111   2            {
+ 112   3                  
+ 113   3               vtg_flag = 0;//´ò¿ªÖ÷°å²ÉÑù
+ 114   3              
+ 115   3              //USART_Sendbuffer(upload_usart,Handbuffer,sizeof(Handbuffer));//µ¥Ö÷°åÊý¾Ý¶þ½øÖÆ¸ñÊ½
+ 116   3              
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 3   
+
+ 117   3              //USART_Sendbuffer(upload_usart,BaseBoardBuffer,sizeof(BaseBoardBuffer));//µ¥Ö÷°åÊý¾Ý¶þ½øÖÆ¸ñÊ½
+ 118   3              
+ 119   3              USART_Sendbuffer(upload_usart,OBDHandbuffer,sizeof(OBDHandbuffer)-1);//µ¥Ö÷°åÊý¾Ý×Ö·û´®¸ñÊ½
+ 120   3              
+ 121   3              
+ 122   3              USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//µ¥Ö÷°åÊý¾Ý×Ö·û´®¸ñÊ½
+ 123   3              
+ 124   3              
+ 125   3              delay_ms(100);//¼ä¸ô100ºÁÃë
+ 126   3            }
+ 127   2            else
+ 128   2            {
+ 129   3              timeout++;
+ 130   3              delay_ms(100);//¼ä¸ô100ºÁÃë
+ 131   3            }
+ 132   2            
+ 133   2          } 
+ 134   1      }
+ 135          #endif
+ 136          //========================================================================
+ 137          // º¯Êý:void SerialDataUpload(u8 upload_usart)
+ 138          // ÃèÊö: ÉÏ´«Ö÷°åÊý¾Ý
+ 139          // ²ÎÊý£ºu8 upload_usartÎªÖ÷°åÓëÉÏÎ»»úµÄ´®¿Ú
+ 140          // °æ±¾: V1.0, 2022-10-17
+ 141          //========================================================================
+ 142          void SerialDataUpload(u8 upload_usart)
+ 143          {
+ 144   1      
+ 145   1        if(start == TURE)
+ 146   1        //if(start != TURE)
+ 147   1        {
+ 148   2            
+ 149   2            #ifdef  STC12C5A60S2    
+                    memset(BaseBoardBuffer,0,sizeof(BaseBoardBuffer));  //Çå¿ÕÖ÷°åÊý¾Ý»º´æ
+                    
+                    GetBaseBoardDataPack(BaseBoardBuffer,sizeof(BaseBoardBuffer));//»ñÈ¡Ö÷°åÊý¾Ý  
+                      
+                    USART_Sendbuffer(upload_usart,Handbuffer,sizeof(Handbuffer));//ÉÏ´«µ¥Ö÷°åÊý¾Ý
+                          
+                    USART_Sendbuffer(upload_usart,BaseBoardBuffer,sizeof(BaseBoardBuffer));//ÉÏ´«µ¥Ö÷°åÊý¾Ý
+                    #endif
+ 158   2          
+ 159   2            #ifdef  STC15W4K48S4    
+ 160   2            InsertBaseboardData(GPS_USART,upload_usart);//²åÈëÖ÷°åÊý¾ÝÉÏ´«        
+ 161   2            #endif
+ 162   2           
+ 163   2        }
+ 164   1      }
+ 165          #ifdef  STC15W4K48S4  
+ 166          
+ 167          
+ 168          //========================================================================
+ 169          // º¯Êý:void Serial_TiltSensor_Analy(u8 Tilt_usart,TiltSensorTypeDef *Tilt)
+ 170          // ÃèÊö: ½âÎöÇã½Ç´«¸ÐÆ÷Êý¾Ý
+ 171          // ²ÎÊý£ºu8 Tilt_usartÎªÇã½Ç´«¸ÐÆ÷ÓëÖ÷°åÖ®¼äµÄ½Ó¿Ú TiltSensorTypeDef *Tilt´«¸ÐÆ÷Êý¾Ý±£´æµÄÄÚ´æµØÖ·
+ 172          // ·µ»Ø£º½âÎöµ½Êý¾Ý·µ»ØTURE£¬·ñÔò·µ»ØFALSE
+ 173          // °æ±¾: V1.0, 2022-10-17
+ 174          //========================================================================
+ 175          u8 Serial_TiltSensor_Analy(u8 Tilt_usart,TiltSensorTypeDef *Tilt)
+ 176          {
+ 177   1         
+ 178   1         xdata u8 *pOut =  NULL;//Ö¸ÏòÊý¾ÝµÄ³ö¿Ú
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 4   
+
+ 179   1         xdata u16 lenth = 0;
+ 180   1         xdata u8 cutstr[] ={0x55,0x53};
+ 181   1         xdata u8 ret = FALSE;
+ 182   1         xdata u8 i = 0;
+ 183   1         xdata u8 j = 0;
+ 184   1          
+ 185   1         memset(Buffer,0,sizeof(Buffer)); //Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
+ 186   1         
+ 187   1         lenth = BSP_GetFormatRxBuffer(Tilt_usart,Buffer,sizeof(Buffer),cutstr,sizeof(cutstr));//¶ÁÈ¡µÄ»º´æÊý¾Ý  
+ 188   1      
+ 189   1         if(lenth > 0)
+ 190   1         {
+ 191   2          pOut = ByteArrayCompar(Buffer,lenth,cutstr,sizeof(cutstr));//»ñÈ¡×ÖÍ·µÄÎ»ÖÃ   
+ 192   2         
+ 193   2          while(pOut != NULL)
+ 194   2          {
+ 195   3              //55 53 00 00 01 01 00 00 02 02 00 00 03 03 00 00 00 00 00 00 00 
+ 196   3              #if TILT_ALL_USART//ËùÓÐµÄ´«¸ÐÆ÷»ã×ÜºóÍ³Ò»Êä³öµ½Ö÷°å  
+                      {
+                        
+                        i= 0;
+                        j = 0;
+                        while(j<20)
+                        {
+                            Tilt->RollL = *(pOut + (i+2));      //XÖá½Ç¶ÈµÍ×Ö½Ú
+                            Tilt->RollH = *(pOut + (i+3));      //XÖá½Ç¶È¸ß×Ö½Ú
+                            Tilt->PitchL = *(pOut + (i+4));     //YÖá½Ç¶ÈµÍ×Ö½Ú
+                            Tilt->PitchH = *(pOut + (i+5));     //YÖá½Ç¶È¸ß×Ö½Ú
+                            Tilt->YawL = *(pOut + (j+14));        //ZÖá½Ç¶ÈµÍ×Ö½Ú
+                            Tilt->YawH = *(pOut + (j+15));        //ZÖá½Ç¶È¸ß×Ö½Ú         
+                            Tilt->Roll  = (int)((Tilt->RollH << 8)  | Tilt->RollL ) /32768.0*1800;      //XÖá½Ç¶È
+                            Tilt->Pitch = (int)((Tilt->PitchH << 8) | Tilt->PitchL) /32768.0*1800;      //YÖá½Ç¶È
+                            Tilt->Yaw   = (int)((Tilt->YawH << 8)   | Tilt->YawL)   /32768.0*1800;      //ZÖá½Ç¶È
+              
+                            if(Tilt->Roll>127) //±ß½ç´¦Àí
+                            {
+                              Tilt->Roll = 127;
+                            }
+                            else if(Tilt->Roll < -127) 
+                            {
+                              Tilt->Roll = -127;
+                            }
+                            if(Tilt->Pitch>127) //±ß½ç´¦Àí
+                            {
+                              Tilt->Pitch = 127;
+                            }
+                            else if(Tilt->Pitch < -127) 
+                            {
+                              Tilt->Pitch = -127;
+                            }   
+                            if(Tilt->Yaw>127) //±ß½ç´¦Àí
+                            {
+                              Tilt->Yaw = 127;
+                            }
+                            else if(Tilt->Yaw < -127) 
+                            {
+                            Tilt->Yaw = -127;
+                            }
+                          
+                            i = i+4;//°´Ð­ÒéÒÆ¶¯
+                            j = j+2;
+                            Tilt++;//ÒÆµ½ÏÂÒ»×éÊý¾Ý
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 5   
+
+                            
+                        } 
+                        ret = TURE;
+                      }
+                      #else   //55 53 01 02 02 02 01 01 00 00 00  
+ 246   3              {
+ 247   4                  Tilt->RollL = *(pOut + 2);      //XÖá½Ç¶ÈµÍ×Ö½Ú
+ 248   4                  Tilt->RollH = *(pOut + 3);      //XÖá½Ç¶È¸ß×Ö½Ú
+ 249   4                  Tilt->PitchL = *(pOut + 4);     //YÖá½Ç¶ÈµÍ×Ö½Ú
+ 250   4                  Tilt->PitchH = *(pOut + 5);     //YÖá½Ç¶È¸ß×Ö½Ú 
+ 251   4                  Tilt->YawL = *(pOut + 6);       //ZÖá½Ç¶ÈµÍ×Ö½Ú
+ 252   4                  Tilt->YawH = *(pOut + 7);       //ZÖá½Ç¶È¸ß×Ö½Ú
+ 253   4                
+ 254   4      //            printf("------------------------------------\r\n");
+ 255   4      //            printf("Tilt->RollL = %b02d\r\n", Tilt->RollL);
+ 256   4      //            printf("Tilt->RollH = %b02d\r\n", Tilt->RollH);
+ 257   4      //            printf("Tilt->PitchL = %b02d\r\n",Tilt->PitchL);
+ 258   4      //            printf("Tilt->PitchH = %b02d\r\n",Tilt->PitchH);
+ 259   4      //            printf("Tilt->YawL = %b02d\r\n",  Tilt->YawL);
+ 260   4      //            printf("Tilt->YawH = %b02d\r\n",  Tilt->YawH);
+ 261   4      //            printf("------------------------------------\r\n");
+ 262   4                      
+ 263   4                  Tilt->Roll  = (int)((Tilt->RollH << 8)  | Tilt->RollL ) /32768.0*1800;      //XÖá½Ç¶È
+ 264   4                  Tilt->Pitch = (int)((Tilt->PitchH << 8) | Tilt->PitchL) /32768.0*1800;      //YÖá½Ç¶È
+ 265   4                  Tilt->Yaw   = (int)((Tilt->YawH << 8)   | Tilt->YawL)   /32768.0*1800;      //ZÖá½Ç¶È
+ 266   4                
+ 267   4      //            printf("Tilt->Roll = %h04d\r\n",  Tilt->Roll);
+ 268   4      //            printf("Tilt->Pitch = %h04d\r\n", Tilt->Pitch);
+ 269   4      //            printf("Tilt->Yaw = %h04d\r\n",   Tilt->Yaw);
+ 270   4                    
+ 271   4                  if(Tilt->Roll > 127) //±ß½ç´¦Àí
+ 272   4                  {
+ 273   5                    Tilt->Roll = 127;
+ 274   5                  }
+ 275   4                  else if(Tilt->Roll < -127) 
+ 276   4                  {
+ 277   5                    Tilt->Roll = -127;
+ 278   5                  }
+ 279   4      
+ 280   4                  if(Tilt->Pitch > 127) //±ß½ç´¦Àí
+ 281   4                  {
+ 282   5                    Tilt->Pitch = 127;
+ 283   5                  }
+ 284   4                  else if(Tilt->Pitch < -127) 
+ 285   4                  {
+ 286   5                    Tilt->Pitch = -127;
+ 287   5                  }   
+ 288   4                  if(Tilt->Yaw > 127) //±ß½ç´¦Àí
+ 289   4                  {
+ 290   5                    Tilt->Yaw = 127;
+ 291   5                  }
+ 292   4                  else if(Tilt->Yaw < -127) 
+ 293   4                  {
+ 294   5                    Tilt->Yaw = -127;
+ 295   5                  } 
+ 296   4                  
+ 297   4                 ret = TURE;              
+ 298   4              
+ 299   4              }
+ 300   3              #endif
+ 301   3             pOut = pOut +1;//Ö¸ÕëºóÒÆ£¬È¡ÏÂÒ»×éÊý¾Ý
+ 302   3                   
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 6   
+
+ 303   3             pOut = ByteArrayCompar(pOut,lenth,cutstr,sizeof(cutstr));//»ñÈ¡×ÖÍ·µÄÎ»ÖÃ
+ 304   3                   
+ 305   3          } 
+ 306   2        }   
+ 307   1         
+ 308   1        return ret; 
+ 309   1      }
+ 310          
+ 311          //========================================================================
+ 312          // º¯Êý:HighSensorShock_Analy(u8 bump_usart,SignalLineTypeDef *pole)
+ 313          // ÃèÊö: °´ÕÕÍ¨Ñ¶Ð­Òé½âÎöÅö¸Ë´«¸ÐÆ÷´«¸ÐÆ÷µÄÊý¾Ý,½«½âÎöºÃµÄÊý¾Ý±£´æµ½poleÖ¸ÏòµÄÄÚ´æÖÐ
+ 314          // ²ÎÊý£ºUSRATxÊý¾ÝÍ¨Ñ¶µÄ¶Ë¿ÚºÅ£¬SignalLineTypeDef *poleÅö¸ËµÄÊý¾ÝÀàÐÍÖ¸Õë
+ 315          // ·µ»Ø£º»ñÈ¡µ½´®¿ÚÊý¾Ý·µ»ØTURE£¬·ñÕß·µ»ØFALSE
+ 316          // °æ±¾: V1.0, 2022-10-17
+ 317          //========================================================================
+ 318          u8 Serial_HighSensorShock_Analy(u8 bump_usart,SignalLineTypeDef *pole) //¸ßÉ­Õð¶¯´«¸ÐÆ÷Êý¾Ý½âÎö
+ 319          {
+ 320   1         //$HS-MOTION,15,0000000000.0000100000*03
+ 321   1         xdata u8 *phand = NULL;//Ö¸ÏòÊý¾ÝµÄ³ö¿Ú
+ 322   1         xdata u8 *pOut = NULL;//Ö¸ÏòÊý¾ÝµÄ³ö¿Ú
+ 323   1         xdata u8 *pEnd = NULL;
+ 324   1         xdata u16 lenth = 0;
+ 325   1         xdata u8 group_i = 0;//
+ 326   1         xdata u16 temp = 0;//
+ 327   1         xdata u8 ret = FALSE;
+ 328   1         xdata u8 i = 0;
+ 329   1         xdata u8 cutstr[] ="\n";
+ 330   1      
+ 331   1      
+ 332   1         memset(Buffer,0,sizeof(Buffer)); //Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
+ 333   1      
+ 334   1         lenth = BSP_GetFormatRxBuffer(bump_usart,Buffer,sizeof(Buffer),cutstr,strlen(cutstr));//¶ÁÈ¡µÄ»º´æÊý¾Ý 
+ 335   1        
+ 336   1          if (lenth > 0)  //»º´æ²»Îª¿Õ
+ 337   1          {   
+ 338   2            
+ 339   2            phand = strstr((char *)Buffer,"$HS-MOTION");//²éÕÒ×Ö·û´®
+ 340   2            
+ 341   2            //printf("phand = %p\r\n",phand);
+ 342   2            
+ 343   2            pEnd = strstr((char *)Buffer,cutstr);//²éÕÒ½áÊø·ûºÅ
+ 344   2            
+ 345   2            //printf("pEnd = %p\r\n",pEnd);
+ 346   2            
+ 347   2            while((phand != NULL) && (pEnd != NULL))
+ 348   2            {
+ 349   3              ret =TURE;//ÒÑ¾­½âÎöµ½Êý¾Ý
+ 350   3              
+ 351   3              //printf("BSP_GetFormatRxBuffer lenth = %h04d\r\n",lenth);
+ 352   3              
+ 353   3              phand = strstr((char *)phand,",");//²éÕÒ¶ººÅ
+ 354   3              phand ++ ;
+ 355   3              phand = strstr((char *)phand,",");//²éÕÒµÚ¶þ¸ö¶ººÅ
+ 356   3              
+ 357   3              pOut = (u8 *)(phand +1);  //Ö¸ÏòÊý¾Ý
+ 358   3              
+ 359   3              //printf("pOut = %p\r\n",pOut);
+ 360   3              
+ 361   3              for (group_i = 0; group_i < sizeof(pole->bump)/sizeof(pole->bump[0]);group_i++)
+ 362   3              {
+ 363   4                 // printf("group_i = %b02d\r\n",group_i);
+ 364   4                
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 7   
+
+ 365   4                  if(pole->bump[group_i].name != 0)         //Åö¸ËÏîÄ¿ÒÑ¾­ÅäÖÃ
+ 366   4                  {
+ 367   5                    
+ 368   5                    if( (pOut + pole->bump[group_i].count) > pEnd)          //Êý¾Ý³¤¶È²»ºÏ·¨£¬ÍË³ö
+ 369   5                    {
+ 370   6      
+ 371   6                      //printf("pOut + pole->bump[group_i].count) > pEnd\r\n");
+ 372   6                      break;
+ 373   6                    }   
+ 374   5                    
+ 375   5                    pole->bump[group_i].value = 0;//ÇåÁã£¬ÓÃÓÚ¸³Öµ
+ 376   5                    
+ 377   5                    for (i = 0; i< pole->bump[group_i].count; i++)//È¡¸Ã×éµÄÅö¸Ë×´Ì¬
+ 378   5                    {
+ 379   6              
+ 380   6                      temp = (*pOut - '0');         //È¡Åö¸Ë×´Ì¬
+ 381   6                      
+ 382   6                      if (*pOut == '.')             
+ 383   6                      {
+ 384   7                        pOut++;                     //Ìø¹ýÐ¡Êýµã
+ 385   7                        temp = (*pOut - '0');       //È¡Åö¸Ë×´Ì¬  
+ 386   7                      } 
+ 387   6                      pOut++;   
+ 388   6                          
+ 389   6                      temp = temp << i;
+ 390   6                            
+ 391   6                      pole->bump[group_i].value |= temp;//½«´«¸ÐÆ÷µÄ×´Ì¬°´Ë³ÐòÐ´Èë·µ»ØÖµ
+ 392   6                      
+ 393   6                    }
+ 394   5                    //printf("value = %h04d\r\n",pole->bump[group_i].value);
+ 395   5                  }
+ 396   4                  else
+ 397   4                    {
+ 398   5                        //printf("pole->bump[group_i].name == 0\r\n");
+ 399   5                        break;//Ö÷°å²ÎÊýÎ´ÅäÖÃ»òÃ»ÓÐ°´Ë³ÐòÅäÖÃ¸Ã²ÎÊý£¬·µ»Ø£¬²»ÔÚ½âÎö¸ÃÌõÊý¾Ý
+ 400   5                    }   
+ 401   4               }
+ 402   3              
+ 403   3              
+ 404   3               
+ 405   3              phand = strstr((char *)pOut,"$HS-MOTION");//²éÕÒ×Ö·û´®
+ 406   3               
+ 407   3              //printf("phand = %p\r\n",phand);
+ 408   3               
+ 409   3              pEnd = pEnd + 1;  //Ìø¹ýÇÐ¸îµÄ½áÊø·û
+ 410   3              pEnd = strstr((char *)pEnd,cutstr);//ÔÙ´Î²éÕÒ½áÊø·ûºÅ 
+ 411   3               
+ 412   3              //printf("pEnd = %p\r\n",pEnd);      
+ 413   3             
+ 414   3            }
+ 415   2          }
+ 416   1          return ret;
+ 417   1          
+ 418   1      }
+ 419          
+ 420          //========================================================================
+ 421          // º¯Êý:Serial_Sensor24GShock_Analy(u8 bump_usart,PengganTypeDef *pole)
+ 422          // ÃèÊö: °´ÕÕÍ¨Ñ¶Ð­Òé½âÎöÅö¸Ë´«¸ÐÆ÷´«¸ÐÆ÷µÄÊý¾Ý,½«½âÎöºÃµÄÊý¾Ý±£´æµ½poleÖ¸ÏòµÄÄÚ´æÖÐ
+ 423          // ²ÎÊý£ºUSRATxÊý¾ÝÍ¨Ñ¶µÄ¶Ë¿ÚºÅ£¬PengganTypeDef *poleÅö¸ËµÄÊý¾ÝÀàÐÍÖ¸Õë
+ 424          // ·µ»Ø£º»ñÈ¡µ½´®¿ÚÊý¾Ý·µ»ØTURE£¬·ñÕß·µ»ØFALSE
+ 425          // °æ±¾: V1.0, 2022-10-17
+ 426          //========================================================================
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 8   
+
+ 427          void Serial_Sensor24GShock_Analy(u8 bump24g_usart,PengganTypeDef *pole) //2.4GÕð¶¯´«¸ÐÆ÷Êý¾Ý½âÎö
+ 428          {
+ 429   1         xdata u8 *pOut =  NULL;//Ö¸ÏòÊý¾ÝµÄ³ö¿Ú
+ 430   1         xdata u16 lenth = 0;
+ 431   1         xdata u8 cutstr[] ={0x53};
+ 432   1      
+ 433   1         memset(Buffer,0,sizeof(Buffer)); //Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
+ 434   1      
+ 435   1         lenth = BSP_GetFormatRxBuffer(bump24g_usart,Buffer,sizeof(Buffer),cutstr,sizeof(cutstr));//¶ÁÈ¡µÄ»º´æÊý¾
+             -Ý  
+ 436   1      
+ 437   1          if (lenth > 0)  //»º´æ²»Îª¿Õ
+ 438   1          {   
+ 439   2            pOut = ByteArrayCompar(Buffer,lenth,cutstr,sizeof(cutstr));//»ñÈ¡×ÖÍ·µÄÎ»ÖÃ 
+ 440   2            
+ 441   2            while(pOut != NULL)
+ 442   2            {
+ 443   3             pole->name = *(pOut +2);   //ÏîÄ¿Ãû³Æ
+ 444   3             pole->number = *(pOut +3); //ÏîÄ¿±àºÅ
+ 445   3             pole->value = *(pOut +4);  //¸ËºÅ
+ 446   3              
+ 447   3             pOut = pOut +1;//Ö¸ÕëºóÒÆ£¬È¡ÏÂÒ»×éÊý¾Ý
+ 448   3              
+ 449   3             pOut = ByteArrayCompar(pOut,lenth,cutstr,sizeof(cutstr));//»ñÈ¡×ÖÍ·µÄÎ»ÖÃ
+ 450   3            } 
+ 451   2          }
+ 452   1          
+ 453   1      }
+ 454          
+ 455          #endif
+ 456          //========================================================================
+ 457          // º¯Êý:u8 Serial_Analy(u8 *RxBuffer)
+ 458          // ÃèÊö: °´ÕÕÍ¨Ñ¶Ð­Òé½âÎö´®¿ÚÊý¾Ý
+ 459          // ²ÎÊý£ºUSRATxÊý¾ÝÍ¨Ñ¶µÄ¶Ë¿ÚºÅ£¬RxBufferÊý¾Ý»º´æÇøÖ¸Õë,lenthÎªÊý¾Ý³¤¶È
+ 460          // ·µ»Ø£º½âÎö³É¹¦£¬·µ»ØTURE.Ê§°Ü·µ»Ø FALSE
+ 461          // °æ±¾: V1.0, 2022-10-17
+ 462          //========================================================================
+ 463          u8 Serial_CMD_Analy(u8 USRATx,u8 *RxBuffer,u16 lenth)
+ 464          {
+ 465   1        u8 *pfirst = NULL;  
+ 466   1        xdata u16 flash_addr = 0;
+ 467   1        xdata u8 flash_value = 0;
+ 468   1        xdata u16 validlen = 0;
+ 469   1        
+ 470   1        //´¦Àí¿ªÊ¼²É¼¯Ö¸Áî 55 AA 00 00 11 11
+ 471   1        pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_start,sizeof(CMD_start));//±È½ÏÖ¸Áî
+ 472   1        if (NULL != pfirst) //ÊÕµ½¿ªÊ¼²É¼¯Ö¸Áî
+ 473   1        {
+ 474   2          #ifdef DEBUG
+                  printf("received data:55 AA 00 00 11 11\r\n");
+                  #endif
+ 477   2          Cmd_Start_Callback();
+ 478   2          start = TURE;
+ 479   2          return  TURE;
+ 480   2        }
+ 481   1      
+ 482   1        //´¦ÀíÍ£Ö¹²É¼¯Ö¸Áî 55 AA 00 00 00 00  
+ 483   1        pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_stop,sizeof(CMD_stop));//±È½ÏÖ¸Áî
+ 484   1        if (NULL != pfirst) //ÊÕµ½¿ªÊ¼²É¼¯Ö¸Áî
+ 485   1        {
+ 486   2          #ifdef DEBUG
+                  printf("received data: 55 AA 00 00 00 00\r\n");
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 9   
+
+                  #endif
+ 489   2          start = FALSE;
+ 490   2          return  TURE;
+ 491   2        }
+ 492   1      
+ 493   1        //´¦ÀíÐ´flashÖ¸Áî 0x55 0xaa 0x49 0x4f 0x58 0x47
+ 494   1        pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_writeflash,sizeof(CMD_writeflash));//±È½ÏÖ¸Áî
+ 495   1        
+ 496   1        if (NULL != pfirst) //ÊÕµ½Ð´flashÖ¸Áî
+ 497   1        {
+ 498   2          start = FALSE;  //Í£Ö¹²É¼¯
+ 499   2          validlen = lenth - (pfirst - RxBuffer);//×ÖÍ·Ð£Ñé³É¹¦ºó£¬¼ÆËãÓÐÐ§Êý¾ÝµÄ³¤¶È¡£
+ 500   2          if(validlen < 10) //Ð´flashÖ¸ÁîÊÇ10¸ö×Ö½Ú£¬²»¹»10¸ö×Ö½Ú¼ÌÐø½ÓÊÕ
+ 501   2          {
+ 502   3            return FALSE;
+ 503   3          }
+ 504   2          flash_addr = *(pfirst + 6);
+ 505   2          flash_addr = flash_addr<<8;
+ 506   2          flash_addr = flash_addr + *(pfirst + 7);
+ 507   2      
+ 508   2          flash_value = *(pfirst + 9);
+ 509   2          
+ 510   2          BSP_FlashWriteByte(flash_addr,flash_value);//Ð´Èëflash
+ 511   2          
+ 512   2          USART_Sendbuffer(USRATx,CMD_wflash_Ack,sizeof(CMD_wflash_Ack));//Ó¦´ð
+ 513   2      
+ 514   2          return TURE;
+ 515   2        }
+ 516   1        
+ 517   1        //´¦Àí¶ÁflashÖ¸Áî 0x55,0xaa,0x49,0x4f,0x44,0x51 
+ 518   1        pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_readflash,sizeof(CMD_readflash));//±È½ÏÖ¸Áî
+ 519   1        
+ 520   1        if (NULL != pfirst) //ÊÕµ½¶ÁflashÖ¸Áî
+ 521   1        {
+ 522   2          start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ÐÅºÅ
+ 523   2          
+ 524   2          validlen = lenth - (pfirst - RxBuffer);//×ÖÍ·Ð£Ñé³É¹¦ºó£¬¼ÆËãÓÐÐ§Êý¾ÝµÄ³¤¶È¡£   
+ 525   2          
+ 526   2          if(validlen < 10) //Ð´flashÖ¸ÁîÊÇ10¸ö×Ö½Ú£¬²»¹»10¸ö×Ö½Ú¼ÌÐø½ÓÊÕ
+ 527   2          {
+ 528   3            return FALSE;//¼ÌÐø½ÓÊÕ´®¿ÚÊý¾Ý
+ 529   3          }
+ 530   2            
+ 531   2          flash_addr = *(pfirst + 6);
+ 532   2          flash_addr = flash_addr<<8;
+ 533   2          flash_addr = flash_addr + *(pfirst + 7);
+ 534   2          
+ 535   2          flash_value = IapReadByte(flash_addr);//¶Á³öflash 
+ 536   2          
+ 537   2          USART_Sendbuffer(USRATx,CMD_rflash_Ack,sizeof(CMD_rflash_Ack));//Ó¦´ð
+ 538   2          
+ 539   2          USART_SendData(USRATx,flash_value);//·¢ËÍ¶Á³öÀ´µÄÖµ
+ 540   2          
+ 541   2          return TURE;
+ 542   2        }
+ 543   1        #ifdef  STC15W4K48S4
+ 544   1        #if GPS_USART
+ 545   1        //½øÈëGPSÒÆ¶¯Õ¾ÅäÖÃ 0x55 0xAA 0x49 0x4F 0xff 0xff
+ 546   1        pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_conf_gpssmobile,sizeof(CMD_conf_gpssmobile));//±È½ÏÖ¸Áî
+ 547   1        
+ 548   1        if (NULL != pfirst) //ÊÕµ½GPSÒÆ¶¯Õ¾ÅäÖÃÖ¸Áî
+ 549   1        {
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 10  
+
+ 550   2          start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ÐÅºÅ
+ 551   2          
+ 552   2          GPS_EnterConfiguration(MOBILESTATION);//½øÈëGPS»ù×¼Õ¾ÅäÖÃ
+ 553   2            
+ 554   2          return TURE;
+ 555   2        }
+ 556   1        
+ 557   1        //½øÈëGPS»ù×¼Õ¾ÅäÖÃ 0x55 0xAA 0x49 0x4F 0xff 0xfe
+ 558   1        pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_conf_gpsbase,sizeof(CMD_conf_gpsbase));//±È½ÏÖ¸Áî
+ 559   1        
+ 560   1        if (NULL != pfirst) //ÊÕµ½GPSÒÆ¶¯Õ¾ÅäÖÃÖ¸Áî
+ 561   1        {
+ 562   2          start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ÐÅºÅ
+ 563   2          
+ 564   2          GPS_EnterConfiguration(BASESTATION);//½øÈëGPS»ù×¼Õ¾ÅäÖÃ
+ 565   2      
+ 566   2          return TURE;
+ 567   2        } 
+ 568   1        
+ 569   1        //¶ÁÈ¡GPS»ù×¼Õ¾×ø±êÖ¸Áî0x55 0xAA 0x49 0x4F 0xff 0xfc
+ 570   1        pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_get_gpsbasepos,sizeof(CMD_get_gpsbasepos));//±È½ÏÖ¸Áî
+ 571   1        
+ 572   1        if (NULL != pfirst) //ÊÕµ½GPSÒÆ¶¯Õ¾ÅäÖÃÖ¸Áî
+ 573   1        {
+ 574   2          start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ÐÅºÅ
+ 575   2          
+ 576   2          GetBaseStationPos();//»ñÈ¡»ù×¼Õ¾×ø±ê
+ 577   2            
+ 578   2          return TURE;
+ 579   2        }   
+ 580   1        #endif
+ 581   1        #endif
+ 582   1        return FALSE;
+ 583   1          
+ 584   1      }
+ 585          
+ 586          
+ 587          //========================================================================
+ 588          // º¯Êý:void SerialHandle(u8 USARTx)
+ 589          // ÃèÊö: ´®¿Ú´¦Àí³ÌÐò
+ 590          // ²ÎÊý£ºUSARTx¶Ë¿ÚºÅ
+ 591          // °æ±¾: V1.0, 2022-10-17
+ 592          //========================================================================
+ 593          void SerialHandle(u8 USARTx)
+ 594          {
+ 595   1      
+ 596   1        xdata u16 lenth = 0;        
+ 597   1        memset(Buffer,0,sizeof(Buffer));//ÇåÀí»º´æÇø
+ 598   1        
+ 599   1        if(USARTx == UPLOAD_USART)
+ 600   1        {     
+ 601   2            lenth = BSP_GetUsartRxBuffer(USARTx,Buffer,sizeof(Buffer));//¶ÁÈ¡»º´æÊý¾Ý   
+ 602   2            if (lenth > 0)
+ 603   2            {
+ 604   3              if(Serial_CMD_Analy(USARTx,Buffer,lenth) == TURE)
+ 605   3              {
+ 606   4                 BSP_ClearUsartRxBuffer(USARTx);  //½âÎö³É¹¦ºóÇå¿Õ´®¿Ú»º´æÇøÓò
+ 607   4                
+ 608   4              }
+ 609   3              
+ 610   3            } 
+ 611   2        }
+C51 COMPILER V9.56.0.0   SERIAL                                                            11/15/2022 13:44:46 PAGE 11  
+
+ 612   1          
+ 613   1      
+ 614   1      }
+ 615          
+ 616          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   2989    ----
+   CONSTANT SIZE    =     85    ----
+   XDATA SIZE       =    710      52
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2      24
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

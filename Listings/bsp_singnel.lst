@@ -1,0 +1,165 @@
+C51 COMPILER V9.56.0.0   BSP_SINGNEL                                                       10/19/2022 11:30:21 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE BSP_SINGNEL
+OBJECT MODULE PLACED IN .\Objects\bsp_singnel.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Bsp\bsp_singnel.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Li
+                    -stings\bsp_singnel.lst) TABS(2) OBJECT(.\Objects\bsp_singnel.obj)
+
+line level    source
+
+   1          
+   2          #include  "./User/includes.h"
+   3          #include "./Bsp/bsp_singnel.h"
+   4          
+   5          
+   6          void BSP_GPIO_Init(void);
+   7          //========================================================================
+   8          // 函数: void BSP_Init(void)
+   9          // 描述: 板载硬件IO输入端口初始化
+  10          // 版本: V1.0, 2022-10-17
+  11          //========================================================================
+  12          void BSP_Init(void)
+  13          {
+  14   1        BSP_GPIO_Init();
+  15   1      }
+  16          //========================================================================
+  17          // 函数: void BSP_GPIO_Init(void)
+  18          // 描述: 初始化主板IO口.全部初始化为：上拉准双向口
+  19          // 版本: V1.0, 2022-10-17
+  20          //========================================================================
+  21          void BSP_GPIO_Init(void)
+  22          {
+  23   1        GPIO_InitTypeDef  GPIO_InitStructure;       //结构定义
+  24   1        
+  25   1        GPIO_InitStructure.Pin  = GPIO_Pin_All;     //指定要初始化的IO, GPIO_Pin_0 ~ GPIO_Pin_7, 或操作
+  26   1        GPIO_InitStructure.Mode = GPIO_OUT_PP;      //指定IO的输入或输出方式,GPIO_PullUp,GPIO_HighZ,GPIO_OUT_OD,GPIO
+             -_OUT_PP
+  27   1        
+  28   1        GPIO_Inilize(GPIO_P0,&GPIO_InitStructure);  //初始化GPIO_P0
+  29   1        GPIO_Inilize(GPIO_P1,&GPIO_InitStructure);  //初始化GPIO_P1
+  30   1        GPIO_Inilize(GPIO_P2,&GPIO_InitStructure);  //初始化GPIO_P2
+  31   1        GPIO_Inilize(GPIO_P3,&GPIO_InitStructure);  //初始化GPIO_P3
+  32   1        GPIO_Inilize(GPIO_P4,&GPIO_InitStructure);  //初始化GPIO_P4
+  33   1      }
+  34          //========================================================================
+  35          // 函数: u8 BSP_GetGpioStatus(u8 pin)
+  36          // 描述: 读取输入管脚电平值.此函数与硬件电路相关联
+  37          // 参数: 板载输入口编号，取值D1--D32.
+  38          // 返回: 输入口电平值.0或者1
+  39          // 版本: V1.0, 2022-10-17
+  40          //========================================================================
+  41          static u8 BSP_GetGpioStatus(u8 pin)//查询对应的IO口状态
+  42          {
+  43   1        switch(pin)
+  44   1        {
+  45   2          case D1:    return(P00);
+  46   2          case D2:    return(P01);
+  47   2          case D3:    return(P02);
+  48   2          case D4:    return(P03);
+  49   2          case D5:    return(P04);
+  50   2          case D6:    return(P05);
+  51   2          case D7:    return(P06);
+  52   2          case D8:    return(P07);
+  53   2          case D9:    return(P27);
+C51 COMPILER V9.56.0.0   BSP_SINGNEL                                                       10/19/2022 11:30:21 PAGE 2   
+
+  54   2          case D10:   return(P26);
+  55   2          case D11:   return(P25);
+  56   2          case D12:   return(P24);
+  57   2          case D13:   return(P23);
+  58   2          case D14:   return(P22);
+  59   2          case D15:   return(P21);
+  60   2          case D16:   return(P20);
+  61   2          case D17:   return(P10);
+  62   2          case D18:   return(P11);
+  63   2          case D19:   return(P12);
+  64   2          case D20:   return(P13);
+  65   2          case D21:   return(P14);
+  66   2          case D22:   return(P15);
+  67   2          case D23:   return(P16);
+  68   2          case D24:   return(P17);
+  69   2          case D25:   return(P32);
+  70   2          case D26:   return(P33);
+  71   2          case D27:   return(P34);
+  72   2          case D28:   return(P35);
+  73   2          case D29:   return(P36);
+  74   2          case D30:   return(P37); 
+  75   2          case D31:   return(P47);
+  76   2          case D32:   return(P46);
+  77   2          case D33:   return(P45);
+  78   2          case D34:   return(P44); 
+  79   2          case D35:   return(P44);
+  80   2          default: 
+  81   2                      return(0);
+  82   2        }
+  83   1      }
+  84          //========================================================================
+  85          // 函数: u8 BSP_ReadInputDataBit(SignalTypeDef *pSignal)
+  86          // 描述: 读取输入管脚电平值.
+  87          // 参数: SignalTypeDef为指向信号结构体的指针.
+  88          // 返回: 返回TURE，或FALSE.
+  89          // 版本: V1.0, 2022-10-17
+  90          //========================================================================
+  91          u8 BSP_ReadInputDataBit(SignalTypeDef *pSignal)
+  92          {
+  93   1        static u8 flag = 0;
+  94   1        u8 status = 0;
+  95   1        u8 signalstatus = BSP_GetGpioStatus(pSignal->pin);//获取单片机的管脚输入状态
+  96   1        if(flag == 0)
+  97   1        {
+  98   2          if (signalstatus == pSignal->on_off)//判断信号是否开启
+  99   2          {
+ 100   3            pSignal->times = 0;
+ 101   3            status = TURE;
+ 102   3          }
+ 103   2          else if(pSignal->times < pSignal->count_up) //信号抖动与延时处理
+ 104   2          {
+ 105   3            pSignal->times++;
+ 106   3            status = TURE;
+ 107   3          } 
+ 108   2          else 
+ 109   2          {
+ 110   3            flag = 1;
+ 111   3            status = FLASE; 
+ 112   3          }
+ 113   2        }
+ 114   1        else 
+ 115   1        {
+C51 COMPILER V9.56.0.0   BSP_SINGNEL                                                       10/19/2022 11:30:21 PAGE 3   
+
+ 116   2          if (signalstatus != pSignal->on_off)//获取相应的状态
+ 117   2          {
+ 118   3            pSignal->times = 0;
+ 119   3            status = FLASE;
+ 120   3          }
+ 121   2          else if(pSignal->times < pSignal->count_down) //信号抖动与延时处理
+ 122   2          {
+ 123   3            pSignal->times++;
+ 124   3            status = FLASE;
+ 125   3          } 
+ 126   2          else 
+ 127   2          {
+ 128   3            flag = 0;
+ 129   3            status = TURE; 
+ 130   3          }   
+ 131   2        }
+ 132   1        return(status);
+ 133   1      }
+ 134          
+ 135          
+ 136          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    460    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
