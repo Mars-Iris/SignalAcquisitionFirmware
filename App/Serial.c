@@ -48,7 +48,7 @@ u8 code CMD_get_gpsbasepos[]	=	{0x55,0xAA,0x49,0x4F,0xff,0xfc};			//»ñÈ¡GPS»ù×¼Õ
 //========================================================================
 // º¯Êı:void InsertBaseboardDstaUpload(u8 gps_usart,u8 upload_usart)
 // ÃèÊö: ²åÈëÖ÷°åÊı¾İ(vtgÓï¾äÖ®Ç°)²¢ÉÏ´«£¬Èç»ñÈ¡²»µ½GPSÊı¾İ£¬×Ô¶¯ÉÏ´«µ¥Ö÷°åÊı¾İ
-// ²ÎÊı£ºu8 gps_usartÎªgpsÓëÖ÷°åµÄ´®¿Ú,u8 upload_usartÉÏÎ»»úÓëÖ÷°åµÄ´®¿Ú
+// ²ÎÊı£ºu8 gps_usartÎªgpsÓëÖ÷°åµÄ´®¿Ú,u8 upload_usartÉÏÎ»»úÓëÖ÷°åµÄ´®ºÅ
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
 static void InsertBaseboardData(u8 gps_usart,u8 upload_usart)
