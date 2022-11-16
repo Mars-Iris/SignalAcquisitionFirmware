@@ -1156,13 +1156,13 @@ void GetBaseBoardDataPack(u8 pDatabuf[], u16 lenth)
 			pDatabuf[46]			=	(char)Tilt[PLACE_MTC_AXLE].PitchH;		//（二轮摩托）车身X轴原始数据-高位
 #endif			
 			pDatabuf[47]			=		ID_LENTH;	//主板序列号字节数（便于以后其他系列升级）
-//			pDatabuf[48]		=		localid[0];
-//			pDatabuf[49]		=		localid[1];
-//			pDatabuf[50]		=		localid[2];
-//			pDatabuf[51]		=		localid[3];
-//			pDatabuf[52]		=		localid[4];
-//			pDatabuf[53]		=		localid[5];
-//			pDatabuf[54]		=		localid[6];
+			pDatabuf[48]		=		localid[0];
+			pDatabuf[49]		=		localid[1];
+			pDatabuf[50]		=		localid[2];
+			pDatabuf[51]		=		localid[3];
+			pDatabuf[52]		=		localid[4];
+			pDatabuf[53]		=		localid[5];
+			pDatabuf[54]		=		localid[6];
 
 			pDatabuf[55]		|=	(guanchayibiao(&SignalLine) << 0);//观察仪表盘
 			

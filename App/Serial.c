@@ -476,6 +476,9 @@ u8 Serial_CMD_Analy(u8 USRATx,u8 *RxBuffer,u16 lenth)
 		#endif
 		Cmd_Start_Callback();
 		start = TURE;
+		#ifdef  STC15W4K48S4
+		S1_USE_P16P17();//ÇÐ»»´®¿Ú1µ½GPS´®¿Ú
+		#endif
 		return	TURE;
 	}
 

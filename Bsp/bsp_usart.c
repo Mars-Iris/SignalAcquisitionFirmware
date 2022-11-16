@@ -182,6 +182,7 @@ u16 BSP_GetUsartRxBuffer(u8 USARTx,u8 *pRxBuffer,u16 Rxlenth)
 	return lenth;
 	
 }
+#ifdef  STC15W4K48S4
 //========================================================================
 // 函数:u16 BSP_GetFormatRxBuffer(u8 USARTx,u8 *RxBuffer,u16 *lenth,u8 *cutstr)
 // 描述: 获取串口缓存中的数据，按照最后一个'\n'进行切割读取.
@@ -245,6 +246,7 @@ u16 BSP_GetFormatRxBuffer(u8 USARTx,u8 *pRxBuffer,u16 Rxlenth,u8 *cutstr,u8 cutl
 	
 	return lenth;
 }
+#endif
 //========================================================================
 // 函数:void BSP_ClearUsartRxBuffer(u8 USARTx)
 // 描述: 清理串口缓存数据
