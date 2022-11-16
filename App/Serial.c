@@ -53,13 +53,16 @@ u8 code CMD_get_gpsbasepos[]	=	{0x55,0xAA,0x49,0x4F,0xff,0xfc};			//»ñÈ¡GPS»ù×¼Õ
 //========================================================================
 static void InsertBaseboardData(u8 gps_usart,u8 upload_usart)
 {
+#if GPS_USART
 	 static u8 timeout = 0;//Á¬Ğø5´Î¶ÁÈ¡²»µ½VTGÊı¾İ£¬×Ô¶¯ÉÏ´«µ¥Ö÷°åÊı¾İ
-	 static u8 vtg_flag = 0;//Á¬Ğø5´Î¶ÁÈ¡²»µ½VTGÊı¾İ£¬×Ô¶¯ÉÏ´«µ¥Ö÷°åÊı¾İ
 	 xdata u8 *pvtg = NULL;
 	 xdata u8 *pOut = (u8 *)Buffer;//Ö¸ÏòÊı¾İµÄ³ö¿Ú
 	 xdata u16 lenth = 0;
 	 xdata u8 cutstr[] ="\n";
 	 xdata u8 i = 0;
+#endif
+	 static u8 vtg_flag = 0;//Á¬Ğø5´Î¶ÁÈ¡²»µ½VTGÊı¾İ£¬×Ô¶¯ÉÏ´«µ¥Ö÷°åÊı¾İ	
+	
 	
 	
 		if(vtg_flag == 0)//³öÏÖvtgÒ»´Î×ö²ÉÑù1´Î
@@ -72,7 +75,8 @@ static void InsertBaseboardData(u8 gps_usart,u8 upload_usart)
 				memset(OBDstrbuffer,0,sizeof(OBDstrbuffer));	//Çå¿ÕÖ÷°åÊı¾İ»º´æ
 				HextoStr(BaseBoardBuffer,OBDstrbuffer,sizeof(BaseBoardBuffer));//Êı¾İ×ª»»	
 		}
-
+#if GPS_USART
+		
 		memset(Buffer,0,sizeof(Buffer));	//Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
 		lenth = BSP_GetFormatRxBuffer(gps_usart,Buffer,sizeof(Buffer),cutstr,strlen(cutstr));//¶ÁÈ¡µÄ»º´æÊı¾İ
 
@@ -107,22 +111,22 @@ static void InsertBaseboardData(u8 gps_usart,u8 upload_usart)
 		}
 		else
 		{
+
 			if(timeout >= 10)
-			{
-						
+			{	
 				 vtg_flag = 0;//´ò¿ªÖ÷°å²ÉÑù
 				
-				//USART_Sendbuffer(upload_usart,Handbuffer,sizeof(Handbuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
+				USART_Sendbuffer(upload_usart,Handbuffer,sizeof(Handbuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
 				
-				//USART_Sendbuffer(upload_usart,BaseBoardBuffer,sizeof(BaseBoardBuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
+				USART_Sendbuffer(upload_usart,BaseBoardBuffer,sizeof(BaseBoardBuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
 				
-			  USART_Sendbuffer(upload_usart,OBDHandbuffer,sizeof(OBDHandbuffer)-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½
+			  //USART_Sendbuffer(upload_usart,OBDHandbuffer,sizeof(OBDHandbuffer)-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½
 				
 				
-				USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½
-				
+				//USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½	
 				
 				delay_ms(100);//¼ä¸ô100ºÁÃë
+				
 			}
 			else
 			{
@@ -130,7 +134,23 @@ static void InsertBaseboardData(u8 gps_usart,u8 upload_usart)
 				delay_ms(100);//¼ä¸ô100ºÁÃë
 			}
 			
-		} 
+		}
+#else 
+				gps_usart = gps_usart;//½ö×÷ÎªÏû³ı±àÒëÆ÷¾¯¸æ
+			
+		    vtg_flag = 0;//´ò¿ªÖ÷°å²ÉÑù
+				
+				USART_Sendbuffer(upload_usart,Handbuffer,sizeof(Handbuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
+				
+				USART_Sendbuffer(upload_usart,BaseBoardBuffer,sizeof(BaseBoardBuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
+				
+			  //USART_Sendbuffer(upload_usart,OBDHandbuffer,sizeof(OBDHandbuffer)-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½
+				
+				//USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½	
+				
+				delay_ms(100);//¼ä¸ô100ºÁÃë		
+#endif
+		
 }
 #endif
 //========================================================================
@@ -156,8 +176,10 @@ void SerialDataUpload(u8 upload_usart)
 			USART_Sendbuffer(upload_usart,BaseBoardBuffer,sizeof(BaseBoardBuffer));//ÉÏ´«µ¥Ö÷°åÊı¾İ
 			#endif
 		
-			#ifdef  STC15W4K48S4		
-			InsertBaseboardData(GPS_USART,upload_usart);//²åÈëÖ÷°åÊı¾İÉÏ´«				
+			#ifdef  STC15W4K48S4
+		
+			InsertBaseboardData(GPS_USART,upload_usart);//²åÈëÖ÷°åÊı¾İÉÏ´«		
+
 			#endif
 		 
 	}
@@ -476,7 +498,7 @@ u8 Serial_CMD_Analy(u8 USRATx,u8 *RxBuffer,u16 lenth)
 		#endif
 		Cmd_Start_Callback();
 		start = TURE;
-		#ifdef  STC15W4K48S4
+		#if GPS_USART
 		S1_USE_P16P17();//ÇĞ»»´®¿Ú1µ½GPS´®¿Ú
 		#endif
 		return	TURE;
