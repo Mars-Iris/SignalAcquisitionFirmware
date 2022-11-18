@@ -1,6 +1,7 @@
 #ifndef __BSP_GPIO_H
 #define __BSP_GPIO_H	 
 #include	"./User/config.h"
+#include "./Bsp/bsp_usart.h"
 
 
 
@@ -25,12 +26,12 @@
 #define D17 17  //左后视镜
 #define D18 18  //点火
 #define D19 19  //内后视镜
-#define D20 20  //座椅(压力)
+#define D20 20  //调座椅
 #define D21 21  //挡位_1
 #define D22 22  //挡位_2
 #define D23 23  //挡位_3
 #define D24 24  //挡位_4
-#define D25 25  //调座椅
+#define D25 25  //座椅(压力)2022年11月18与调座椅互换
 #define D26 26  //离合
 #define D27 27  //转速
 #define D28 28  //钥匙开关
@@ -102,14 +103,24 @@ typedef struct
 }PengganTypeDef;   //震动传感器
 
 
-
-
 #endif
 
 typedef struct 
 { 
 	
-	SignalTypeDef 			zytj;	  //座椅开关（调节）
+	UsartConfTypeDef  	upload;  		//主板与工控机连接的串口
+	UsartConfTypeDef  	gps;  			//主板与GPS连接的串口
+	UsartConfTypeDef  	bump_hs; 		//主板与高森碰杆传感器连接的串口
+	UsartConfTypeDef  	bump_24g; 	//主板与2.4G碰杆传感器连接的串口
+	UsartConfTypeDef  	titl_all; 	//主板与倾角连接的串口（汇总后上传）
+	UsartConfTypeDef  	titl_q;  		//主板与前轴倾角连接的串口
+	UsartConfTypeDef  	titl_h;  		//主板与后轴倾角连接的串口
+	UsartConfTypeDef		titl_g;  		//主板与挂轴倾角连接的串口
+	UsartConfTypeDef		titl_mtc;  	//主板与二轮摩托车倾角连接的串口
+	UsartConfTypeDef		network;  	//主板与二轮摩托车倾角连接的串口
+
+	
+	SignalTypeDef				zytj;	  //座椅开关（调节）
 	SignalTypeDef 			ss;	  	//手刹开关
 	SignalTypeDef 			zz;	    //左转开关
 	SignalTypeDef 			yz;	  	//右转开关
@@ -171,7 +182,7 @@ typedef struct
 
 
 	
-}SignalLineTypeDef;//板载所有的信号线
+}FlashParameterTypeDef;//板载所有FLASH参数
 
 
 

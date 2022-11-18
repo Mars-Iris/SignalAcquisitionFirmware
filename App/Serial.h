@@ -18,7 +18,7 @@ void SerialHandle(u8 USARTx);
 void SerialDataUpload(u8 upload_usart);
 
 #ifdef  STC15W4K48S4	
-u8 Serial_HighSensorShock_Analy(u8 bump_usart,SignalLineTypeDef *pole); //高森HS-SKR无线震动传感器数据解析
+u8 Serial_HighSensorShock_Analy(u8 bump_usart); //高森HS-SKR无线震动传感器数据解析
 
 u8 Serial_TiltSensor_Analy(u8 Tilt_usart,TiltSensorTypeDef *Tilt);//解析倾角传感器数据
 

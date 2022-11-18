@@ -3,8 +3,6 @@
 #include	<stdio.h>
 #include	<string.h>
 
-xdata SignalLineTypeDef SignalLine; 
-
 #ifdef  STC15W4K48S4	
 
 xdata PengganTypeDef 				pilepole = {0};//×®¸Ë
@@ -15,16 +13,16 @@ xdata TiltAdjustTypeDef     mtc = {0};
 
 
 //========================================================================
-// º¯Êı: u8 zuozhuanxiangdeng(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 zuozhuanxiangdeng(FlashParameterTypeDef *pFlash)
 // ÃèÊö: »ñÈ¡×ó×ªÏòµÆĞÅºÅ,Èç¿ªÆôË«ÉÁ£¬·µ»ØFLASE
-// ²ÎÊı£ºpSignalLine
+// ²ÎÊı£ºpFlash
 // ·µ»Ø: ¿ªÆô×ó×ª·µ»ØTURE£¬¹Ø±Õ×ó×ª·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 zuozhuanxiangdeng(SignalLineTypeDef *pSignalLine)  //×ó×ªÏòµÆ D1
+static u8 zuozhuanxiangdeng(void)  //×ó×ªÏòµÆ D1
 {
-	xdata u8 zz_pin = BSP_ReadInputDataBit(&pSignalLine->zz);//¶ÁÈ¡ÊäÈë×´Ì¬
-	xdata u8 yz_pin = BSP_ReadInputDataBit(&pSignalLine->yz);//¶ÁÈ¡ÊäÈë×´Ì¬
+	xdata u8 zz_pin = BSP_ReadInputDataBit(&pFlash->zz);//¶ÁÈ¡ÊäÈë×´Ì¬
+	xdata u8 yz_pin = BSP_ReadInputDataBit(&pFlash->yz);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	if(zz_pin == TURE && yz_pin == FALSE)
 			return TURE;
@@ -32,17 +30,17 @@ static u8 zuozhuanxiangdeng(SignalLineTypeDef *pSignalLine)  //×ó×ªÏòµÆ D1
 			return FALSE;
 }
 //========================================================================
-// º¯Êı: u8 youzhuanxiangdeng(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 youzhuanxiangdeng(void)
 // ÃèÊö: »ñÈ¡ÓÒ×ªÏòµÆĞÅºÅ,Èç¿ªÆôË«ÉÁ£¬·µ»ØFLASE
-// ²ÎÊı£ºpSignalLine
+// ²ÎÊı£ºpFlash
 // ·µ»Ø: ¿ªÆôÓÒ×ª·µ»ØTURE£¬¹Ø±Õ×ó×ª·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 youzhuanxiangdeng(SignalLineTypeDef *pSignalLine)  //ÓÒ×ªÏòµÆ D2
+static u8 youzhuanxiangdeng(void)  //ÓÒ×ªÏòµÆ D2
 {
 	
-	xdata u8 zz_pin = BSP_ReadInputDataBit(&pSignalLine->zz);//¶ÁÈ¡ÊäÈë×´Ì¬
-	xdata u8 yz_pin = BSP_ReadInputDataBit(&pSignalLine->yz);//¶ÁÈ¡ÊäÈë×´Ì¬
+	xdata u8 zz_pin = BSP_ReadInputDataBit(&pFlash->zz);//¶ÁÈ¡ÊäÈë×´Ì¬
+	xdata u8 yz_pin = BSP_ReadInputDataBit(&pFlash->yz);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	if(zz_pin == FALSE && yz_pin == TURE)
 			return TURE;
@@ -51,20 +49,20 @@ static u8 youzhuanxiangdeng(SignalLineTypeDef *pSignalLine)  //ÓÒ×ªÏòµÆ D2
 	
 }
 //========================================================================
-// º¯Êı: u8 xihuo(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 xihuo(void)
 // ÃèÊö: »ñÈ¡³µÁ¾Ï¨»ğ×´Ì¬,¹ØÁªÆô¶¯ĞÅºÅ£¬×Å³µÖ®Ç°±ØĞë³öÏÖÆô¶¯ĞÅºÅ¡£
 //  		 ¿ÉÊ¹ÓÃ¿ª¹ØÁ¿»òÔò·¢¶¯»ú×ªËÙÆÀÅĞÏ¨»ğ     
-// ²ÎÊı£ºpSignalLine
+// ²ÎÊı£ºpFlash
 // ·µ»Ø: ³µÁ¾×Å³µ·µ»ØTURE£¬³µÁ¾Ï¨»ğ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 xihuo(SignalLineTypeDef *pSignalLine)  //Ï¨»ğ D3
+static u8 xihuo(void)  //Ï¨»ğ D3
 {
 	static u8 qidong_flag = FALSE;
 	static u8 zhaoche_flag = FALSE;
-	xdata u8 qd_pin		=	BSP_ReadInputDataBit(&pSignalLine->qd);//¶ÁÈ¡ÊäÈë×´Ì¬
-	xdata u8 xh_pin 	= BSP_ReadInputDataBit(&pSignalLine->xh);//¶ÁÈ¡ÊäÈë×´Ì¬
-	xdata u8 xh_type	=	pSignalLine->xh.type;
+	xdata u8 qd_pin		=	BSP_ReadInputDataBit(&pFlash->qd);//¶ÁÈ¡ÊäÈë×´Ì¬
+	xdata u8 xh_pin 	= BSP_ReadInputDataBit(&pFlash->xh);//¶ÁÈ¡ÊäÈë×´Ì¬
+	xdata u8 xh_type	=	pFlash->xh.type;
 	
 	if(qd_pin == TURE)
 			qidong_flag = TURE;//³öÏÖÆô¶¯ĞÅºÅ
@@ -98,31 +96,31 @@ static u8 xihuo(SignalLineTypeDef *pSignalLine)  //Ï¨»ğ D3
 		}
 }
 //========================================================================
-// º¯Êı: u8 shousha(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 shousha(void)
 // ÃèÊö: »ñÈ¡ÊÖÉ²ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: À­ÊÖÉ²·µ»ØTURE£¬ËÉÊÖÉ²·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 shousha(SignalLineTypeDef *pSignalLine)  //ÊÖÉ²D4
+static u8 shousha(void)  //ÊÖÉ²D4
 {
 	
-	u8 ss_pin = BSP_ReadInputDataBit(&pSignalLine->ss);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 ss_pin = BSP_ReadInputDataBit(&pFlash->ss);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return ss_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 anquandai(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 anquandai(FlashParameterTypeDef *pFlash)
 // ÃèÊö: »ñÈ¡°²È«´øĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÏµÉÏ°²È«´ø·µ»ØTURE£¬ËÉ¿ª°²È«´ø·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 anquandai(SignalLineTypeDef *pSignalLine)  //°²È«´øD5
+static u8 anquandai(void)  //°²È«´øD5
 {
 	
-	u8 aqd_pin = BSP_ReadInputDataBit(&pSignalLine->aqd);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 aqd_pin = BSP_ReadInputDataBit(&pFlash->aqd);//¶ÁÈ¡ÊäÈë×´Ì¬
 	#ifdef DEBUG1
 				printf("aqd_pin = %b02d\r\n",aqd_pin);
 	#endif	
@@ -131,16 +129,16 @@ static u8 anquandai(SignalLineTypeDef *pSignalLine)  //°²È«´øD5
 	
 }
 //========================================================================
-// º¯Êı: u8 chenmen_zq(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 chenmen_zq(void)
 // ÃèÊö: »ñÈ¡³µÃÅĞÅºÅ,×óÇ°¡¢ÓÒÇ°¡¢×óºó¡¢ÓÒºó¹²ËÄ¸öÃÅ£¬
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ´ò¿ª³µÃÅ·µ»ØFLASE£¬¹Ø±Õ³µÃÅ·µ»Ø0xF0,³µÃÅÎª¸ßËÄÎ»
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 chemen(SignalLineTypeDef *pSignalLine)  		//³µÃÅD6
+static u8 chemen(void)  		//³µÃÅD6
 {
 	
-	u8 cm_pin = BSP_ReadInputDataBit(&pSignalLine->cm);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 cm_pin = BSP_ReadInputDataBit(&pFlash->cm);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	if(cm_pin == TURE)
 		return 0xF0;	//³µÃÅÎª¸ßËÄÎ»
@@ -149,46 +147,46 @@ static u8 chemen(SignalLineTypeDef *pSignalLine)  		//³µÃÅD6
 	
 }
 //========================================================================
-// º¯Êı: u8 daochedeng(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 daochedeng(void)
 // ÃèÊö: »ñÈ¡µ¹³µµÆĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ¹Òµ¹µ²·µ»ØTURE£¬²»ÔÚµ¹µ²·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 daochedeng(SignalLineTypeDef *pSignalLine)  //µ¹³µµÆ D7
+static u8 daochedeng(void)  //µ¹³µµÆ D7
 {
 	
-	u8 dcd_pin = BSP_ReadInputDataBit(&pSignalLine->dcd);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 dcd_pin = BSP_ReadInputDataBit(&pFlash->dcd);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return dcd_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 laba(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 laba(void)
 // ÃèÊö: »ñÈ¡À®°ÈĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: °´À®°È·µ»ØTURE£¬ËÉ¿ªÀ®°È·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 laba(SignalLineTypeDef *pSignalLine)  //À®°È  D8
+static u8 laba(void)  //À®°È  D8
 {
 	
-	u8 lb_pin = BSP_ReadInputDataBit(&pSignalLine->lb);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 lb_pin = BSP_ReadInputDataBit(&pFlash->lb);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return lb_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 raoche1(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 raoche1(void)
 // ÃèÊö: »ñÈ¡ÈÆ³µ¿ª¹Ø1ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: °´¿ª¹Ø·µ»ØPRESS£¬ËÉ¿ª¿ª¹Ø·µ»ØNOPRESS
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 raoche1(SignalLineTypeDef *pSignalLine)  //ÈÆ³µ1   D9
+static u8 raoche1(void)  //ÈÆ³µ1   D9
 {
 
-	u8 rc_pin1 = BSP_ReadMultipleDataBit(&pSignalLine->rc,RCPIN1);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 rc_pin1 = BSP_ReadMultipleDataBit(&pFlash->rc,RCPIN1);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	(rc_pin1 == TURE)? (rc_pin1 = PRESS):(rc_pin1 = NOPRESS);//°´ÕÕĞ­Òé¸³Öµ
 	
@@ -196,16 +194,16 @@ static u8 raoche1(SignalLineTypeDef *pSignalLine)  //ÈÆ³µ1   D9
 	
 }
 //========================================================================
-// º¯Êı: u8 raoche1(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 raoche1(FlashParameterTypeDef *pFlash)
 // ÃèÊö: »ñÈ¡ÈÆ³µ¿ª¹Ø2ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: °´¿ª¹Ø·µ»ØPRESS£¬ËÉ¿ª¿ª¹Ø·µ»ØNOPRESS
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 raoche2(SignalLineTypeDef *pSignalLine)  //ÈÆ³µ2   D10
+static u8 raoche2(void)  //ÈÆ³µ2   D10
 {
 	
-	u8 rc_pin2 = BSP_ReadMultipleDataBit(&pSignalLine->rc,RCPIN2);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 rc_pin2 = BSP_ReadMultipleDataBit(&pFlash->rc,RCPIN2);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	(rc_pin2 == TURE)? (rc_pin2 = PRESS):(rc_pin2 = NOPRESS);//°´ÕÕĞ­Òé¸³Öµ
 	
@@ -213,159 +211,159 @@ static u8 raoche2(SignalLineTypeDef *pSignalLine)  //ÈÆ³µ2   D10
 	
 }
 //========================================================================
-// º¯Êı: u8 wudeng(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 wudeng(void)
 // ÃèÊö: »ñÈ¡ÎíµÆ¿ª¹Ø2ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ¿ªÎíµÆ·µ»ØTURE£¬¹Ø±ÕÎíµÆ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 wudeng(SignalLineTypeDef *pSignalLine)  //ÎíµÆ D11
+static u8 wudeng(void)  //ÎíµÆ D11
 {
 	
-	u8 wd_pin = BSP_ReadInputDataBit(&pSignalLine->wd);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 wd_pin = BSP_ReadInputDataBit(&pFlash->wd);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return wd_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 yuanguang(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 yuanguang(void)
 // ÃèÊö: »ñÈ¡Ô¶¹â¿ª¹ØĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ¿ªÔ¶¹âµÆ·µ»ØTURE£¬¹Ø±ÕÔ¶¹âµÆ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 yuanguang(SignalLineTypeDef *pSignalLine)  //Ô¶¹â D12
+static u8 yuanguang(void)  //Ô¶¹â D12
 {
 	
-	u8 yg_pin = BSP_ReadInputDataBit(&pSignalLine->yg);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 yg_pin = BSP_ReadInputDataBit(&pFlash->yg);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return yg_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 jinguang(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 jinguang(void)
 // ÃèÊö: »ñÈ¡½ü¹â¿ª¹ØĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ¿ª½ü¹âµÆ·µ»ØTURE£¬¹Ø±Õ½ü¹âµÆ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 jinguang(SignalLineTypeDef *pSignalLine)  //½ü¹â D13
+static u8 jinguang(void)  //½ü¹â D13
 {
 	
-	u8 jg_pin = BSP_ReadInputDataBit(&pSignalLine->jg);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 jg_pin = BSP_ReadInputDataBit(&pFlash->jg);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return jg_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 xiaodeng(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 xiaodeng(void)
 // ÃèÊö: »ñÈ¡Ğ¡µÆ¿ª¹ØĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ¿ªĞ¡µÆ·µ»ØTURE£¬¹Ø±ÕĞ¡µÆ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 xiaodeng(SignalLineTypeDef *pSignalLine)  //Ğ¡µÆ D14
+static u8 xiaodeng(void)  //Ğ¡µÆ D14
 {
 	
-	u8 xd_pin = BSP_ReadInputDataBit(&pSignalLine->xd);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 xd_pin = BSP_ReadInputDataBit(&pFlash->xd);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return xd_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 jiaosha(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 jiaosha(void)
 // ÃèÊö: »ñÈ¡½ÅÉ²ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ²È½ÅÉ²·µ»ØTURE£¬ËÉ¿ª½ÅÉ²·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 jiaosha(SignalLineTypeDef *pSignalLine)  //½ÅÉ² D15
+static u8 jiaosha(void)  //½ÅÉ² D15
 {
 	
-	u8 js_pin = BSP_ReadInputDataBit(&pSignalLine->js);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 js_pin = BSP_ReadInputDataBit(&pFlash->js);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return js_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 yushua(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 yushua(void)
 // ÃèÊö: »ñÈ¡ÓêË¢Æ÷ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ¿ªÓêË¢Æ÷·µ»ØTURE£¬¹Ø±ÕÓêË¢Æ÷·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 yushua(SignalLineTypeDef *pSignalLine)  //ÓêË¢ D16
+static u8 yushua(void)  //ÓêË¢ D16
 {
 	
-	u8 ys_pin = BSP_ReadInputDataBit(&pSignalLine->ys);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 ys_pin = BSP_ReadInputDataBit(&pFlash->ys);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return ys_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 zuohoushi(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 zuohoushi(void)
 // ÃèÊö: »ñÈ¡µ÷½Ú×óºóÊÓ¾µĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: µ÷½Ú×óºóÊÓ¾µ·µ»ØTURE£¬Î´µ÷½Ú·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 zuohoushi(SignalLineTypeDef *pSignalLine)  //×óºóÊÓ D17
+static u8 zuohoushi(void)  //×óºóÊÓ D17
 {
 	
-	u8 zhs_pin = BSP_ReadInputDataBit(&pSignalLine->zhs);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 zhs_pin = BSP_ReadInputDataBit(&pFlash->zhs);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return zhs_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 qidong(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 qidong(void)
 // ÃèÊö: »ñÈ¡Æô¶¯¿ª¹ØĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: Æô¶¯µã»ğÊ±·µ»ØTURE£¬ËÉ¿ªÆô¶¯Ô¿³×·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 qidong(SignalLineTypeDef *pSignalLine)  //Æô¶¯¿ª¹Ø D18
+static u8 qidong(void)  //Æô¶¯¿ª¹Ø D18
 {
 	
-	u8 qd_pin = BSP_ReadInputDataBit(&pSignalLine->qd);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 qd_pin = BSP_ReadInputDataBit(&pFlash->qd);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return qd_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 neihoushi(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 neihoushi(void)
 // ÃèÊö: »ñÈ¡µ÷½ÚÄÚºóÊÓ¾µĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: µ÷½ÚÄÚºóÊÓ¾µ·µ»ØTURE£¬Î´µ÷½Ú·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 neihoushi(SignalLineTypeDef *pSignalLine)  //ÄÚºóÊÓ D19
+static u8 neihoushi(void)  //ÄÚºóÊÓ D19
 {
 	
-	xdata u8 nhs_pin = BSP_ReadInputDataBit(&pSignalLine->nhs);//¶ÁÈ¡ÊäÈë×´Ì¬
+	xdata u8 nhs_pin = BSP_ReadInputDataBit(&pFlash->nhs);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return nhs_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 zuoyitiaojie(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 zuoyitiaojie(void)
 // ÃèÊö: »ñÈ¡µ÷½Ú×ùÒÎĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: µ÷½Ú×ùÒÎ·µ»ØTURE£¬Î´µ÷½Ú·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 zuoyitiaojie(SignalLineTypeDef *pSignalLine)  //×ùÒÎµ÷½Ú¿ª¹Ø D20
+static u8 zuoyitiaojie(void)  //×ùÒÎµ÷½Ú¿ª¹Ø D20
 {
 	
-	u8 zytj_pin = BSP_ReadInputDataBit(&pSignalLine->zytj);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 zytj_pin = BSP_ReadInputDataBit(&pFlash->zytj);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return zytj_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 dangwei(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 dangwei(void)
 // ÃèÊö: »ñÈ¡µ²Î»ĞÅºÅ£¬´«¸ĞÆ÷ÀàĞÍÓĞ´Å¸ĞºÍÇã½ÇÁ½ÖÖÀàĞÍ¡£
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: 	GEAR1		 1µµ
 //				GEAR2    2µµ
 //				GEAR3    3µµ
@@ -374,14 +372,14 @@ static u8 zuoyitiaojie(SignalLineTypeDef *pSignalLine)  //×ùÒÎµ÷½Ú¿ª¹Ø D20
 //				GEARR    Rµµ
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 dangwei(SignalLineTypeDef *pSignalLine)  //µ²Î»D21--D24
+static u8 dangwei(void)  //µ²Î»D21--D24
 {
 	xdata u8 temp = 0;
-	xdata u8 dw_pin1 = BSP_ReadMultipleDataBit(&pSignalLine->dw,DWPIN1);//¶ÁÈ¡ÊäÈë×´Ì¬D21
-	xdata u8 dw_pin2 = BSP_ReadMultipleDataBit(&pSignalLine->dw,DWPIN2);//¶ÁÈ¡ÊäÈë×´Ì¬D22
-	xdata u8 dw_pin3 = BSP_ReadMultipleDataBit(&pSignalLine->dw,DWPIN3);//¶ÁÈ¡ÊäÈë×´Ì¬D23
-	xdata u8 dw_pin4 = BSP_ReadMultipleDataBit(&pSignalLine->dw,DWPIN4);//¶ÁÈ¡ÊäÈë×´Ì¬D24
-	xdata u8 dw_type = pSignalLine->dw.type;//»ñÈ¡´«¸ĞÆ÷ÀàĞÍ
+	xdata u8 dw_pin1 = BSP_ReadMultipleDataBit(&pFlash->dw,DWPIN1);//¶ÁÈ¡ÊäÈë×´Ì¬D21
+	xdata u8 dw_pin2 = BSP_ReadMultipleDataBit(&pFlash->dw,DWPIN2);//¶ÁÈ¡ÊäÈë×´Ì¬D22
+	xdata u8 dw_pin3 = BSP_ReadMultipleDataBit(&pFlash->dw,DWPIN3);//¶ÁÈ¡ÊäÈë×´Ì¬D23
+	xdata u8 dw_pin4 = BSP_ReadMultipleDataBit(&pFlash->dw,DWPIN4);//¶ÁÈ¡ÊäÈë×´Ì¬D24
+	xdata u8 dw_type = pFlash->dw.type;//»ñÈ¡´«¸ĞÆ÷ÀàĞÍ
 	
 	switch(dw_type)
 	{
@@ -425,91 +423,91 @@ static u8 dangwei(SignalLineTypeDef *pSignalLine)  //µ²Î»D21--D24
 	
 }
 //========================================================================
-// º¯Êı: u8 zuoyiyali(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 zuoyiyali(void)
 // ÃèÊö: »ñÈ¡×ùÒÎ£¨Ñ¹Á¦£©ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ×ùÒÎÓĞÑ¹Á¦·µ»ØTURE£¬Ã»ÓĞÑ¹Á¦·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 zuoyiyali(SignalLineTypeDef *pSignalLine)  ///×ùÒÎ£¨Ñ¹Á¦£© D25
+static u8 zuoyiyali(void)  ///×ùÒÎ£¨Ñ¹Á¦£© D25
 {
 	
-	xdata u8 zyyl_pin = BSP_ReadInputDataBit(&pSignalLine->zyyl);//¶ÁÈ¡ÊäÈë×´Ì¬
+	xdata u8 zyyl_pin = BSP_ReadInputDataBit(&pFlash->zyyl);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return zyyl_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 lihe(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 lihe(FlashParameterTypeDef *pFlash)
 // ÃèÊö: »ñÈ¡ÀëºÏÆ÷ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ²ÈÏÂÀëºÏÆ÷·µ»ØTURE£¬Ì§ÆğÀëºÏÆ÷·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 lihe(SignalLineTypeDef *pSignalLine)   //ÀëºÏ D26
+static u8 lihe(void)   //ÀëºÏ D26
 {
 	
-	u8 lh_pin = BSP_ReadInputDataBit(&pSignalLine->lh);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 lh_pin = BSP_ReadInputDataBit(&pFlash->lh);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return lh_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 yaoshimen(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 yaoshimen(void)
 // ÃèÊö: »ñÈ¡Ô¿³×ÃÅĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ´ò¿ªÔ¿³×ÃÅ¿ª¹Ø·µ»ØTURE£¬¹Ø±ÕÔ¿³×ÃÅ¿ª¹Ø·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 yaoshimen(SignalLineTypeDef *pSignalLine)   //Ô¿³×ÃÅ¿ª¹Ø D28
+static u8 yaoshimen(void)   //Ô¿³×ÃÅ¿ª¹Ø D28
 {
 	
-	u8 ysm_pin = BSP_ReadInputDataBit(&pSignalLine->ysm);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 ysm_pin = BSP_ReadInputDataBit(&pFlash->ysm);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return ysm_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 fushache(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 fushache(void)
 // ÃèÊö: »ñÈ¡¸±É²ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ²ÈÏÂ¸±É²³µ·µ»ØTURE£¬Ì§Æğ¸±É²³µ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 fushache(SignalLineTypeDef *pSignalLine)   //¸±É²³µ D29
+static u8 fushache(void)   //¸±É²³µ D29
 {
 	
-	u8 fsc_pin = BSP_ReadInputDataBit(&pSignalLine->fsc);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 fsc_pin = BSP_ReadInputDataBit(&pFlash->fsc);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return fsc_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 chuangdong(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 chuangdong(void)
 // ÃèÊö: »ñÈ¡Æğ²½Ê±´³¶¯ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ³öÏß´³¶¯·µ»ØTURE£¬Æ½ÎÈ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 chuangdong(SignalLineTypeDef *pSignalLine)   //´³¶¯´«¸ĞÆ÷ D30
+static u8 chuangdong(void)   //´³¶¯´«¸ĞÆ÷ D30
 {
 	
-	u8 cd_pin = BSP_ReadInputDataBit(&pSignalLine->cd);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 cd_pin = BSP_ReadInputDataBit(&pFlash->cd);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return cd_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 raoche3(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 raoche3(void)
 // ÃèÊö: »ñÈ¡ÈÆ³µ3ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: °´ÏÂ·µ»ØTURE£¬Î´°´ÏÂFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 raoche3(SignalLineTypeDef *pSignalLine)   //ÈÆ³µ3  D31
+static u8 raoche3(void)   //ÈÆ³µ3  D31
 {
 	
-	u8 rc_pin3 = BSP_ReadMultipleDataBit(&pSignalLine->rc,RCPIN3);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 rc_pin3 = BSP_ReadMultipleDataBit(&pFlash->rc,RCPIN3);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	(rc_pin3 == TURE)? (rc_pin3 = PRESS):(rc_pin3 = NOPRESS);//°´ÕÕĞ­Òé¸³Öµ
 	
@@ -517,17 +515,17 @@ static u8 raoche3(SignalLineTypeDef *pSignalLine)   //ÈÆ³µ3  D31
 	
 }
 //========================================================================
-// º¯Êı: u8 shijing(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 shijing(void)
 // ÃèÊö: »ñÈ¡Ë«ÉÁĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ´ò¿ªË«ÉÁ·µ»ØTURE£¬¹Ø±ÕË«ÉÁ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 shijing(SignalLineTypeDef *pSignalLine)   //Ê¾¾¯¿ª¹Ø
+static u8 shijing(void)   //Ê¾¾¯¿ª¹Ø
 {
 	
-	u8 zz_pin = BSP_ReadInputDataBit(&pSignalLine->zz);//¶ÁÈ¡ÊäÈë×´Ì¬
-	u8 yz_pin = BSP_ReadInputDataBit(&pSignalLine->yz);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 zz_pin = BSP_ReadInputDataBit(&pFlash->zz);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 yz_pin = BSP_ReadInputDataBit(&pFlash->yz);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	if(zz_pin == TURE && yz_pin == TURE)
 			return TURE;
@@ -536,133 +534,133 @@ static u8 shijing(SignalLineTypeDef *pSignalLine)   //Ê¾¾¯¿ª¹Ø
 	
 }
 //========================================================================
-// º¯Êı: u8 kongdang(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 kongdang(void)
 // ÃèÊö: »ñÈ¡¿Õµ²ĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ¿Õµ²·µ»ØTURE£¬·Ç¿Õµ²·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 kongdang(SignalLineTypeDef *pSignalLine)   //¿Õµ²
+static u8 kongdang(void)   //¿Õµ²
 {
 	
-	if(dangwei(pSignalLine) != FALSE)
+	if(dangwei() != FALSE)
 			return TURE;
 	else 
 			return FALSE;
 	
 }
 //========================================================================
-// º¯Êı: u8 guanchayibiao(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 guanchayibiao(void)
 // ÃèÊö: »ñÈ¡¹Û²ìÒÇ±íÅÌĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ¹Û²ì·µ»ØTURE£¬Ã»ÓĞ¹Û²ì·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 guanchayibiao(SignalLineTypeDef *pSignalLine)   //¹Û²ìÒÇ±íÅÌ
+static u8 guanchayibiao(void)   //¹Û²ìÒÇ±íÅÌ
 {
 	
-	u8 gcybp_pin = BSP_ReadInputDataBit(&pSignalLine->gcybp);//¶ÁÈ¡ÊäÈë×´Ì¬
+	u8 gcybp_pin = BSP_ReadInputDataBit(&pFlash->gcybp);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return gcybp_pin;	
 	
 }
 //========================================================================
-// º¯Êı: u8 DBQ_LeftFront(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 DBQ_LeftFront(void)
 // ÃèÊö: »ñÈ¡µ¥±ßÇÅ´«¸ĞÆ÷×óÇ°ÂÖĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÔÚÇÅÉÏ·µ»ØTURE£¬²»ÇÅÉÏ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 DBQ_LeftFront(SignalLineTypeDef *pSignalLine)    //µ¥±ßÇÅ×óÇ°ÂÖ×´Ì¬
+static u8 DBQ_LeftFront(void)    //µ¥±ßÇÅ×óÇ°ÂÖ×´Ì¬
 {
-  u8 dbq_pin1 = BSP_ReadMultipleDataBit(&pSignalLine->dbq,LEFT_FRONT_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 dbq_pin1 = BSP_ReadMultipleDataBit(&pFlash->dbq,LEFT_FRONT_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return dbq_pin1;
 
 }
 //========================================================================
-// º¯Êı: u8 DBQ_LeftRear(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 DBQ_LeftRear(void)
 // ÃèÊö: »ñÈ¡µ¥±ßÇÅ´«¸ĞÆ÷×óºóÂÖĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÔÚÇÅÉÏ·µ»ØTURE£¬²»ÇÅÉÏ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 DBQ_LeftRear(SignalLineTypeDef *pSignalLine)    //µ¥±ßÇÅ×óºóÂÖ×´Ì¬
+static u8 DBQ_LeftRear(void)    //µ¥±ßÇÅ×óºóÂÖ×´Ì¬
 {
-  u8 dbq_pin2 = BSP_ReadMultipleDataBit(&pSignalLine->dbq,LEFT_REAR_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 dbq_pin2 = BSP_ReadMultipleDataBit(&pFlash->dbq,LEFT_REAR_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return dbq_pin2;
 
 }
 //========================================================================
-// º¯Êı: u8 DBQ_LeftRear(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 DBQ_LeftRear(void)
 // ÃèÊö: »ñÈ¡µ¥±ßÇÅ´«¸ĞÆ÷ÓÒÇ°ÂÖĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÔÚÇÅÉÏ·µ»ØTURE£¬²»ÇÅÉÏ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 DBQ_RightFront(SignalLineTypeDef *pSignalLine)    //µ¥±ßÇÅÓÒÇ°ÂÖ×´Ì¬
+static u8 DBQ_RightFront(void)    //µ¥±ßÇÅÓÒÇ°ÂÖ×´Ì¬
 {
-  u8 dbq_pin3 = BSP_ReadMultipleDataBit(&pSignalLine->dbq,RIGHT_FRONT_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 dbq_pin3 = BSP_ReadMultipleDataBit(&pFlash->dbq,RIGHT_FRONT_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return dbq_pin3;
 
 }
 //========================================================================
-// º¯Êı: u8 DBQ_RightRear(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 DBQ_RightRear(void)
 // ÃèÊö: »ñÈ¡µ¥±ßÇÅ´«¸ĞÆ÷ÓÒºóÂÖĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÔÚÇÅÉÏ·µ»ØTURE£¬²»ÇÅÉÏ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 DBQ_RightRear(SignalLineTypeDef *pSignalLine)    //µ¥±ßÇÅÓÒºóÂÖ×´Ì¬
+static u8 DBQ_RightRear(void)    //µ¥±ßÇÅÓÒºóÂÖ×´Ì¬
 {
-  u8 dbq_pin4 = BSP_ReadMultipleDataBit(&pSignalLine->dbq,RIGHT_REAR_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 dbq_pin4 = BSP_ReadMultipleDataBit(&pFlash->dbq,RIGHT_REAR_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return dbq_pin4;
 
 }
 //========================================================================
-// º¯Êı: u8 DBQ_LeftMiddle(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 DBQ_LeftMiddle(void)
 // ÃèÊö: »ñÈ¡µ¥±ßÇÅ´«¸ĞÆ÷×ó¹Ò³µÂÖĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÔÚÇÅÉÏ·µ»ØTURE£¬²»ÇÅÉÏ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 DBQ_LeftMiddle(SignalLineTypeDef *pSignalLine)    //µ¥±ßÇÅ×ó¹Ò³µÂÖ×´Ì¬
+static u8 DBQ_LeftMiddle(void)    //µ¥±ßÇÅ×ó¹Ò³µÂÖ×´Ì¬
 {
-  u8 dbq_pin5 = BSP_ReadMultipleDataBit(&pSignalLine->dbq,LEFT_MIDDLE_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 dbq_pin5 = BSP_ReadMultipleDataBit(&pFlash->dbq,LEFT_MIDDLE_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return dbq_pin5;
 
 }
 //========================================================================
-// º¯Êı: u8 DBQ_RightMiddle(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 DBQ_RightMiddle(void)
 // ÃèÊö: »ñÈ¡µ¥±ßÇÅ´«¸ĞÆ÷ÓÒ¹Ò³µÂÖĞÅºÅ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÔÚÇÅÉÏ·µ»ØTURE£¬²»ÇÅÉÏ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 DBQ_RightMiddle(SignalLineTypeDef *pSignalLine)    //µ¥±ßÇÅÓÒ¹Ò³µÂÖ×´Ì¬
+static u8 DBQ_RightMiddle(void)    //µ¥±ßÇÅÓÒ¹Ò³µÂÖ×´Ì¬
 {
-  u8 dbq_pin6 = BSP_ReadMultipleDataBit(&pSignalLine->dbq,RIGHT_MIDDLE_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 dbq_pin6 = BSP_ReadMultipleDataBit(&pFlash->dbq,RIGHT_MIDDLE_WHEEL);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return dbq_pin6;
 
 }
 //========================================================================
-// º¯Êı: u8 zhuansucount(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 zhuansucount(void)
 // ÃèÊö: »ñÈ¡×ªËÙµÄÂö³å¼ÆÊıÖµ
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÔÚÇÅÉÏ·µ»ØTURE£¬²»ÇÅÉÏ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u16 zhuansucount(SignalLineTypeDef *pSignalLine)    //Âö³å¼ÆÊı
+static u16 zhuansucount(void)    //Âö³å¼ÆÊı
 {
 	static u8 times = 0;//²ÉÑùµÈ´ı´ÎÊı£¨Ê±¼ä£©
 	static u16 count = 0;//»ñÈ¡×ªËÙ³õÖµ
 	
-	if(times == pSignalLine->zs.sampling_time)//µ½´ï²ÉÑùÊ±¼ä
+	if(times == pFlash->zs.sampling_time)//µ½´ï²ÉÑùÊ±¼ä
 	{
 		times = 0;
 		count = TH0;
@@ -670,7 +668,7 @@ static u16 zhuansucount(SignalLineTypeDef *pSignalLine)    //Âö³å¼ÆÊı
 		count = count + TL0;		
 		TH0 = 0;//ÇåÁã
 		TL0 = 0;//ÇåÁã	
-		if ((count == 0) && (pSignalLine->zs.init_value == 1))
+		if ((count == 0) && (pFlash->zs.init_value == 1))
 		{
 			count = 800;	//¹óÖİÌØÊâÒªÇó
 		}
@@ -685,84 +683,84 @@ static u16 zhuansucount(SignalLineTypeDef *pSignalLine)    //Âö³å¼ÆÊı
 #ifdef  STC15W4K48S4
 
 //========================================================================
-// º¯Êı: u8 toukui(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 toukui(void)
 // ÃèÊö: »ñÈ¡Ä¦ÍĞ³µÍ·¿ø×´Ì¬
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ´÷ÉÏ·µ»ØTURE£¬È¡ÏÂ·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 toukui(SignalLineTypeDef *pSignalLine)    //Ä¦ÍĞ³µÍ·¿ø
+static u8 toukui(void)    //Ä¦ÍĞ³µÍ·¿ø
 {
-  u8 tk_pin = BSP_ReadInputDataBit(&pSignalLine->tk);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 tk_pin = BSP_ReadInputDataBit(&pFlash->tk);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return tk_pin;
 
 }
 //========================================================================
-// º¯Êı: u8 zuobashou(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 zuobashou(void)
 // ÃèÊö: »ñÈ¡Ä¦ÍĞ³µ×ó°ÑÊÖ×´Ì¬
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÎÕ×¡·µ»ØTURE£¬Àë¿ª·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 zuobashou(SignalLineTypeDef *pSignalLine)    //Ä¦ÍĞ³µ×ó°ÑÊÖ
+static u8 zuobashou(void)    //Ä¦ÍĞ³µ×ó°ÑÊÖ
 {
-  u8 zbs_pin = BSP_ReadInputDataBit(&pSignalLine->zbs);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 zbs_pin = BSP_ReadInputDataBit(&pFlash->zbs);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return zbs_pin;
 
 }
 //========================================================================
-// º¯Êı: u8 youbashou(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 youbashou(void)
 // ÃèÊö: »ñÈ¡Ä¦ÍĞ³µÓÒ°ÑÊÖ×´Ì¬
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ÎÕ×¡·µ»ØTURE£¬Àë¿ª·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 youbashou(SignalLineTypeDef *pSignalLine)    //Ä¦ÍĞ³µÓÒ°ÑÊÖ
+static u8 youbashou(void)    //Ä¦ÍĞ³µÓÒ°ÑÊÖ
 {
-  u8 ybs_pin = BSP_ReadInputDataBit(&pSignalLine->ybs);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 ybs_pin = BSP_ReadInputDataBit(&pFlash->ybs);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return ybs_pin;
 
 }
 //========================================================================
-// º¯Êı: u8 zuojiaotaban(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 zuojiaotaban(void)
 // ÃèÊö: »ñÈ¡Ä¦ÍĞ³µÓÒ°ÑÊÖ×´Ì¬
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ²È×¡·µ»ØTURE£¬Àë¿ª·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 zuojiaotaban(SignalLineTypeDef *pSignalLine)    //Ä¦ÍĞ³µ×ó½ÅÌ¤°å
+static u8 zuojiaotaban(void)    //Ä¦ÍĞ³µ×ó½ÅÌ¤°å
 {
-  u8 zjtb_pin = BSP_ReadInputDataBit(&pSignalLine->zjtb);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 zjtb_pin = BSP_ReadInputDataBit(&pFlash->zjtb);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return zjtb_pin;
 
 }
 //========================================================================
-// º¯Êı: u8 youtaban(SignalLineTypeDef *pSignalLine)
+// º¯Êı: u8 youtaban(void)
 // ÃèÊö: »ñÈ¡Ä¦ÍĞ³µÓÒ°ÑÊÖ×´Ì¬
-// ²ÎÊı£ºpSignalLine£¬
+// ²ÎÊı£ºpFlash£¬
 // ·µ»Ø: ²È×¡·µ»ØTURE£¬Àë¿ª·µ»ØFLASE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static u8 youjiaotaban(SignalLineTypeDef *pSignalLine)    //Ä¦ÍĞ³µÓÒ½ÅÌ¤°å
+static u8 youjiaotaban(void)    //Ä¦ÍĞ³µÓÒ½ÅÌ¤°å
 {
-  u8 yjtb_pin = BSP_ReadInputDataBit(&pSignalLine->yjtb);//¶ÁÈ¡ÊäÈë×´Ì¬
+  u8 yjtb_pin = BSP_ReadInputDataBit(&pFlash->yjtb);//¶ÁÈ¡ÊäÈë×´Ì¬
 	
 	return yjtb_pin;
 
 }
 
 //========================================================================
-// º¯Êı: u8 GetHSShockSensor_value(u8 bump_usart,SignalLineTypeDef *pole)
+// º¯Êı: u8 GetHSShockSensor_value(u8 bump_usart)
 // ÃèÊö: ²É¼¯¸ßÉ­Åö¸Ë´«¸ĞÆ÷µÄÊı¾İ
-// ²ÎÊı£ºbump_usart´«¸ĞÆ÷ÓëÖ÷°åÖ®¼äµÄ´®¿ÚºÅ£¬SignalLineTypeDefÊı¾İ½á¹¹
+// ²ÎÊı£ºbump_usart´«¸ĞÆ÷ÓëÖ÷°åÖ®¼äµÄ´®¿ÚºÅ£¬FlashParameterTypeDefÊı¾İ½á¹¹
 // ·µ»Ø: 
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static void GetHSShockSensor_value(u8 bump_usart,SignalLineTypeDef *pole)    //µÃµ½¸ßÉ­Åö¸Ë´«¸ĞÆ÷µÄÖµ
+static void GetHSShockSensor_value(u8 bump_usart)    //µÃµ½¸ßÉ­Åö¸Ë´«¸ĞÆ÷µÄÖµ
 {
   xdata u8 group_i = 0;//
 	xdata u8 temp = 0;//
@@ -781,61 +779,61 @@ static void GetHSShockSensor_value(u8 bump_usart,SignalLineTypeDef *pole)    //µ
 	pilepole.number = 0;	//ÉÏ´«Åö¸Ë×´Ì¬	ÇåÁã		
 	pilepole.value  = 0;	//ÉÏ´«Åö¸ËÎ»ÖÃ	ÇåÁã
 	
-	if (Serial_HighSensorShock_Analy(bump_usart,pole) == TURE)//¶ÁÈ¡µ½´®¿ÚÊı¾İ
+	if (Serial_HighSensorShock_Analy(bump_usart) == TURE)//¶ÁÈ¡µ½´®¿ÚÊı¾İ
 	{
 	
-				for (group_i = 0; group_i < sizeof(pole->bump)/sizeof(pole->bump[0]);group_i++)
+				for (group_i = 0; group_i < sizeof(pFlash->bump)/sizeof(pFlash->bump[0]);group_i++)
 				{
 					
-					if(pole->bump[group_i].name == 0) 
+					if(pFlash->bump[group_i].name == 0) 
 					{
 						break;//flashÀïÃæÎ´ÅäÖÃÅö¸Ë½ÓÊÕÏîÄ¿
 					}
-					value  =	 pole->bump[group_i].value;//È¡Åö¸Ë×´Ì¬
+					value  =	 pFlash->bump[group_i].value;//È¡Åö¸Ë×´Ì¬
 					
 					//printf("value = %h04X\r\n",value);
 					
-					for (i = 0 ; i< pole->bump[group_i].count;i++)
+					for (i = 0 ; i< pFlash->bump[group_i].count;i++)
 					{		
 						valuebit  = (u16)(value >> i) & (0x0001);//È¡³öÅö¸ËÎ»
 						
-						temp = BSP_ReadBumpDataBit(&pole->pgjs,group_i,valuebit,i);//Ïû¶¶´¦Àí
+						temp = BSP_ReadBumpDataBit(&pFlash->pgjs,group_i,valuebit,i);//Ïû¶¶´¦Àí
 						
 						if( temp == 0 )
 						{
-						  pole->bump[group_i].value &= ~(1<< i);//¸üĞÂÏû¶¶´¦Àí½á¹û
+						  pFlash->bump[group_i].value &= ~(1<< i);//¸üĞÂÏû¶¶´¦Àí½á¹û
 						}
 						else 
-						  pole->bump[group_i].value |= (1<< i);//¸üĞÂÏû¶¶´¦Àí½á¹û
+						  pFlash->bump[group_i].value |= (1<< i);//¸üĞÂÏû¶¶´¦Àí½á¹û
 					}
 					//printf("pole->bump[group_i].value = %h04X\r\n",pole->bump[group_i].value);
 					
 					
 				}
 				//ÓÉÓÚĞèÒªÂÖÑ¯Åö¸Ë×´Ì¬£¬ËùÒÔĞèÒªµÚ¶ş´Î±éÀú£¬²¢ÇÒĞèÒª¼ÇÂ¼±éÀúµÄÎ»ÖÃ
-				for ( ;gor_i < sizeof(pole->bump)/sizeof(pole->bump[0]);gor_i++)
+				for ( ;gor_i < sizeof(pFlash->bump)/sizeof(pFlash->bump[0]);gor_i++)
 				{
 					
-					if(pole->bump[gor_i].name == 0) 
+					if(pFlash->bump[gor_i].name == 0) 
 					{
 						gor_i = 0;
 						
 						break;//flashÀïÃæÎ´ÅäÖÃÅö¸Ë½ÓÊÕÏîÄ¿
 					}
 					
-					value  =	pole->bump[gor_i].value;//È¡Åö¸Ë×´Ì¬
+					value  =	pFlash->bump[gor_i].value;//È¡Åö¸Ë×´Ì¬
 					
 					//printf("penggan.value = %h04X\r\n",value);
 					
-					for (;pos_i< pole->bump[gor_i].count;pos_i++)
+					for (;pos_i< pFlash->bump[gor_i].count;pos_i++)
 					{
 						
 						valuebit = (u8)(value >> pos_i) & (0x0001);//È¡³öÅö¸ËÎ»
 						
 						if(valuebit == 1)//³öÏÖÅö¸ËĞÅºÅ
 						{
-								pilepole.name   = pole->bump[gor_i].name;			//ÉÏ´«Åö¸Ë×´Ì¬	
-								pilepole.number = pole->bump[gor_i].number;	  //ÉÏ´«Åö¸Ë×´Ì¬			
+								pilepole.name   = pFlash->bump[gor_i].name;			//ÉÏ´«Åö¸Ë×´Ì¬	
+								pilepole.number = pFlash->bump[gor_i].number;	  //ÉÏ´«Åö¸Ë×´Ì¬			
 								pilepole.value  = pos_i+1;	//ÉÏ´«Åö¸ËÎ»ÖÃ
 								pos_i++;//±¾´ÎÑ­»·½áÊø
 							 
@@ -885,7 +883,8 @@ static void Get24GShockSensor_value(u8 bump_usart)    //µÃµ½2.4GÅö¸ËÅö¸Ë´«¸ĞÆ÷µÄ
 static void GetTiltSensor_value(u8 Tilt_usart,TiltSensorTypeDef *pTilt)    //Çã½Ç´«¸ĞÆ÷µÄÖµ
 {
 
-	#if TILT_ALL_USART //È«²¿¶ÁÈ¡
+	if (TILT_ALL_USART != DISABLE)//È«²¿¶ÁÈ¡
+	{
 			Serial_TiltSensor_Analy(Tilt_usart,pTilt);
 	
 //		 printf("------------------------------------------\r\n");
@@ -893,47 +892,55 @@ static void GetTiltSensor_value(u8 Tilt_usart,TiltSensorTypeDef *pTilt)    //Çã½
 //		 printf("Tilt[PLACE_Q_AXLE].Pitch = %h04d\r\n",		Tilt[PLACE_Q_AXLE].Pitch);
 //		 printf("Tilt[PLACE_Q_AXLE].Yaw = %h04d\r\n",			Tilt[PLACE_Q_AXLE].Yaw);
 //		 printf("------------------------------------------\r\n");
-	#else
-	if(Tilt_usart != DISABLE)//µ¥¸ö¶ÁÈ¡
-	{
-		 //memset(pTilt,0,sizeof(Tilt[0]));//ÇåÁã
-		 if (Serial_TiltSensor_Analy(Tilt_usart,pTilt) == TURE)//µ¥¸ö¶ÁÈ¡
-		 {
-			 if(Tilt_usart == TILT_MTC_USART) //Èç¹ûÊÇ¶şÂÖÄ¦ÍĞ³µ
-			 {
-	 
-					(char)pTilt->RollL -= mtc.Adjust_XL;  	//µÃµ½XÖá²îÖµµÍ×Ö½Ú	
-					(char)pTilt->RollH -= mtc.Adjust_XH;  	//µÃµ½XÖá²îÖµ¸ß×Ö½Ú	
-					(char)pTilt->PitchL -= mtc.Adjust_YL;  //µÃµ½YÖá²îÖµµÍ×Ö½Ú		
-					(char)pTilt->PitchH -= mtc.Adjust_YH;  //µÃµ½YÖá²îÖµ¸ß×Ö½Ú	
-				 
-//					printf("pTilt->RollL = %b02d\r\n",	pTilt->RollL);
-//					printf("pTilt->RollH = %b02d\r\n",	pTilt->RollH);
-//					printf("pTilt->PitchL = %b02d\r\n",	pTilt->PitchL);
-//					printf("pTilt->PitchH = %b02d\r\n",	pTilt->PitchH);	
-//					printf("\r\n");				 
-			 }
-		 }		 
 	}
-	#endif
+	else
+	{
+			if(Tilt_usart != DISABLE)//µ¥¸ö¶ÁÈ¡
+			{
+				 //memset(pTilt,0,sizeof(Tilt[0]));//ÇåÁã
+				 if (Serial_TiltSensor_Analy(Tilt_usart,pTilt) == TURE)//µ¥¸ö¶ÁÈ¡
+				 {
+					 if(Tilt_usart == TILT_MTC_USART) //Èç¹ûÊÇ¶şÂÖÄ¦ÍĞ³µ
+					 {
+			 
+							(char)pTilt->RollL -= mtc.Adjust_XL;  	//µÃµ½XÖá²îÖµµÍ×Ö½Ú	
+							(char)pTilt->RollH -= mtc.Adjust_XH;  	//µÃµ½XÖá²îÖµ¸ß×Ö½Ú	
+							(char)pTilt->PitchL -= mtc.Adjust_YL;  //µÃµ½YÖá²îÖµµÍ×Ö½Ú		
+							(char)pTilt->PitchH -= mtc.Adjust_YH;  //µÃµ½YÖá²îÖµ¸ß×Ö½Ú	
+						 
+		//					printf("pTilt->RollL = %b02d\r\n",	pTilt->RollL);
+		//					printf("pTilt->RollH = %b02d\r\n",	pTilt->RollH);
+		//					printf("pTilt->PitchL = %b02d\r\n",	pTilt->PitchL);
+		//					printf("pTilt->PitchH = %b02d\r\n",	pTilt->PitchH);	
+		//					printf("\r\n");				 
+					 }
+				 }		 
+			}
+	}
 }
 
 //========================================================================
-// º¯Êı: void GetTilt_Adjust_vaule(u8 Tilt_usart,u8 *TiltSensorTypeDef pTilt) //»ñÈ¡Ä¦ÍĞ³µÇã½Ç´«¸ĞÆ÷Ğ£×¼Öµ
-// ÃèÊö: »ñÈ¡Çã½Ç´«¸ĞÆ÷µÄ»ù×¼Öµ
-// ²ÎÊı£ºu8 Tilt_usart£¬´«¸ĞÆ÷ÓëÖ÷°åÖ®¼äÁ¬½ÓµÄ´®¿ÚºÅ£¬pTiltÖ¸ÏòÊı¾İ±£´æµÄÖ¸Õë
+// º¯Êı: void GetTilt_Adjust_vaule(void) //»ñÈ¡Ä¦ÍĞ³µÇã½Ç´«¸ĞÆ÷Ğ£×¼Öµ
+// ÃèÊö: »ñÈ¡¶şÂÖÄ¦ÍĞ³µÇã½Ç´«¸ĞÆ÷Ğ£×¼»ù×¼Öµ
+// ²ÎÊı£º
 // ·µ»Ø: 
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-static void  GetTilt_Adjust_vaule(u8 Tilt_usart,TiltSensorTypeDef *pTilt) //»ñÈ¡Ä¦ÍĞ³µÇã½Ç´«¸ĞÆ÷Ğ£×¼Öµ
+void GetTilt_Adjust_vaule(void) //»ñÈ¡¶şÂÖÄ¦ÍĞ³µÇã½Ç´«¸ĞÆ÷Ğ£×¼Öµ
 {
-	if(Tilt_usart != DISABLE)
+	if(TILT_MTC_USART != DISABLE)
 	{
-		GetTiltSensor_value(Tilt_usart,pTilt);//»ñÈ¡»ù×¼Öµ
-		mtc.Adjust_XL = pTilt->RollL;					//XÖá½Ç¶ÈµÍ×Ö½Ú	
-		mtc.Adjust_XH = pTilt->RollH;  				//XÖá½Ç¶È¸ß×Ö½Ú
-		mtc.Adjust_YL = pTilt->PitchL;					//YÖá½Ç¶ÈµÍ×Ö½Ú
-		mtc.Adjust_YH = pTilt->PitchH;  				//YÖá½Ç¶È¸ß×Ö½Ú	
+		USART_ClearMsgQueueRxBuffer(TILT_MTC_USART);//ÇåÀí´®¿Ú»º´æ
+	
+	  BSP_ClearUsartRxBuffer(TILT_MTC_USART);//
+	
+	  delay_ms(200);//ÑÓÊ±300ºÁÃë¶ÁÈ¡»ù×¼Öµ
+		
+		GetTiltSensor_value(TILT_MTC_USART,&Tilt[PLACE_MTC_AXLE]);//»ñÈ¡»ù×¼Öµ
+		mtc.Adjust_XL = Tilt[PLACE_MTC_AXLE].RollL;					//XÖá½Ç¶ÈµÍ×Ö½Ú	
+		mtc.Adjust_XH = Tilt[PLACE_MTC_AXLE].RollH;  				//XÖá½Ç¶È¸ß×Ö½Ú
+		mtc.Adjust_YL = Tilt[PLACE_MTC_AXLE].PitchL;					//YÖá½Ç¶ÈµÍ×Ö½Ú
+		mtc.Adjust_YH = Tilt[PLACE_MTC_AXLE].PitchH;  				//YÖá½Ç¶È¸ß×Ö½Ú	
 		
 //		printf("mtc.Adjust_XL = %b02d\r\n",	mtc.Adjust_XL);
 //		printf("mtc.Adjust_XH = %b02d\r\n",	mtc.Adjust_XH);
@@ -943,85 +950,74 @@ static void  GetTilt_Adjust_vaule(u8 Tilt_usart,TiltSensorTypeDef *pTilt) //»ñÈ¡
 }
 #endif
 //========================================================================
-// º¯Êı: void Cmd_Start_Callback(void)
-// ÃèÊö: Ö÷°åÊÕµ½55 aa 00 00 11 11 ºó»áµ÷ÓÃ´Ëº¯Êı
-// °æ±¾: V1.0, 2022-10-17
-//========================================================================
-void Cmd_Start_Callback(void)
-{
-	USART_ClearMsgQueueRxBuffer(UPLOAD_USART);
-	
-	BSP_ClearUsartRxBuffer(UPLOAD_USART);//
-	
-	SignalLine_Init();//»ñÈ¡×îĞÂµÄÅäÖÃÎÄ¼ş
-	
-#ifdef  STC15W4K48S4
-	USART_ClearMsgQueueRxBuffer(TILT_MTC_USART);//ÇåÀí´®¿Ú»º´æ
-	
-	BSP_ClearUsartRxBuffer(TILT_MTC_USART);//
-	
-	delay_ms(200);//ÑÓÊ±300ºÁÃë¶ÁÈ¡»ù×¼Öµ
-	
-	GetTilt_Adjust_vaule(TILT_MTC_USART,&Tilt[PLACE_MTC_AXLE]);//»ñÈ¡´«¶şÂÖÄ¦ÍĞ³µ´«¸ĞÆ÷µÄ»ù×¼Öµ
-	
-#endif
-}
-
-//========================================================================
-// º¯Êı: void SignalLine_Init(void)
-// ÃèÊö: ³õÊ¼»¯ĞÅºÅµÄÅäÖÃ£¬ÊäÈë¶Ë¿ÚÎ´ÅäÖÃ£¬°´Ä¬ÈÏ¶Ë¿Ú½ÓÏß
+// º¯Êı: void DefaultConfig_Init(void)
+// ÃèÊö: ³õÊ¼»¯Ä¬ÈÏÅäÖÃ
 // ²ÎÊı£ºÎŞ
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-void SignalLine_Init(void)
+void GetFlashConfig(void)
 {
-	  xdata SignalLineTypeDef *pSignalLine = &SignalLine;
 	
-	  BSP_GetFlashConfig(pSignalLine);	//»ñÈ¡ÅäÖÃ²ÎÊı
+	  BSP_GetFlashConfig();	//»ñÈ¡ÅäÖÃ²ÎÊı
 	
-	  if(pSignalLine->zz.pin == 0)			pSignalLine->zz.pin 	= D1;		//×ó×ª,Ä¬ÈÏ¶Ë¿ÚÎªD1
-		if(pSignalLine->yz.pin == 0)			pSignalLine->yz.pin 	= D2;		//ÓÒ×ª,Ä¬ÈÏ¶Ë¿ÚÎªD2
-		if(pSignalLine->xh.pin == 0)			pSignalLine->xh.pin 	= D3;		//·¢µç»ú,Ä¬ÈÏ¶Ë¿ÚÎªD3
-		if(pSignalLine->ss.pin == 0)			pSignalLine->ss.pin 	= D4;		//ÊÖÉ²,Ä¬ÈÏ¶Ë¿ÚÎªD4
-		if(pSignalLine->aqd.pin == 0)			pSignalLine->aqd.pin 	= D5;		//°²È«´ø,Ä¬ÈÏ¶Ë¿ÚÎªD5	
-		if(pSignalLine->cm.pin == 0)			pSignalLine->cm.pin 	= D6;		//³µÃÅ,Ä¬ÈÏ¶Ë¿ÚÎªD6
-		if(pSignalLine->dcd.pin == 0)			pSignalLine->dcd.pin 	= D7;		//µ¹³µµÆ,Ä¬ÈÏ¶Ë¿ÚÎªD7
-		if(pSignalLine->lb.pin == 0)			pSignalLine->lb.pin 	= D8;		//À®°È,Ä¬ÈÏ¶Ë¿ÚÎªD8
+	  if(pFlash->zz.pin == 0)				pFlash->zz.pin 		= D1;		//×ó×ª,Ä¬ÈÏ¶Ë¿ÚÎªD1
+		if(pFlash->yz.pin == 0)				pFlash->yz.pin 		= D2;		//ÓÒ×ª,Ä¬ÈÏ¶Ë¿ÚÎªD2
+		if(pFlash->xh.pin == 0)				pFlash->xh.pin 		= D3;		//·¢µç»ú,Ä¬ÈÏ¶Ë¿ÚÎªD3
+		if(pFlash->ss.pin == 0)				pFlash->ss.pin 		= D4;		//ÊÖÉ²,Ä¬ÈÏ¶Ë¿ÚÎªD4
+		if(pFlash->aqd.pin == 0)			pFlash->aqd.pin 	= D5;	  //°²È«´ø,Ä¬ÈÏ¶Ë¿ÚÎªD5	
+		if(pFlash->cm.pin == 0)				pFlash->cm.pin 		= D6;		//³µÃÅ,Ä¬ÈÏ¶Ë¿ÚÎªD6
+		if(pFlash->dcd.pin == 0)			pFlash->dcd.pin 	= D7;	  //µ¹³µµÆ,Ä¬ÈÏ¶Ë¿ÚÎªD7
+		if(pFlash->lb.pin == 0)				pFlash->lb.pin 		= D8;		//À®°È,Ä¬ÈÏ¶Ë¿ÚÎªD8
 	
-		if(pSignalLine->rc.pin1 == 0)			pSignalLine->rc.pin1 	= D9;		//ÈÆ³µ1,Ä¬ÈÏ¶Ë¿ÚÎªD9
-		if(pSignalLine->rc.pin2 == 0)			pSignalLine->rc.pin2 	= D10;	//ÈÆ³µ2,Ä¬ÈÏ¶Ë¿ÚÎªD10
-		if(pSignalLine->wd.pin == 0)			pSignalLine->wd.pin 	= D11;	//ÎíµÆ,Ä¬ÈÏ¶Ë¿ÚÎªD11
-		if(pSignalLine->yg.pin == 0)			pSignalLine->yg.pin 	= D12;	//Ô¶¹â,Ä¬ÈÏ¶Ë¿ÚÎªD12
-		if(pSignalLine->jg.pin == 0)			pSignalLine->jg.pin 	= D13;	//½ü¹â,Ä¬ÈÏ¶Ë¿ÚÎªD13	
-		if(pSignalLine->xd.pin == 0)			pSignalLine->xd.pin 	= D14;	//Ğ¡µÆ,Ä¬ÈÏ¶Ë¿ÚÎªD14
-		if(pSignalLine->js.pin == 0)			pSignalLine->js.pin 	= D15;	//½ÅÉ²,Ä¬ÈÏ¶Ë¿ÚÎªD15
-		if(pSignalLine->ys.pin == 0)			pSignalLine->ys.pin 	= D16;	//ÓêË¢,Ä¬ÈÏ¶Ë¿ÚÎªD16
+		if(pFlash->rc.pin1 == 0)			pFlash->rc.pin1 	= D9;	//ÈÆ³µ1,Ä¬ÈÏ¶Ë¿ÚÎªD9
+		if(pFlash->rc.pin2 == 0)			pFlash->rc.pin2 	= D10;//ÈÆ³µ2,Ä¬ÈÏ¶Ë¿ÚÎªD10
+		if(pFlash->wd.pin == 0)				pFlash->wd.pin 		= D11;	//ÎíµÆ,Ä¬ÈÏ¶Ë¿ÚÎªD11
+		if(pFlash->yg.pin == 0)				pFlash->yg.pin 		= D12;	//Ô¶¹â,Ä¬ÈÏ¶Ë¿ÚÎªD12
+		if(pFlash->jg.pin == 0)				pFlash->jg.pin 		= D13;	//½ü¹â,Ä¬ÈÏ¶Ë¿ÚÎªD13	
+		if(pFlash->xd.pin == 0)				pFlash->xd.pin 		= D14;	//Ğ¡µÆ,Ä¬ÈÏ¶Ë¿ÚÎªD14
+		if(pFlash->js.pin == 0)				pFlash->js.pin 		= D15;	//½ÅÉ²,Ä¬ÈÏ¶Ë¿ÚÎªD15
+		if(pFlash->ys.pin == 0)				pFlash->ys.pin 		= D16;	//ÓêË¢,Ä¬ÈÏ¶Ë¿ÚÎªD16
 	
-		if(pSignalLine->zhs.pin == 0)			pSignalLine->zhs.pin 	= D17;	//×óºóÊÓ¾µ,Ä¬ÈÏ¶Ë¿ÚÎªD17
-		if(pSignalLine->qd.pin == 0)			pSignalLine->qd.pin 	= D18;	//Æô¶¯,Ä¬ÈÏ¶Ë¿ÚÎªD18
-		if(pSignalLine->nhs.pin == 0)			pSignalLine->nhs.pin 	= D19;	//ÄÚºóÊÓ¾µ,Ä¬ÈÏ¶Ë¿ÚÎªD19
-		if(pSignalLine->zyyl.pin == 0)		pSignalLine->zyyl.pin = D20;	//Ô¶×ùÒÎ(Ñ¹Á¦,Ä¬ÈÏ¶Ë¿ÚÎªD20
-		if(pSignalLine->dw.pin1 == 0)			pSignalLine->dw.pin1 	= D21;	//µ²Î»1,Ä¬ÈÏ¶Ë¿ÚÎªD21	
-		if(pSignalLine->dw.pin2 == 0)			pSignalLine->dw.pin2	= D22;	//µ²Î»2,Ä¬ÈÏ¶Ë¿ÚÎªD22
-		if(pSignalLine->dw.pin3 == 0)			pSignalLine->dw.pin3 	= D23;	//µ²Î»3,Ä¬ÈÏ¶Ë¿ÚÎªD23
-		if(pSignalLine->dw.pin4 == 0)			pSignalLine->dw.pin4 	= D24;	//µ²Î»4,Ä¬ÈÏ¶Ë¿ÚÎªD24
+		if(pFlash->zhs.pin == 0)			pFlash->zhs.pin 	= D17;//×óºóÊÓ¾µ,Ä¬ÈÏ¶Ë¿ÚÎªD17
+		if(pFlash->qd.pin == 0)				pFlash->qd.pin 		= D18;	//Æô¶¯,Ä¬ÈÏ¶Ë¿ÚÎªD18
+		if(pFlash->nhs.pin == 0)			pFlash->nhs.pin 	= D19;//ÄÚºóÊÓ¾µ,Ä¬ÈÏ¶Ë¿ÚÎªD19
+		if(pFlash->zytj.pin == 0)			pFlash->zytj.pin 	= D20;	//Ô¶×ùÒÎ(Ñ¹Á¦,Ä¬ÈÏ¶Ë¿ÚÎªD20
+		if(pFlash->dw.pin1 == 0)			pFlash->dw.pin1 	= D21;//µ²Î»1,Ä¬ÈÏ¶Ë¿ÚÎªD21	
+		if(pFlash->dw.pin2 == 0)			pFlash->dw.pin2		= D22;	//µ²Î»2,Ä¬ÈÏ¶Ë¿ÚÎªD22
+		if(pFlash->dw.pin3 == 0)			pFlash->dw.pin3 	= D23;//µ²Î»3,Ä¬ÈÏ¶Ë¿ÚÎªD23
+		if(pFlash->dw.pin4 == 0)			pFlash->dw.pin4 	= D24;//µ²Î»4,Ä¬ÈÏ¶Ë¿ÚÎªD24
 		
-		if(pSignalLine->zytj.pin == 0)		pSignalLine->zytj.pin = D25;	//µ÷×ùÒÎ,Ä¬ÈÏ¶Ë¿ÚÎªD25
-		if(pSignalLine->lh.pin == 0)			pSignalLine->lh.pin 	= D26;	//ÀëºÏ,Ä¬ÈÏ¶Ë¿ÚÎªD26
-		if(pSignalLine->zs.pin == 0)			pSignalLine->zs.pin 	= D27;	//×ªËÙ,Ä¬ÈÏ¶Ë¿ÚÎªD27
-		if(pSignalLine->ysm.pin == 0)			pSignalLine->ysm.pin 	= D28;	//Ô¿³×¿ª¹Ø,Ä¬ÈÏ¶Ë¿ÚÎªD28
-		if(pSignalLine->fsc.pin == 0)			pSignalLine->fsc.pin 	= D29;	//¸±É²³µ,Ä¬ÈÏ¶Ë¿ÚÎªD29	
-		if(pSignalLine->cd.pin == 0)			pSignalLine->cd.pin		= D30;	//´³¶¯´«¸ĞÆ÷,Ä¬ÈÏ¶Ë¿ÚÎªD30
-		//if(pSignalLine->dw3.pin == 0)		pSignalLine->dw3.pin 	= D31;	//±¸ÓÃ,Ä¬ÈÏ¶Ë¿ÚÎªD31
-		if(pSignalLine->rc.pin3 == 0)			pSignalLine->rc.pin3 	= D32;	//ÈÆ³µ3,Ä¬ÈÏ¶Ë¿ÚÎªD32
+		if(pFlash->zyyl.pin == 0)			pFlash->zyyl.pin 	= D25;	//µ÷×ùÒÎ,Ä¬ÈÏ¶Ë¿ÚÎªD25
+		if(pFlash->lh.pin == 0)				pFlash->lh.pin 		= D26;	//ÀëºÏ,Ä¬ÈÏ¶Ë¿ÚÎªD26
+		if(pFlash->zs.pin == 0)				pFlash->zs.pin 		= D27;	//×ªËÙ,Ä¬ÈÏ¶Ë¿ÚÎªD27
+		if(pFlash->ysm.pin == 0)			pFlash->ysm.pin 	= D28;//Ô¿³×¿ª¹Ø,Ä¬ÈÏ¶Ë¿ÚÎªD28
+		if(pFlash->fsc.pin == 0)			pFlash->fsc.pin 	= D29;//¸±É²³µ,Ä¬ÈÏ¶Ë¿ÚÎªD29	
+		if(pFlash->cd.pin == 0)				pFlash->cd.pin		= D30;//´³¶¯´«¸ĞÆ÷,Ä¬ÈÏ¶Ë¿ÚÎªD30
+		//if(pFlash->dw3.pin == 0)		pFlash->dw3.pin 	= D31;//±¸ÓÃ,Ä¬ÈÏ¶Ë¿ÚÎªD31
+		if(pFlash->rc.pin3 == 0)			pFlash->rc.pin3 	= D32;//ÈÆ³µ3,Ä¬ÈÏ¶Ë¿ÚÎªD32
+#ifdef  STC15W4K48S4			
+	
+		if(pFlash->tk.pin == 0)				pFlash->tk.pin 	= D5;		//°²È«´ø,Ä¬ÈÏ¶Ë¿ÚÎªD5			//Ä¦ÍĞ³µÍ·¿ø
+		if(pFlash->zbs.pin == 0)			pFlash->zbs.pin 	= D17;//×óºóÊÓ¾µ,Ä¬ÈÏ¶Ë¿ÚÎªD17		//Ä¦ÍĞ³µ×ó°ÑÊÖ
+		if(pFlash->ybs.pin == 0)			pFlash->ybs.pin	= D19;	//ÄÚºóÊÓ¾µ,Ä¬ÈÏ¶Ë¿ÚÎªD19		//Ä¦ÍĞ³µÓÒ°ÑÊÖ
+		if(pFlash->zjtb.pin == 0)			pFlash->zjtb.pin = D6;	//³µÃÅ,Ä¬ÈÏ¶Ë¿ÚÎªD6				//Ä¦ÍĞ³µ×ó½ÅÌ¤°å
+		if(pFlash->yjtb.pin == 0)			pFlash->yjtb.pin = D16;	//ÓêË¢,Ä¬ÈÏ¶Ë¿ÚÎªD16				//Ä¦ÍĞ³µÓÒ½ÅÌ¤°å
 		
-	#ifdef  STC15W4K48S4	
-		if(pSignalLine->tk.pin == 0)			pSignalLine->tk.pin 	= D5;		//°²È«´ø,Ä¬ÈÏ¶Ë¿ÚÎªD5			//Ä¦ÍĞ³µÍ·¿ø
-		if(pSignalLine->zbs.pin == 0)			pSignalLine->zbs.pin 	= D17;	//×óºóÊÓ¾µ,Ä¬ÈÏ¶Ë¿ÚÎªD17		//Ä¦ÍĞ³µ×ó°ÑÊÖ
-		if(pSignalLine->ybs.pin == 0)			pSignalLine->ybs.pin	= D19;	//ÄÚºóÊÓ¾µ,Ä¬ÈÏ¶Ë¿ÚÎªD19		//Ä¦ÍĞ³µÓÒ°ÑÊÖ
-		if(pSignalLine->zjtb.pin == 0)		pSignalLine->zjtb.pin = D6;		//³µÃÅ,Ä¬ÈÏ¶Ë¿ÚÎªD6				//Ä¦ÍĞ³µ×ó½ÅÌ¤°å
-		if(pSignalLine->yjtb.pin == 0)		pSignalLine->yjtb.pin = D16;	//ÓêË¢,Ä¬ÈÏ¶Ë¿ÚÎªD16				//Ä¦ÍĞ³µÓÒ½ÅÌ¤°å
-	#endif
+		if(pFlash-> upload.com > 4)		pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+		if(pFlash-> gps.com > 4)			pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+		if(pFlash-> bump_hs.com > 4)	pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+		if(pFlash-> bump_24g.com > 4)	pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+		if(pFlash-> titl_all.com > 4)	pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+		
+		if(pFlash-> titl_q.com > 4)		pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+		if(pFlash-> titl_h.com > 4)		pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+		if(pFlash-> titl_g.com > 4)		pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+		if(pFlash-> titl_mtc.com > 4)	pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+#endif
+
+#ifdef  STC12C5A60S2
+		if(pFlash-> upload.com > 2)		pFlash-> upload.com 	= DISABLE;//´®¿ÚºÅ³¬³ö·¶Î§
+#endif
 		
 
 		
@@ -1040,7 +1036,7 @@ void GetBaseBoardDataPack(u8 pDatabuf[], u16 lenth)
 	
 #ifdef  STC15W4K48S4		
 	
-	    GetHSShockSensor_value(HS_BUMP_USART,&SignalLine);//¸üĞÂÅö¸ËÊı¾İ
+	    GetHSShockSensor_value(BUMP_HS_USART);//¸üĞÂÅö¸ËÊı¾İ
 	    Get24GShockSensor_value(BUMP_24G_USART);//¸üĞÂÅö¸ËÊı¾İ
 			GetTiltSensor_value(TILT_Q_USART,&Tilt[PLACE_Q_AXLE]);//²É¼¯Ç°ÖáÊı¾İ
 			GetTiltSensor_value(TILT_H_USART,&Tilt[PLACE_H_AXLE]);//²É¼¯ºóÖáÊı¾İ
@@ -1050,48 +1046,48 @@ void GetBaseBoardDataPack(u8 pDatabuf[], u16 lenth)
 
 #endif
 	
-			pDatabuf[0] |= (jiaosha(&SignalLine) << 0);		 					//½ÅÉ±
-			pDatabuf[0]	|=	(lihe(&SignalLine) << 1); 							//ÀëºÏÆ÷				
-			pDatabuf[0]	|=	(jinguang(&SignalLine) << 2);						//½ü¹âµÆ
-			pDatabuf[0]	|=	(yuanguang(&SignalLine) << 3);					//Ô¶¹âµÆ	
-			pDatabuf[0]	|=	(youzhuanxiangdeng(&SignalLine) << 4);	//ÓÒ×ªÏò			
-			pDatabuf[0]	|=	(zuozhuanxiangdeng(&SignalLine) << 5);	//×ó×ªÏò
-    	pDatabuf[0]	|=	(shousha(&SignalLine)<<6);							//ÊÖÉ²
-      pDatabuf[0]	|=	(zuoyitiaojie(&SignalLine)<<7);					//×ùÒÎ
+			pDatabuf[0] |= (jiaosha() << 0);		 					//½ÅÉ±
+			pDatabuf[0]	|=	(lihe() << 1); 							//ÀëºÏÆ÷				
+			pDatabuf[0]	|=	(jinguang() << 2);						//½ü¹âµÆ
+			pDatabuf[0]	|=	(yuanguang() << 3);					//Ô¶¹âµÆ	
+			pDatabuf[0]	|=	(youzhuanxiangdeng() << 4);	//ÓÒ×ªÏò			
+			pDatabuf[0]	|=	(zuozhuanxiangdeng() << 5);	//×ó×ªÏò
+    	pDatabuf[0]	|=	(shousha()<<6);							//ÊÖÉ²
+      pDatabuf[0]	|=	(zuoyitiaojie()<<7);					//×ùÒÎ
 			
-			pDatabuf[1]	|=	(laba(&SignalLine) << 0);				//À®°È
-			pDatabuf[1]	|=	(daochedeng(&SignalLine) << 2);	//µ¹³µµÆ¿ª¹Ø		
-			pDatabuf[1]	|=	(xiaodeng(&SignalLine) << 3);		//Ğ¡µÆ
-			pDatabuf[1]	|=	(shijing(&SignalLine) << 4);		//Ë«ÉÁ
-			pDatabuf[1]	|=	(anquandai(&SignalLine) << 5);	//°²È«´ø¿ª¹Ø    
-			pDatabuf[1]	|=	(qidong(&SignalLine) << 6);			//Æô¶¯¿ª¹Ø
-			pDatabuf[1]	|=	(xihuo(&SignalLine) << 7);			//·¢¶¯»ú×ªËÙ
+			pDatabuf[1]	|=	(laba() << 0);				//À®°È
+			pDatabuf[1]	|=	(daochedeng() << 2);	//µ¹³µµÆ¿ª¹Ø		
+			pDatabuf[1]	|=	(xiaodeng() << 3);		//Ğ¡µÆ
+			pDatabuf[1]	|=	(shijing() << 4);		//Ë«ÉÁ
+			pDatabuf[1]	|=	(anquandai() << 5);	//°²È«´ø¿ª¹Ø    
+			pDatabuf[1]	|=	(qidong() << 6);			//Æô¶¯¿ª¹Ø
+			pDatabuf[1]	|=	(xihuo() << 7);			//·¢¶¯»ú×ªËÙ
 	
-			pDatabuf[2]	|=	chemen(&SignalLine);		//³µÃÅ
-			pDatabuf[2]	|=	dangwei(&SignalLine);		//µ²Î»
+			pDatabuf[2]	|=	chemen();		//³µÃÅ
+			pDatabuf[2]	|=	dangwei();		//µ²Î»
 
 			pDatabuf[3]	=	0;			//³µËÙ
-			pDatabuf[4]	|=	(u8)zhuansucount(&SignalLine);			//·¢¶¯»ú×ªËÙµÍ°ËÎ»   
-			pDatabuf[5]	|=	(u8)zhuansucount(&SignalLine)>>8;		//·¢¶¯»ú×ªËÙ¸ß°ËÎ»
+			pDatabuf[4]	|=	(u8)zhuansucount();			//·¢¶¯»ú×ªËÙµÍ°ËÎ»   
+			pDatabuf[5]	|=	(u8)zhuansucount()>>8;		//·¢¶¯»ú×ªËÙ¸ß°ËÎ»
 			
-			pDatabuf[6] |=	(kongdang(&SignalLine) << 0);		//¿Õµ²
-			pDatabuf[6]	|=	(zuoyiyali(&SignalLine) << 3);	//×ùÒÎ¿ª¹Ø
+			pDatabuf[6] |=	(kongdang() << 0);		//¿Õµ²
+			pDatabuf[6]	|=	(zuoyiyali() << 3);	//×ùÒÎ¿ª¹Ø
 			
-			pDatabuf[7]	|=	(yushua(&SignalLine) << 0);			//ÓêË¢
-			pDatabuf[7]	|=	(wudeng(&SignalLine) << 1);			//ÎíµÆ
-			pDatabuf[7]	|=	(neihoushi(&SignalLine) << 2);	//ÄÚºóÊÓ
-			pDatabuf[7]	|=	(zuohoushi(&SignalLine) << 3);	//ºóÊÓ×ó
-			pDatabuf[7]	|=	(jinguang(&SignalLine) << 4);		//´óµÆ
-			pDatabuf[7]	|=	(yuanguang(&SignalLine) << 4);	//´óµÆ
-			pDatabuf[7]	|=	(fushache(&SignalLine) << 5);		//¸±É²
-			pDatabuf[7]	|=	(qidong(&SignalLine) << 6);			//Æô¶¯
+			pDatabuf[7]	|=	(yushua() << 0);			//ÓêË¢
+			pDatabuf[7]	|=	(wudeng() << 1);			//ÎíµÆ
+			pDatabuf[7]	|=	(neihoushi() << 2);	//ÄÚºóÊÓ
+			pDatabuf[7]	|=	(zuohoushi() << 3);	//ºóÊÓ×ó
+			pDatabuf[7]	|=	(jinguang() << 4);		//´óµÆ
+			pDatabuf[7]	|=	(yuanguang() << 4);	//´óµÆ
+			pDatabuf[7]	|=	(fushache() << 5);		//¸±É²
+			pDatabuf[7]	|=	(qidong() << 6);			//Æô¶¯
 			//pDatabuf[8]=0;			//ºìÂÌµÆ×´Ì¬
 			//pDatabuf[9]=0;			//Òì³£×´Ì¬
 
-			pDatabuf[10]	=	raoche1(&SignalLine);	//×óÇ°ÈÆ³µ
-			pDatabuf[11]	=	raoche2(&SignalLine);	//×óºóÈÆ³µ
-			pDatabuf[12]	=	raoche1(&SignalLine);	//ÓÒÇ°ÈÆ³µ
-			pDatabuf[13]	=	raoche3(&SignalLine);	//ÓÒºóÈÆ³µ
+			pDatabuf[10]	=	raoche1();	//×óÇ°ÈÆ³µ
+			pDatabuf[11]	=	raoche2();	//×óºóÈÆ³µ
+			pDatabuf[12]	=	raoche1();	//ÓÒÇ°ÈÆ³µ
+			pDatabuf[13]	=	raoche3();	//ÓÒºóÈÆ³µ
 
 			//pDatabuf[14]	=	0;			//Àï³Ì¼ÆÊı¸ßÎ»//¼ÆÊıÆ÷0
 			//pDatabuf[15]	=	0;			//Àï³Ì¼ÆÊıµÍÎ»//¼ÆÊıÆ÷0
@@ -1115,28 +1111,28 @@ void GetBaseBoardDataPack(u8 pDatabuf[], u16 lenth)
 			pDatabuf[29]	=	0;				//ÀëºÏADÖµ
 			pDatabuf[30]	=	0;				//ÓÍÃÅADÖµ
 			
-			pDatabuf[31]		|=	(yaoshimen(&SignalLine) << 0); 			//Ô¿³×¿ª¹Ø
-			pDatabuf[31]		|=	(chuangdong(&SignalLine) << 1);			//´³¶¯¿ª¹Ø
+			pDatabuf[31]		|=	(yaoshimen() << 0); 			//Ô¿³×¿ª¹Ø
+			pDatabuf[31]		|=	(chuangdong() << 1);			//´³¶¯¿ª¹Ø
 			
 #ifdef  STC15W4K48S4	
-			pDatabuf[31]		|=	(toukui(&SignalLine) << 2); 			//Í·¿ø£¨1=´÷ÉÏ£©//Ä¦ÍĞ³µ
-			pDatabuf[31]		|=	(zuobashou(&SignalLine) << 3);		//×ó°ÑÊÖ£¨1=ÎÕÉÏ£©//Ä¦ÍĞ³µ
-			pDatabuf[31]		|=	(youbashou(&SignalLine) << 4);		//ÓÒ°ÑÊÖ£¨1=ÎÕÉÏ£©//Ä¦ÍĞ³µ
-			pDatabuf[31]		|=	(zuojiaotaban(&SignalLine) << 5);			//×óÌ¤°å£¨1=²ÈÉÏ£©//Ä¦ÍĞ³µ
-			pDatabuf[31]		|=	(youjiaotaban(&SignalLine) << 6);			//ÓÒÌ¤°å£¨1=²ÈÉÏ£©//Ä¦ÍĞ³µ
+			pDatabuf[31]		|=	(toukui() << 2); 			//Í·¿ø£¨1=´÷ÉÏ£©//Ä¦ÍĞ³µ
+			pDatabuf[31]		|=	(zuobashou() << 3);		//×ó°ÑÊÖ£¨1=ÎÕÉÏ£©//Ä¦ÍĞ³µ
+			pDatabuf[31]		|=	(youbashou() << 4);		//ÓÒ°ÑÊÖ£¨1=ÎÕÉÏ£©//Ä¦ÍĞ³µ
+			pDatabuf[31]		|=	(zuojiaotaban() << 5);			//×óÌ¤°å£¨1=²ÈÉÏ£©//Ä¦ÍĞ³µ
+			pDatabuf[31]		|=	(youjiaotaban() << 6);			//ÓÒÌ¤°å£¨1=²ÈÉÏ£©//Ä¦ÍĞ³µ
 #endif
-			//*pDatabuf[31]		|=	(youmentaban(&SignalLine) << 7);	//1=ÓÍÃÅÌ¤°å 
+			//*pDatabuf[31]		|=	(youmentaban() << 7);	//1=ÓÍÃÅÌ¤°å 
 			
 			
 			pDatabuf[32]		=	FIRMWARE_NUM;			//³µÔØµ¥Æ¬»ú¹Ì¼şºÅ
 			//*pDatabuf[33]		=	0;							//·½ÏòÅÌ×ª½Ç
 
-			pDatabuf[34]		|=	(DBQ_LeftFront(&SignalLine)<<7);    //µ¥±ßÇÅ×óÇ°ÂÖĞÅºÅ    £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
-			pDatabuf[34]		|=	(DBQ_LeftRear(&SignalLine)<<6);     //µ¥±ßÇÅ×óºóÂÖĞÅºÅ    £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
-			pDatabuf[34]		|=	(DBQ_RightFront(&SignalLine)<<5);   //µ¥±ßÇÅÓÒÇ°ÂÖĞÅºÅ    £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
-			pDatabuf[34]		|=	(DBQ_RightRear(&SignalLine)<<4);    //µ¥±ßÇÅÓÒºóÂÖĞÅºÅ    £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
-			pDatabuf[34]		|=	(DBQ_LeftMiddle(&SignalLine)<<3);   //µ¥±ßÇÅ×ó¹Ò³µÂÖĞÅºÅ  £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
-			pDatabuf[34]		|=	(DBQ_RightMiddle(&SignalLine)<<2);  //µ¥±ßÇÅÓÒ¹Ò³µÂÖĞÅºÅ  £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
+			pDatabuf[34]		|=	(DBQ_LeftFront()<<7);    //µ¥±ßÇÅ×óÇ°ÂÖĞÅºÅ    £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
+			pDatabuf[34]		|=	(DBQ_LeftRear()<<6);     //µ¥±ßÇÅ×óºóÂÖĞÅºÅ    £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
+			pDatabuf[34]		|=	(DBQ_RightFront()<<5);   //µ¥±ßÇÅÓÒÇ°ÂÖĞÅºÅ    £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
+			pDatabuf[34]		|=	(DBQ_RightRear()<<4);    //µ¥±ßÇÅÓÒºóÂÖĞÅºÅ    £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
+			pDatabuf[34]		|=	(DBQ_LeftMiddle()<<3);   //µ¥±ßÇÅ×ó¹Ò³µÂÖĞÅºÅ  £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
+			pDatabuf[34]		|=	(DBQ_RightMiddle()<<2);  //µ¥±ßÇÅÓÒ¹Ò³µÂÖĞÅºÅ  £¨1=²»ÔÚÇÅÉÏ£¬0=ÔÚÇÅÉÏ£©
 			//*pDatabuf[34]		|=	((gaosujingshi()&0x01)<<1);  		//1=¸ßËÙ¾¯Ê¾±êÖ¾
 			//*pDatabuf[34]		|=	((gaosuanquan()&0x01)<<0);  		//1=¸ßËÙ°²È«ÇøÓò//ÎŞÎı¼ì²âÊ¹ÓÃ
 #ifdef  STC15W4K48S4	
@@ -1164,7 +1160,7 @@ void GetBaseBoardDataPack(u8 pDatabuf[], u16 lenth)
 			pDatabuf[53]		=		localid[5];
 			pDatabuf[54]		=		localid[6];
 
-			pDatabuf[55]		|=	(guanchayibiao(&SignalLine) << 0);//¹Û²ìÒÇ±íÅÌ
+			pDatabuf[55]		|=	(guanchayibiao() << 0);//¹Û²ìÒÇ±íÅÌ
 			
 			pDatabuf[lenth-2]		=	count++;    //Êı¾İ±êÇ©ÎªÊı¾İ³¤¶ÈµÄµ¹ÊıµÚ¶şÎ»,Ã¿´ÎÔö¼Ó1	
 			

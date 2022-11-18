@@ -13,36 +13,11 @@
 
 #ifdef  STC15W4K48S4	
 	xdata UsartRxTypeDef Rx[4];	
-//为节约内存，做预编译处理，仅将GPS的串口缓存分配512字节，其他为128个字节
-  #if (GPS_USART == USART1)
 	xdata u8 Rx1_Buffer[GPS_Rx_LENTH];
 	xdata u8 Rx2_Buffer[COM_Rx_LENTH];
 	xdata u8 Rx3_Buffer[COM_Rx_LENTH];
 	xdata u8 Rx4_Buffer[COM_Rx_LENTH];
 		
-  #elif (GPS_USART == USART2)
-	xdata u8 Rx1_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx2_Buffer[GPS_Rx_LENTH];
-	xdata u8 Rx3_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx4_Buffer[COM_Rx_LENTH];
-		
-	#elif (GPS_USART == USART3)
-	xdata u8 Rx1_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx2_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx3_Buffer[GPS_Rx_LENTH];
-	xdata u8 Rx4_Buffer[COM_Rx_LENTH];
-		
-	#elif (GPS_USART == USART4)
-	xdata u8 Rx1_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx2_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx3_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx4_Buffer[GPS_Rx_LENTH];
-	#else	
-	xdata u8 Rx1_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx2_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx3_Buffer[COM_Rx_LENTH];
-	xdata u8 Rx4_Buffer[COM_Rx_LENTH];
-	#endif
 #endif
 //========================================================================
 // 函数:char putchar(char ch) printf重定向函数
@@ -111,6 +86,7 @@ void BSP_Usart_Init(unsigned char USARTx,unsigned long bote)
 	{
 		return;
 	}
+	if(bote == DISABLE)  return;													//检查波特率，为DISABLE时，不初始化该串口
 	COMx_InitStructure.UART_BaudRate  = bote;		   	      //波特率, 一般 110 ~ 115200
 	COMx_InitStructure.UART_Interrupt = ENABLE;				    //中断允许,   ENABLE或DISABLE
 	USART_Configuration(USARTx, &COMx_InitStructure);		  //初始化串口1 USART1,USART2
@@ -133,6 +109,7 @@ u16 BSP_GetUsartRxBuffer(u8 USARTx,u8 *pRxBuffer,u16 Rxlenth)
 	{	
 		return 0;//返回0
 	}
+	//printf("BSP_GetUsartRxBuffer:USARTx = %b02d\r\n",USARTx);
 	
 	remaindlen = (u16)(Rx[USARTx-1].pEnd - Rx[USARTx-1].pIn) + 1;//计算剩余空间大小
 	

@@ -7,5 +7,8 @@
 
 void BSP_Init(void);
 
+void Cmd_Start_Callback(void);
+void Cmd_Stop_Callback(void);
+
 
 #endif

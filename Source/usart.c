@@ -3,44 +3,18 @@
 #include <string.h>
 
 #ifdef  STC12C5A60S2	
-xdata volatile MessageQueue  Msg_RX[2];
-xdata volatile u8 Msg_Rx1Buffer[Q_BUF_LENTH];			//缓存区
-xdata volatile u8 Msg_Rx2Buffer[Q_BUF_LENTH];			//缓存区
+xdata MessageQueue  Msg_RX[2];
+xdata u8 Msg_Rx1Buffer[Q_BUF_LENTH];			//缓存区
+xdata u8 Msg_Rx2Buffer[Q_BUF_LENTH];			//缓存区
 #endif
 
 #ifdef  STC15W4K48S4	
 xdata volatile MessageQueue  Msg_RX[4];
 //为节约内存，做预编译处理，仅将GPS的串口缓存分配512字节，其他为128个字节
-  #if (GPS_USART == USART1)
-		xdata volatile u8 Msg_Rx1Buffer[Q_GPS_BUF_LENTH];	//缓存区
-		xdata volatile u8 Msg_Rx2Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx3Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx4Buffer[Q_BUF_LENTH];			//缓存区
-		
-  #elif (GPS_USART == USART2)
-		xdata volatile u8 Msg_Rx1Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx2Buffer[Q_GPS_BUF_LENTH];	//缓存区
-		xdata volatile u8 Msg_Rx3Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx4Buffer[Q_BUF_LENTH];			//缓存区
-		
-	#elif (GPS_USART == USART3)
-		xdata volatile u8 Msg_Rx1Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx2Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx3Buffer[Q_GPS_BUF_LENTH];	//缓存区
-		xdata volatile u8 Msg_Rx4Buffer[Q_BUF_LENTH];			//缓存区
-		
-	#elif (GPS_USART == USART4)
-		xdata volatile u8 Msg_Rx1Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx2Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx3Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx4Buffer[Q_GPS_BUF_LENTH];	//缓存区
-	#else
-		xdata volatile u8 Msg_Rx1Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx2Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx3Buffer[Q_BUF_LENTH];			//缓存区
-		xdata volatile u8 Msg_Rx4Buffer[Q_BUF_LENTH];			//缓存区
-	#endif
-		
+xdata u8 Msg_Rx1Buffer[Q_GPS_BUF_LENTH];	//缓存区
+xdata u8 Msg_Rx2Buffer[Q_BUF_LENTH];			//缓存区
+xdata u8 Msg_Rx3Buffer[Q_BUF_LENTH];			//缓存区
+xdata u8 Msg_Rx4Buffer[Q_BUF_LENTH];			//缓存区	
 #endif
 
 //========================================================================
@@ -345,17 +319,17 @@ u16 USART_ReadRxBuffer(u8 UARTx, u8 *pbuffer, u16 Buflenth)
 	return lenth;
 		
 }
+
+
 //========================================================================
-// 函数: void USART_ClearMsgQueueRxBuffer(u8 UARTx)
-// 描述: 清理串口缓存数据
-// 参数: u8 UARTx需要清理的串口号
+// 函数: void USART_CloseInterrupt(u8 UARTx)
+// 描述: 关闭串口中断
+// 参数: u8 UARTx需要关闭的串口号
 // 返回: 
 // 版本: V1.0, 2022-10-17
 //========================================================================
-void USART_ClearMsgQueueRxBuffer(u8 UARTx)
+void USART_CloseInterrupt(u8 UARTx)
 {
-			u16 Bufferlenth = 0;
-	
 			switch(UARTx)
 			{
 				case USART1:
@@ -374,18 +348,18 @@ void USART_ClearMsgQueueRxBuffer(u8 UARTx)
 #endif
 				default:
 										return;
-			}
-	
-	    Bufferlenth = Msg_RX[UARTx-1].pEnd - Msg_RX[UARTx-1].pStart +1;//计算缓存区的长度
-	
-			memset(Msg_RX[UARTx-1].pStart,0,Bufferlenth);//清理缓存
-	
-			Msg_RX[UARTx-1].pIn = Msg_RX[UARTx-1].pStart;//复位数据入口指针
-	
-			Msg_RX[UARTx-1].pOut = Msg_RX[UARTx-1].pStart;//复位数据出口指针
-	
-			Msg_RX[UARTx-1].overflow_flag = 0;//溢出标志清零
-	
+			}	
+}
+
+//========================================================================
+// 函数: void USART_OpenInterrupt(u8 UARTx)
+// 描述: 开启串口中断
+// 参数: u8 UARTx需要开启的串口号
+// 返回: 
+// 版本: V1.0, 2022-10-17
+//========================================================================
+void USART_OpenInterrupt(u8 UARTx)
+{
 			switch(UARTx)
 			{
 				case USART1:
@@ -405,5 +379,35 @@ void USART_ClearMsgQueueRxBuffer(u8 UARTx)
 										return;
 #endif
 			}
+}
+//========================================================================
+// 函数: void USART_ClearMsgQueueRxBuffer(u8 UARTx)
+// 描述: 清理串口缓存数据
+// 参数: u8 UARTx需要清理的串口号
+// 返回: 
+// 版本: V1.0, 2022-10-17
+//========================================================================
+void USART_ClearMsgQueueRxBuffer(u8 UARTx)
+{
+			u16 Bufferlenth = 0;
+	
+	    if(UARTx != DISABLE)
+			{
+	
+				USART_CloseInterrupt(UARTx);//关闭中断
+
+				Bufferlenth = Msg_RX[UARTx-1].pEnd - Msg_RX[UARTx-1].pStart +1;//计算缓存区的长度
+		
+				memset(Msg_RX[UARTx-1].pStart,0,Bufferlenth);//清理缓存
+		
+				Msg_RX[UARTx-1].pIn = Msg_RX[UARTx-1].pStart;//复位数据入口指针
+		
+				Msg_RX[UARTx-1].pOut = Msg_RX[UARTx-1].pStart;//复位数据出口指针
+		
+				Msg_RX[UARTx-1].overflow_flag = 0;//溢出标志清零
+		
+				USART_OpenInterrupt(UARTx);//开启中断
+			}
+	
 		
 }

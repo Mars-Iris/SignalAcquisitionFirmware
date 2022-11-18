@@ -6,6 +6,29 @@
 
 //第一扇区0x0000--0x1ff
 //第二扇区0x0200--0x3ff
+
+#define FLASH_ADDR_UPLOAD_COM     		0x0001      //主板与上位机的连接串口号
+#define FLASH_ADDR_UPLOAD_BOTE  			0x0002    	//主板与上位机的连接串口波特率
+#define FLASH_ADDR_GPS_COM     				0x0003      //主板与GPS的连接串口号
+#define FLASH_ADDR_GPS_BOTE  					0x0004    	//主板与GPS的连接串口波特率
+
+#define FLASH_ADDR_BUMP_HS_COM     		0x0005      //主板与高森碰杆传感器连接串口号
+#define FLASH_ADDR_BUMP_HS_BOTE  			0x0006    	//主板与高森碰杆传感器连接串口波特率
+#define FLASH_ADDR_BUMP_24G_COM     	0x0007      //主板与2.4G碰杆传感器连接串口号
+#define FLASH_ADDR_BUMP_24G_BOTE  		0x0008    	//主板与2.4G碰杆传感器连接串口波特率
+
+
+#define FLASH_ADDR_TILT_ALL_COM     	0x0009      //主板与倾角传感器的连接串口号(数据汇总后对接)
+#define FLASH_ADDR_TILT_Q_COM     		0x000A      //主板与前轴倾角传感器的连接串口号（单传感器连接）
+#define FLASH_ADDR_TILT_H_COM  				0x000B    	//主板与后轴倾角传感器的连接串口号（单传感器连接）
+#define FLASH_ADDR_TILT_G_COM     		0x000C      //主板与挂轴倾角传感器的连接串口号（单传感器连接）
+#define FLASH_ADDR_TILT_MTC_COM  			0x000D    	//主板与二轮摩托车倾角传感器的连接串口号（单传感器连接）
+#define FLASH_ADDR_TILT_BOTE  				0x000E    	//主板与倾角传感器的连接串口波特率(倾角传感器波特率配置相同)
+
+#define FLASH_ADDR_NETWORK_COM  			0x000F    	//主板网口模块功能是否启用
+
+
+
 #define FLASH_ADDR_ZYTJ_PIN     			0x0020      //座椅信号输入管脚位置
 #define FLASH_ADDR_ZYTJ_MODEL  				0x0021      //座椅开关（调节）输入模式
 #define FLASH_ADDR_ZYTJ_RISING_ED     0x0022      //座椅开关（调节）上升沿消抖
@@ -308,10 +331,10 @@
 #define FLASH_ADDR_END                0x01ff     	//结束地址
 
 
-
-
+//指针常量，指向flash数据在内存中的首地址，全局变量可在各个文件中使用
+extern xdata FlashParameterTypeDef const *const pFlash;
    
-void BSP_GetFlashConfig(SignalLineTypeDef *pSignalLine);
+void BSP_GetFlashConfig();
 void BSP_FlashWriteByte(u16 addr, u8 value);
 
 

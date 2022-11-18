@@ -8,8 +8,6 @@
 
 #ifdef  STC15W4K48S4
 
-#if GPS_USART
-
 xdata	u8 GpsRxBuffer[128]="";	//Ω” ’ª∫≥Â
 
 u8 code CMD_GpsConfFail[]	=	{0x53,0x5A,0x43,0x47};//Gps≈‰÷√ ß∞‹÷∏¡Ó
@@ -301,6 +299,4 @@ void GPS_EnterConfiguration(u8 mode)
 		
 									
 }
-#endif
-
 #endif

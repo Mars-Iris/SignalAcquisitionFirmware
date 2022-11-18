@@ -35,6 +35,14 @@ typedef struct
 //}FormatRxBufferTypeDef;
 //#endif
 
+
+typedef struct 
+{ 
+	u8 com;  		//串口号
+	u8 bote;  	//波特率
+
+}UsartConfTypeDef;  //震动传感器
+
 void USART_SendData(u8 USARTx,u8 ch);
 void USART_Sendbuffer(u8 USARTx,const u8 *ch, u8 lenth);
 void BSP_Usart_Init(unsigned char USARTx,unsigned long bote); //串口初始化函数

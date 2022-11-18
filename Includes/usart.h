@@ -68,6 +68,8 @@ typedef struct
 void USART_Configuration(unsigned char UARTx, COMx_InitDefine *COMx);
 u16 USART_ReadRxBuffer(u8 UARTx, u8 *pbuffer, u16 Buflenth);
 void USART_ClearMsgQueueRxBuffer(u8 UARTx);
+void USART_CloseInterrupt(u8 UARTx);
+void USART_OpenInterrupt(u8 UARTx);
 	
 	
 #endif

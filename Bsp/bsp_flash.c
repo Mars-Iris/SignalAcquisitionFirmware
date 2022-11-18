@@ -1,258 +1,303 @@
 #include "./User/includes.h"
 
-xdata SignalLineTypeDef FlashCacheBuf;//用于修改flash值时，缓存同扇区的数据
+xdata FlashParameterTypeDef FlashCacheBuf;//用于储存FLASH中的的数据（将flash的数据读到SRAM中）
+
+//指针常量，指向flash数据在内存中的首地址，全局变量可在各个文件中使用
+xdata FlashParameterTypeDef const *const pFlash  =  &FlashCacheBuf;
 //========================================================================
-// 函数:BSP_GetFlashConfig(SignalLineTotalTypeDef *pSignalLine)
+// 函数:BSP_GetFlashConfig(SignalLineTotalTypeDef *pFlash)
 // 描述: 读取flash里面的配置参数
-// 参数：*pSignalLine指向需要保存数据的内存首地址3
+// 参数：*pFlash指向需要保存数据的内存首地址3
 // 版本: V1.0, 2022-10-17
 //========================================================================
-void BSP_GetFlashConfig(SignalLineTypeDef *pSignalLine)
+void BSP_GetFlashConfig(void)
 {
+
+			//主板与上位机的连接串口号
+			pFlash->upload.com       			=     IapReadByte(FLASH_ADDR_UPLOAD_COM);     		//主板与上位机的连接串口号
+			pFlash->upload.bote         	=     IapReadByte(FLASH_ADDR_UPLOAD_BOTE);      	//主板与上位机的连接串口波特率
+	
+			//主板与上位机的连接串口号
+			pFlash->gps.com       				=     IapReadByte(FLASH_ADDR_GPS_COM);     				//主板与GPS的连接串口号
+			pFlash->gps.bote          		=     IapReadByte(FLASH_ADDR_GPS_BOTE);      			//主板与GPS的连接串口波特率
+	
+	
+			//主板与高森碰杆传感器连接的串口
+			pFlash->bump_hs.com       		=     IapReadByte(FLASH_ADDR_BUMP_HS_COM);     		//主板与上位机的连接串口号
+			pFlash->bump_hs.bote         	=     IapReadByte(FLASH_ADDR_BUMP_HS_BOTE);      	//主板与上位机的连接串口波特率
+	
+			//主板与2.4G碰杆传感器连接的串口
+			pFlash->bump_24g.com       		=     IapReadByte(FLASH_ADDR_BUMP_24G_COM);     	//主板与2.4G碰杆传感器连接串口号
+			pFlash->bump_24g.bote        	=     IapReadByte(FLASH_ADDR_BUMP_24G_BOTE);      //主板与2.4G碰杆传感器连接串口波特率
+	
+	
+			//主板与倾角连接的串口（汇总后上传）
+			pFlash->titl_all.com       		=     IapReadByte(FLASH_ADDR_TILT_ALL_COM);    		//主板与倾角连接的串口（汇总后上传）串口号
+			pFlash->titl_all.bote       	=     IapReadByte(FLASH_ADDR_TILT_BOTE);      		//主板与倾角连接的串口波特率
+	
+			//主板与前轴倾角传感器的连接串口号（单传感器连接）
+			pFlash->titl_q.com       			=     IapReadByte(FLASH_ADDR_TILT_Q_COM);     		//主板与前轴倾角传感器的连接串口号（单传感器连接）
+			pFlash->titl_q.bote       		=     IapReadByte(FLASH_ADDR_TILT_BOTE);      	  //主板与倾角连接的串口波特率
+			
+			//主板与后轴倾角传感器的连接串口号（单传感器连接）
+			pFlash->titl_h.com       			=     IapReadByte(FLASH_ADDR_TILT_H_COM);     		//主板与后轴倾角传感器的连接串口号（单传感器连接）
+			pFlash->titl_h.bote       		=     IapReadByte(FLASH_ADDR_TILT_BOTE);      	  //主板与倾角连接的串口波特率
+			
+			//主板与挂轴倾角传感器的连接串口号（单传感器连接）
+			pFlash->titl_g.com       			=     IapReadByte(FLASH_ADDR_TILT_G_COM);     		//主板与挂轴倾角传感器的连接串口号（单传感器连接）
+			pFlash->titl_g.bote       		=     IapReadByte(FLASH_ADDR_TILT_BOTE);      	  //主板与倾角连接的串口波特率
+			
+			//主板与二轮摩托车倾角传感器的连接串口号（单传感器连接）
+			pFlash->titl_mtc.com       		=     IapReadByte(FLASH_ADDR_TILT_MTC_COM);     	//主板与二轮摩托车倾角传感器的连接串口号（单传感器连接）
+			pFlash->titl_mtc.bote       	=     IapReadByte(FLASH_ADDR_TILT_BOTE);      	  //主板与倾角连接的串口波特率
+			
+			//主板网口模块
+			pFlash->network.com       		=     IapReadByte(FLASH_ADDR_NETWORK_COM);     		//主板网络模块是否启用
+	
 			//座椅开关（调节）
-			pSignalLine->zytj.pin       		 	=     IapReadByte(FLASH_ADDR_ZYTJ_PIN);     			//座椅开关（调节）输入管脚位置
-			pSignalLine->zytj.modle           =     IapReadByte(FLASH_ADDR_ZYTJ_MODEL);      		//座椅开关（调节）输入模式
-			pSignalLine->zytj.rising_ed     	=     IapReadByte(FLASH_ADDR_ZYTJ_RISING_ED);    	//座椅开关（调节）上升沿消抖
-			pSignalLine->zytj.falling_ed     	=     IapReadByte(FLASH_ADDR_ZYTJ_FALLING_ED);  	//座椅开关（调节）下降沿消抖
-			pSignalLine->zytj.type     				=     IapReadByte(FLASH_ADDR_ZYTJ_TYPE);  				//座椅开关（调节）评判类型和方式
+			pFlash->zytj.pin       		 		=     IapReadByte(FLASH_ADDR_ZYTJ_PIN);     			//座椅开关（调节）输入管脚位置
+			pFlash->zytj.modle           	=     IapReadByte(FLASH_ADDR_ZYTJ_MODEL);      		//座椅开关（调节）输入模式
+			pFlash->zytj.rising_ed     		=     IapReadByte(FLASH_ADDR_ZYTJ_RISING_ED);    	//座椅开关（调节）上升沿消抖
+			pFlash->zytj.falling_ed     	=     IapReadByte(FLASH_ADDR_ZYTJ_FALLING_ED);  	//座椅开关（调节）下降沿消抖
+			pFlash->zytj.type     				=     IapReadByte(FLASH_ADDR_ZYTJ_TYPE);  				//座椅开关（调节）评判类型和方式
 			//手刹开关
-	    pSignalLine->ss.pin               =     IapReadByte(FLASH_ADDR_SS_PIN);           	//手刹开关输入管脚位置
-			pSignalLine->ss.modle             =     IapReadByte(FLASH_ADDR_SS_MODEL);        		//手刹开关输入模式
-			pSignalLine->ss.rising_ed         =     IapReadByte(FLASH_ADDR_SS_RISING_ED);      	//手刹开关上升沿消抖
-			pSignalLine->ss.falling_ed        =     IapReadByte(FLASH_ADDR_SS_FALLING_ED);    	//手刹开关下降沿消抖
-			pSignalLine->ss.type     					=     IapReadByte(FLASH_ADDR_SS_TYPE);  					//手刹开关评判类型和方式
+	    pFlash->ss.pin               	=     IapReadByte(FLASH_ADDR_SS_PIN);           	//手刹开关输入管脚位置
+			pFlash->ss.modle             	=     IapReadByte(FLASH_ADDR_SS_MODEL);        		//手刹开关输入模式
+			pFlash->ss.rising_ed         	=     IapReadByte(FLASH_ADDR_SS_RISING_ED);      	//手刹开关上升沿消抖
+			pFlash->ss.falling_ed        	=     IapReadByte(FLASH_ADDR_SS_FALLING_ED);    	//手刹开关下降沿消抖
+			pFlash->ss.type     					=     IapReadByte(FLASH_ADDR_SS_TYPE);  					//手刹开关评判类型和方式
 			//左转开关
-		  pSignalLine->zz.pin               =     IapReadByte(FLASH_ADDR_ZZ_PIN);           	//左转开关输入管脚位置
-			pSignalLine->zz.modle             =     IapReadByte(FLASH_ADDR_ZZ_MODEL);        		//左转开关输入模式
-			pSignalLine->zz.rising_ed         =     IapReadByte(FLASH_ADDR_ZZ_RISING_ED);      	//左转开关上升沿消抖
-			pSignalLine->zz.falling_ed        =     IapReadByte(FLASH_ADDR_ZZ_FALLING_ED);    	//左转开关下降沿消抖
-			pSignalLine->zz.type     					=     IapReadByte(FLASH_ADDR_ZZ_TYPE);  					//左转开关评判类型和方式
+		  pFlash->zz.pin               	=     IapReadByte(FLASH_ADDR_ZZ_PIN);           	//左转开关输入管脚位置
+			pFlash->zz.modle             	=     IapReadByte(FLASH_ADDR_ZZ_MODEL);        		//左转开关输入模式
+			pFlash->zz.rising_ed         	=     IapReadByte(FLASH_ADDR_ZZ_RISING_ED);      	//左转开关上升沿消抖
+			pFlash->zz.falling_ed        	=     IapReadByte(FLASH_ADDR_ZZ_FALLING_ED);    	//左转开关下降沿消抖
+			pFlash->zz.type     					=     IapReadByte(FLASH_ADDR_ZZ_TYPE);  					//左转开关评判类型和方式
 			//右转开关
-			pSignalLine->yz.pin               =     IapReadByte(FLASH_ADDR_YZ_PIN);           	//右转开关输入管脚位置
-			pSignalLine->yz.modle             =     IapReadByte(FLASH_ADDR_YZ_MODEL);        		//右转开关输入模式
-			pSignalLine->yz.rising_ed         =     IapReadByte(FLASH_ADDR_YZ_RISING_ED);      	//右转开关上升沿消抖
-			pSignalLine->yz.falling_ed        =     IapReadByte(FLASH_ADDR_YZ_FALLING_ED);    	//右转开关下降沿消抖
-			pSignalLine->yz.type     					=     IapReadByte(FLASH_ADDR_YZ_TYPE);  					//右转开关评判类型和方式
+			pFlash->yz.pin               	=     IapReadByte(FLASH_ADDR_YZ_PIN);           	//右转开关输入管脚位置
+			pFlash->yz.modle             	=     IapReadByte(FLASH_ADDR_YZ_MODEL);        		//右转开关输入模式
+			pFlash->yz.rising_ed         	=     IapReadByte(FLASH_ADDR_YZ_RISING_ED);      	//右转开关上升沿消抖
+			pFlash->yz.falling_ed        	=     IapReadByte(FLASH_ADDR_YZ_FALLING_ED);    	//右转开关下降沿消抖
+			pFlash->yz.type     					=     IapReadByte(FLASH_ADDR_YZ_TYPE);  					//右转开关评判类型和方式
 			//远光开关
-			pSignalLine->yg.pin               =     IapReadByte(FLASH_ADDR_YG_PIN);           	//远光开关输入管脚位置
-			pSignalLine->yg.modle             =     IapReadByte(FLASH_ADDR_YG_MODEL);        		//远光开关输入模式
-			pSignalLine->yg.rising_ed         =     IapReadByte(FLASH_ADDR_YG_RISING_ED);      	//远光开关上升沿消抖
-			pSignalLine->yg.falling_ed        =     IapReadByte(FLASH_ADDR_YG_FALLING_ED);    	//远光开关下降沿消抖
-			pSignalLine->yg.type     					=     IapReadByte(FLASH_ADDR_YG_TYPE);  					//远光开关评判类型和方式
+			pFlash->yg.pin               	=     IapReadByte(FLASH_ADDR_YG_PIN);           	//远光开关输入管脚位置
+			pFlash->yg.modle             	=     IapReadByte(FLASH_ADDR_YG_MODEL);        		//远光开关输入模式
+			pFlash->yg.rising_ed         	=     IapReadByte(FLASH_ADDR_YG_RISING_ED);      	//远光开关上升沿消抖
+			pFlash->yg.falling_ed       	=     IapReadByte(FLASH_ADDR_YG_FALLING_ED);    	//远光开关下降沿消抖
+			pFlash->yg.type     					=     IapReadByte(FLASH_ADDR_YG_TYPE);  					//远光开关评判类型和方式
 			//近光开关
-			pSignalLine->jg.pin               =     IapReadByte(FLASH_ADDR_JG_PIN);           	//近光开关输入管脚位置
-			pSignalLine->jg.modle             =     IapReadByte(FLASH_ADDR_JG_MODEL);        		//近光开关输入模式
-			pSignalLine->jg.rising_ed         =     IapReadByte(FLASH_ADDR_JG_RISING_ED);       //近光开关上升沿消抖
-			pSignalLine->jg.falling_ed        =     IapReadByte(FLASH_ADDR_JG_FALLING_ED);    	//近光开关下降沿消抖
-			pSignalLine->jg.type     					=     IapReadByte(FLASH_ADDR_JG_TYPE);  					//近光开关评判类型和方式
+			pFlash->jg.pin               	=     IapReadByte(FLASH_ADDR_JG_PIN);           	//近光开关输入管脚位置
+			pFlash->jg.modle             	=     IapReadByte(FLASH_ADDR_JG_MODEL);        		//近光开关输入模式
+			pFlash->jg.rising_ed         	=     IapReadByte(FLASH_ADDR_JG_RISING_ED);       //近光开关上升沿消抖
+			pFlash->jg.falling_ed        	=     IapReadByte(FLASH_ADDR_JG_FALLING_ED);    	//近光开关下降沿消抖
+			pFlash->jg.type     					=     IapReadByte(FLASH_ADDR_JG_TYPE);  					//近光开关评判类型和方式
 			//离合开关
-		  pSignalLine->lh.pin               =     IapReadByte(FLASH_ADDR_LH_PIN);           	//离合开关输入管脚位置
-			pSignalLine->lh.modle             =     IapReadByte(FLASH_ADDR_LH_MODEL);        		//离合开关输入模式
-			pSignalLine->lh.rising_ed         =     IapReadByte(FLASH_ADDR_LH_RISING_ED);      	//离合开关上升沿消抖
-			pSignalLine->lh.falling_ed        =     IapReadByte(FLASH_ADDR_LH_FALLING_ED);    	//离合开关下降沿消抖
-			pSignalLine->lh.type     					=     IapReadByte(FLASH_ADDR_LH_TYPE);  					//离合开关评判类型和方式
+		  pFlash->lh.pin               	=     IapReadByte(FLASH_ADDR_LH_PIN);           	//离合开关输入管脚位置
+			pFlash->lh.modle             	=     IapReadByte(FLASH_ADDR_LH_MODEL);        		//离合开关输入模式
+			pFlash->lh.rising_ed         	=     IapReadByte(FLASH_ADDR_LH_RISING_ED);      	//离合开关上升沿消抖
+			pFlash->lh.falling_ed       	=     IapReadByte(FLASH_ADDR_LH_FALLING_ED);    	//离合开关下降沿消抖
+			pFlash->lh.type     					=     IapReadByte(FLASH_ADDR_LH_TYPE);  					//离合开关评判类型和方式
 			//脚刹开关
-		  pSignalLine->js.pin               =     IapReadByte(FLASH_ADDR_JS_PIN);             //脚刹开关输入管脚位置
-			pSignalLine->js.modle             =     IapReadByte(FLASH_ADDR_JS_MODEL);           //脚刹开关输入模式
-			pSignalLine->js.rising_ed         =     IapReadByte(FLASH_ADDR_JS_RISING_ED);       //脚刹开关上升沿消抖
-			pSignalLine->js.falling_ed        =     IapReadByte(FLASH_ADDR_JS_FALLING_ED);      //脚刹开关下降沿消抖
-			pSignalLine->js.type     					=     IapReadByte(FLASH_ADDR_JS_TYPE);  					//脚刹开关评判类型和方式
+		  pFlash->js.pin               	=     IapReadByte(FLASH_ADDR_JS_PIN);             //脚刹开关输入管脚位置
+			pFlash->js.modle             	=     IapReadByte(FLASH_ADDR_JS_MODEL);           //脚刹开关输入模式
+			pFlash->js.rising_ed         	=     IapReadByte(FLASH_ADDR_JS_RISING_ED);       //脚刹开关上升沿消抖
+			pFlash->js.falling_ed        	=     IapReadByte(FLASH_ADDR_JS_FALLING_ED);      //脚刹开关下降沿消抖
+			pFlash->js.type     					=     IapReadByte(FLASH_ADDR_JS_TYPE);  					//脚刹开关评判类型和方式
 			//熄火开关
-	    pSignalLine->xh.pin               =     IapReadByte(FLASH_ADDR_XH_PIN);           	//熄火开关输入管脚位置
-			pSignalLine->xh.modle             =     IapReadByte(FLASH_ADDR_XH_MODEL);        		//熄火开关输入模式
-			pSignalLine->xh.rising_ed         =     IapReadByte(FLASH_ADDR_XH_RISING_ED);      	//熄火开关上升沿消抖
-			pSignalLine->xh.falling_ed        =     IapReadByte(FLASH_ADDR_XH_FALLING_ED);    	//熄火开关下降沿消抖
-			pSignalLine->xh.type              =     IapReadByte(FLASH_ADDR_XH_TYPE);          	//熄火开关评判方式
+	    pFlash->xh.pin               	=     IapReadByte(FLASH_ADDR_XH_PIN);           	//熄火开关输入管脚位置
+			pFlash->xh.modle             	=     IapReadByte(FLASH_ADDR_XH_MODEL);        		//熄火开关输入模式
+			pFlash->xh.rising_ed         	=     IapReadByte(FLASH_ADDR_XH_RISING_ED);      	//熄火开关上升沿消抖
+			pFlash->xh.falling_ed        	=     IapReadByte(FLASH_ADDR_XH_FALLING_ED);    	//熄火开关下降沿消抖
+			pFlash->xh.type              	=     IapReadByte(FLASH_ADDR_XH_TYPE);          	//熄火开关评判方式
 			//启动开关
-		  pSignalLine->qd.pin               =     IapReadByte(FLASH_ADDR_QD_PIN);             //启动开关输入管脚位置
-			pSignalLine->qd.modle             =     IapReadByte(FLASH_ADDR_QD_MODEL);           //启动开关输入模式
-			pSignalLine->qd.rising_ed         =     IapReadByte(FLASH_ADDR_QD_RISING_ED);      	//启动开关上升沿消抖
-			pSignalLine->qd.falling_ed        =     IapReadByte(FLASH_ADDR_QD_FALLING_ED);    	//启动开关下降沿消抖
-			pSignalLine->qd.type              =     IapReadByte(FLASH_ADDR_QD_TYPE);          	//启动方式	
+		  pFlash->qd.pin               	=     IapReadByte(FLASH_ADDR_QD_PIN);             //启动开关输入管脚位置
+			pFlash->qd.modle             	=     IapReadByte(FLASH_ADDR_QD_MODEL);           //启动开关输入模式
+			pFlash->qd.rising_ed         	=     IapReadByte(FLASH_ADDR_QD_RISING_ED);      	//启动开关上升沿消抖
+			pFlash->qd.falling_ed        	=     IapReadByte(FLASH_ADDR_QD_FALLING_ED);    	//启动开关下降沿消抖
+			pFlash->qd.type              	=     IapReadByte(FLASH_ADDR_QD_TYPE);          	//启动方式	
 			//安全带开关
-			pSignalLine->aqd.pin              =     IapReadByte(FLASH_ADDR_AQD_PIN);           	//安全带开关输入管脚位置
-			pSignalLine->aqd.modle            =     IapReadByte(FLASH_ADDR_AQD_MODEL);        	//安全带开关输入模式
-			pSignalLine->aqd.rising_ed        =     IapReadByte(FLASH_ADDR_AQD_RISING_ED);      //安全带开关上升沿消抖
-			pSignalLine->aqd.falling_ed       =     IapReadByte(FLASH_ADDR_AQD_FALLING_ED);    	//安全带开关下降沿消抖
-			pSignalLine->aqd.type     				=     IapReadByte(FLASH_ADDR_AQD_TYPE);  					//安全带开关评判类型和方式
+			pFlash->aqd.pin             	=     IapReadByte(FLASH_ADDR_AQD_PIN);           	//安全带开关输入管脚位置
+			pFlash->aqd.modle            	=     IapReadByte(FLASH_ADDR_AQD_MODEL);        	//安全带开关输入模式
+			pFlash->aqd.rising_ed        	=     IapReadByte(FLASH_ADDR_AQD_RISING_ED);      //安全带开关上升沿消抖
+			pFlash->aqd.falling_ed       	=     IapReadByte(FLASH_ADDR_AQD_FALLING_ED);    	//安全带开关下降沿消抖
+			pFlash->aqd.type     					=     IapReadByte(FLASH_ADDR_AQD_TYPE);  					//安全带开关评判类型和方式
 			//小灯开关
-			pSignalLine->xd.pin               =     IapReadByte(FLASH_ADDR_XD_PIN);           	//小灯开关输入管脚位置
-			pSignalLine->xd.modle             =     IapReadByte(FLASH_ADDR_XD_MODEL);        		//小灯开关输入模式
-			pSignalLine->xd.rising_ed         =     IapReadByte(FLASH_ADDR_XD_RISING_ED);      	//小灯开关上升沿消抖
-			pSignalLine->xd.falling_ed        =     IapReadByte(FLASH_ADDR_XD_FALLING_ED);    	//小灯开关下降沿消抖
-			pSignalLine->xd.type     					=     IapReadByte(FLASH_ADDR_XD_TYPE);  					//小灯开关评判类型和方式
+			pFlash->xd.pin               	=     IapReadByte(FLASH_ADDR_XD_PIN);           	//小灯开关输入管脚位置
+			pFlash->xd.modle             	=     IapReadByte(FLASH_ADDR_XD_MODEL);        		//小灯开关输入模式
+			pFlash->xd.rising_ed         	=     IapReadByte(FLASH_ADDR_XD_RISING_ED);      	//小灯开关上升沿消抖
+			pFlash->xd.falling_ed        	=     IapReadByte(FLASH_ADDR_XD_FALLING_ED);    	//小灯开关下降沿消抖
+			pFlash->xd.type     					=     IapReadByte(FLASH_ADDR_XD_TYPE);  					//小灯开关评判类型和方式
 			//喇叭开关
-		  pSignalLine->lb.pin               =     IapReadByte(FLASH_ADDR_LB_PIN);           	//喇叭开关输入管脚位置
-			pSignalLine->lb.modle             =     IapReadByte(FLASH_ADDR_LB_MODEL);        		//喇叭开关输入模式
-			pSignalLine->lb.rising_ed         =     IapReadByte(FLASH_ADDR_LB_RISING_ED);      	//喇叭开关上升沿消抖
-			pSignalLine->lb.falling_ed        =     IapReadByte(FLASH_ADDR_LB_FALLING_ED);    	//喇叭开关下降沿消抖
-			pSignalLine->lb.type     					=     IapReadByte(FLASH_ADDR_LB_TYPE);  					//喇叭开关评判类型和方式
+		  pFlash->lb.pin               	=     IapReadByte(FLASH_ADDR_LB_PIN);           	//喇叭开关输入管脚位置
+			pFlash->lb.modle             	=     IapReadByte(FLASH_ADDR_LB_MODEL);        		//喇叭开关输入模式
+			pFlash->lb.rising_ed         	=     IapReadByte(FLASH_ADDR_LB_RISING_ED);      	//喇叭开关上升沿消抖
+			pFlash->lb.falling_ed        	=     IapReadByte(FLASH_ADDR_LB_FALLING_ED);    	//喇叭开关下降沿消抖
+			pFlash->lb.type     					=     IapReadByte(FLASH_ADDR_LB_TYPE);  					//喇叭开关评判类型和方式
 			//车门开关
-		  pSignalLine->cm.pin               =     IapReadByte(FLASH_ADDR_CM_PIN);           	//车门开关输入管脚位置
-			pSignalLine->cm.modle             =     IapReadByte(FLASH_ADDR_CM_MODEL);        		//车门开关输入模式
-			pSignalLine->cm.rising_ed         =     IapReadByte(FLASH_ADDR_CM_RISING_ED);      	//车门开关上升沿消抖
-			pSignalLine->cm.falling_ed        =     IapReadByte(FLASH_ADDR_CM_FALLING_ED);    	//车门开关下降沿消抖
-			pSignalLine->cm.type     					=     IapReadByte(FLASH_ADDR_CM_TYPE);  					//车门开关评判类型和方式
+		  pFlash->cm.pin               	=     IapReadByte(FLASH_ADDR_CM_PIN);           	//车门开关输入管脚位置
+			pFlash->cm.modle             	=     IapReadByte(FLASH_ADDR_CM_MODEL);        		//车门开关输入模式
+			pFlash->cm.rising_ed         	=     IapReadByte(FLASH_ADDR_CM_RISING_ED);      	//车门开关上升沿消抖
+			pFlash->cm.falling_ed       	=     IapReadByte(FLASH_ADDR_CM_FALLING_ED);    	//车门开关下降沿消抖
+			pFlash->cm.type     					=     IapReadByte(FLASH_ADDR_CM_TYPE);  					//车门开关评判类型和方式
 			//挡位传感器
-		  pSignalLine->dw.pin1              =     IapReadByte(FLASH_ADDR_DW_PIN1);          	//挡位传感器信号线1输入管脚位置
-			pSignalLine->dw.pin2            	=     IapReadByte(FLASH_ADDR_DW_PIN2);       			//挡位传感器信号线2输入管脚位置
-			pSignalLine->dw.pin3         			=     IapReadByte(FLASH_ADDR_DW_PIN3);     				//挡位传感器信号线3输入管脚位置
-			pSignalLine->dw.pin4       				=     IapReadByte(FLASH_ADDR_DW_PIN4);   					//挡位传感器信号线4输入管脚位置
-			pSignalLine->dw.modle             =     IapReadByte(FLASH_ADDR_DW_MODEL);       		//挡位传感器输入模式
-			pSignalLine->dw.rising_ed         =     IapReadByte(FLASH_ADDR_DW_RISING_ED);     	//挡位传感器上升沿消抖
-			pSignalLine->dw.falling_ed        =     IapReadByte(FLASH_ADDR_DW_FALLING_ED);   		//挡位传感器下降沿消抖
-			pSignalLine->dw.type              =     IapReadByte(FLASH_ADDR_DW_TYPE);         		//挡位传感器类型
+		  pFlash->dw.pin1              	=     IapReadByte(FLASH_ADDR_DW_PIN1);          	//挡位传感器信号线1输入管脚位置
+			pFlash->dw.pin2            		=     IapReadByte(FLASH_ADDR_DW_PIN2);       			//挡位传感器信号线2输入管脚位置
+			pFlash->dw.pin3         			=     IapReadByte(FLASH_ADDR_DW_PIN3);     				//挡位传感器信号线3输入管脚位置
+			pFlash->dw.pin4       				=     IapReadByte(FLASH_ADDR_DW_PIN4);   					//挡位传感器信号线4输入管脚位置
+			pFlash->dw.modle             	=     IapReadByte(FLASH_ADDR_DW_MODEL);       		//挡位传感器输入模式
+			pFlash->dw.rising_ed        	=     IapReadByte(FLASH_ADDR_DW_RISING_ED);     	//挡位传感器上升沿消抖
+			pFlash->dw.falling_ed        	=     IapReadByte(FLASH_ADDR_DW_FALLING_ED);   		//挡位传感器下降沿消抖
+			pFlash->dw.type              	=     IapReadByte(FLASH_ADDR_DW_TYPE);         		//挡位传感器类型
 			//左后视开关
-			pSignalLine->zhs.pin              =     IapReadByte(FLASH_ADDR_ZHS_PIN);          	//左后视开关输入管脚位置
-			pSignalLine->zhs.modle            =     IapReadByte(FLASH_ADDR_ZHS_MODEL);       		//左后视开关输入模式
-			pSignalLine->zhs.rising_ed        =     IapReadByte(FLASH_ADDR_ZHS_RISING_ED);     	//左后视开关上升沿消抖
-			pSignalLine->zhs.falling_ed       =     IapReadByte(FLASH_ADDR_ZHS_FALLING_ED);   	//左后视开关下降沿消抖
-			pSignalLine->zhs.type     				=     IapReadByte(FLASH_ADDR_ZHS_TYPE);  					//左后视开关评判类型和方式
+			pFlash->zhs.pin              	=     IapReadByte(FLASH_ADDR_ZHS_PIN);          	//左后视开关输入管脚位置
+			pFlash->zhs.modle            	=     IapReadByte(FLASH_ADDR_ZHS_MODEL);       		//左后视开关输入模式
+			pFlash->zhs.rising_ed        	=     IapReadByte(FLASH_ADDR_ZHS_RISING_ED);     	//左后视开关上升沿消抖
+			pFlash->zhs.falling_ed      	=     IapReadByte(FLASH_ADDR_ZHS_FALLING_ED);   	//左后视开关下降沿消抖
+			pFlash->zhs.type     					=     IapReadByte(FLASH_ADDR_ZHS_TYPE);  					//左后视开关评判类型和方式
 			//内后视开关
-			pSignalLine->nhs.pin              =     IapReadByte(FLASH_ADDR_NHS_PIN);          	//内后视开关输入管脚位置
-			pSignalLine->nhs.modle            =     IapReadByte(FLASH_ADDR_NHS_MODEL);       		//内后视开关输入模式
-			pSignalLine->nhs.rising_ed        =     IapReadByte(FLASH_ADDR_NHS_RISING_ED);     	//内后视开关上升沿消抖
-			pSignalLine->nhs.falling_ed       =     IapReadByte(FLASH_ADDR_NHS_FALLING_ED);   	//内后视开关下降沿消抖
-			pSignalLine->nhs.type     				=     IapReadByte(FLASH_ADDR_NHS_TYPE);  					//内后视开关评判类型和方式
+			pFlash->nhs.pin              	=     IapReadByte(FLASH_ADDR_NHS_PIN);          	//内后视开关输入管脚位置
+			pFlash->nhs.modle            	=     IapReadByte(FLASH_ADDR_NHS_MODEL);       		//内后视开关输入模式
+			pFlash->nhs.rising_ed        	=     IapReadByte(FLASH_ADDR_NHS_RISING_ED);     	//内后视开关上升沿消抖
+			pFlash->nhs.falling_ed       	=     IapReadByte(FLASH_ADDR_NHS_FALLING_ED);   	//内后视开关下降沿消抖
+			pFlash->nhs.type     				 	=     IapReadByte(FLASH_ADDR_NHS_TYPE);  					//内后视开关评判类型和方式
 			//副刹开关
-			pSignalLine->fsc.pin              =     IapReadByte(FLASH_ADDR_FSC_PIN);           	//副刹开关输入管脚位置
-			pSignalLine->fsc.modle            =     IapReadByte(FLASH_ADDR_FSC_MODEL);        	//副刹开关输入模式
-			pSignalLine->fsc.rising_ed        =     IapReadByte(FLASH_ADDR_FSC_RISING_ED);      //副刹开关上升沿消抖
-			pSignalLine->fsc.falling_ed       =     IapReadByte(FLASH_ADDR_FSC_FALLING_ED);    	//副刹开关下降沿消抖
-			pSignalLine->fsc.type     				=     IapReadByte(FLASH_ADDR_FSC_TYPE);  					//副刹开关评判类型和方式
+			pFlash->fsc.pin              	=     IapReadByte(FLASH_ADDR_FSC_PIN);           	//副刹开关输入管脚位置
+			pFlash->fsc.modle            	=     IapReadByte(FLASH_ADDR_FSC_MODEL);        	//副刹开关输入模式
+			pFlash->fsc.rising_ed        	=     IapReadByte(FLASH_ADDR_FSC_RISING_ED);      //副刹开关上升沿消抖
+			pFlash->fsc.falling_ed       	=     IapReadByte(FLASH_ADDR_FSC_FALLING_ED);    	//副刹开关下降沿消抖
+			pFlash->fsc.type     					=     IapReadByte(FLASH_ADDR_FSC_TYPE);  					//副刹开关评判类型和方式
 			//雾灯开关
-			pSignalLine->wd.pin               =     IapReadByte(FLASH_ADDR_WD_PIN);           	//雾灯开关输入管脚位置
-			pSignalLine->wd.modle             =     IapReadByte(FLASH_ADDR_WD_MODEL);        		//雾灯开关输入模式
-			pSignalLine->wd.rising_ed         =     IapReadByte(FLASH_ADDR_WD_RISING_ED);      	//雾灯开关上升沿消抖
-			pSignalLine->wd.falling_ed        =     IapReadByte(FLASH_ADDR_WD_FALLING_ED);    	//雾灯开关下降沿消抖
-			pSignalLine->wd.type     					=     IapReadByte(FLASH_ADDR_WD_TYPE);  					//雾灯开关评判类型和方式
+			pFlash->wd.pin               	=     IapReadByte(FLASH_ADDR_WD_PIN);           	//雾灯开关输入管脚位置
+			pFlash->wd.modle             	=     IapReadByte(FLASH_ADDR_WD_MODEL);        		//雾灯开关输入模式
+			pFlash->wd.rising_ed         	=     IapReadByte(FLASH_ADDR_WD_RISING_ED);      	//雾灯开关上升沿消抖
+			pFlash->wd.falling_ed        	=     IapReadByte(FLASH_ADDR_WD_FALLING_ED);    	//雾灯开关下降沿消抖
+			pFlash->wd.type     					=     IapReadByte(FLASH_ADDR_WD_TYPE);  					//雾灯开关评判类型和方式
 			//雨刷开关
-	    pSignalLine->ys.pin               =     IapReadByte(FLASH_ADDR_YS_PIN);           	//雨刷开关输入管脚位置
-			pSignalLine->ys.modle             =     IapReadByte(FLASH_ADDR_YS_MODEL);        		//雨刷开关输入模式
-			pSignalLine->ys.rising_ed         =     IapReadByte(FLASH_ADDR_YS_RISING_ED);      	//雨刷开关上升沿消抖
-			pSignalLine->ys.falling_ed        =     IapReadByte(FLASH_ADDR_YS_FALLING_ED);    	//雨刷开关下降沿消抖
-			pSignalLine->ys.type     					=     IapReadByte(FLASH_ADDR_YS_TYPE);  					//雨刷开关评判类型和方式
+	    pFlash->ys.pin               	=     IapReadByte(FLASH_ADDR_YS_PIN);           	//雨刷开关输入管脚位置
+			pFlash->ys.modle             	=     IapReadByte(FLASH_ADDR_YS_MODEL);        		//雨刷开关输入模式
+			pFlash->ys.rising_ed         	=     IapReadByte(FLASH_ADDR_YS_RISING_ED);      	//雨刷开关上升沿消抖
+			pFlash->ys.falling_ed        	=     IapReadByte(FLASH_ADDR_YS_FALLING_ED);    	//雨刷开关下降沿消抖
+			pFlash->ys.type     					=     IapReadByte(FLASH_ADDR_YS_TYPE);  					//雨刷开关评判类型和方式
 			//倒车灯开关
-			pSignalLine->dcd.pin              =     IapReadByte(FLASH_ADDR_DCD_PIN);           	//倒车灯开关输入管脚位置
-			pSignalLine->dcd.modle            =     IapReadByte(FLASH_ADDR_DCD_MODEL);        	//倒车灯开关输入模式
-			pSignalLine->dcd.rising_ed        =     IapReadByte(FLASH_ADDR_DCD_RISING_ED);      //倒车灯开关上升沿消抖
-			pSignalLine->dcd.falling_ed       =     IapReadByte(FLASH_ADDR_DCD_FALLING_ED);    	//倒车灯开关下降沿消抖
-			pSignalLine->dcd.type     				=     IapReadByte(FLASH_ADDR_DCD_TYPE);  					//倒车灯开关评判类型和方式
+			pFlash->dcd.pin              	=     IapReadByte(FLASH_ADDR_DCD_PIN);           	//倒车灯开关输入管脚位置
+			pFlash->dcd.modle           	=     IapReadByte(FLASH_ADDR_DCD_MODEL);        	//倒车灯开关输入模式
+			pFlash->dcd.rising_ed        	=     IapReadByte(FLASH_ADDR_DCD_RISING_ED);      //倒车灯开关上升沿消抖
+			pFlash->dcd.falling_ed       	=     IapReadByte(FLASH_ADDR_DCD_FALLING_ED);    	//倒车灯开关下降沿消抖
+			pFlash->dcd.type     					=     IapReadByte(FLASH_ADDR_DCD_TYPE);  					//倒车灯开关评判类型和方式
 			//钥匙门开关
-			pSignalLine->ysm.pin            	=     IapReadByte(FLASH_ADDR_YSM_PIN);           	//钥匙门开关输入管脚位置
-			pSignalLine->ysm.modle          	=     IapReadByte(FLASH_ADDR_YSM_MODEL);       		//钥匙门开关输入模式
-			pSignalLine->ysm.rising_ed      	=     IapReadByte(FLASH_ADDR_YSM_RISING_ED);      //钥匙门开关上升沿消抖
-			pSignalLine->ysm.falling_ed    		=     IapReadByte(FLASH_ADDR_YSM_FALLING_ED);    	//钥匙门开关下降沿消抖
-			pSignalLine->ysm.type     				=     IapReadByte(FLASH_ADDR_YSM_TYPE);  					//钥匙门开关评判类型和方式
+			pFlash->ysm.pin            		=     IapReadByte(FLASH_ADDR_YSM_PIN);           	//钥匙门开关输入管脚位置
+			pFlash->ysm.modle          		=     IapReadByte(FLASH_ADDR_YSM_MODEL);       		//钥匙门开关输入模式
+			pFlash->ysm.rising_ed      		=     IapReadByte(FLASH_ADDR_YSM_RISING_ED);      //钥匙门开关上升沿消抖
+			pFlash->ysm.falling_ed    		=     IapReadByte(FLASH_ADDR_YSM_FALLING_ED);    	//钥匙门开关下降沿消抖
+			pFlash->ysm.type     					=     IapReadByte(FLASH_ADDR_YSM_TYPE);  					//钥匙门开关评判类型和方式
 			//绕车开关1
-		  pSignalLine->rc.pin1             	=     IapReadByte(FLASH_ADDR_RC_PIN1);           	//绕车1号开关输入管脚位置
-			pSignalLine->rc.pin2           		=     IapReadByte(FLASH_ADDR_RC_PIN2);        		//绕车2号开关输入管脚位置
-			pSignalLine->rc.pin3       				=     IapReadByte(FLASH_ADDR_RC_PIN3);      			//绕车3号开关输入管脚位置
-			pSignalLine->rc.modle           	=     IapReadByte(FLASH_ADDR_RC_MODEL);        		//绕车开关输入模式
-			pSignalLine->rc.rising_ed       	=     IapReadByte(FLASH_ADDR_RC_RISING_ED);      	//绕车开关上升沿消抖
-			pSignalLine->rc.falling_ed      	=     IapReadByte(FLASH_ADDR_RC_FALLING_ED);    	//绕车开关下降沿消抖
-			pSignalLine->rc.type            	=     IapReadByte(FLASH_ADDR_RC_TYPE);          	//绕车开关1类型
+		  pFlash->rc.pin1             	=     IapReadByte(FLASH_ADDR_RC_PIN1);           	//绕车1号开关输入管脚位置
+			pFlash->rc.pin2           		=     IapReadByte(FLASH_ADDR_RC_PIN2);        		//绕车2号开关输入管脚位置
+			pFlash->rc.pin3       				=     IapReadByte(FLASH_ADDR_RC_PIN3);      			//绕车3号开关输入管脚位置
+			pFlash->rc.modle           		=     IapReadByte(FLASH_ADDR_RC_MODEL);        		//绕车开关输入模式
+			pFlash->rc.rising_ed       		=     IapReadByte(FLASH_ADDR_RC_RISING_ED);      	//绕车开关上升沿消抖
+			pFlash->rc.falling_ed      		=     IapReadByte(FLASH_ADDR_RC_FALLING_ED);    	//绕车开关下降沿消抖
+			pFlash->rc.type            		=     IapReadByte(FLASH_ADDR_RC_TYPE);          	//绕车开关1类型
 			//闯动开关
-			pSignalLine->cd.pin            		=     IapReadByte(FLASH_ADDR_CD_PIN);            	//闯动开关输入管脚位置
-			pSignalLine->cd.modle         		=     IapReadByte(FLASH_ADDR_CD_MODEL);         	//闯动开关输入模式
-			pSignalLine->cd.rising_ed      		=     IapReadByte(FLASH_ADDR_CD_RISING_ED);       //闯动开关上升沿消抖
-			pSignalLine->cd.falling_ed     		=     IapReadByte(FLASH_ADDR_CD_FALLING_ED);     	//闯动开关下降沿消抖
-			pSignalLine->cd.type     					=     IapReadByte(FLASH_ADDR_CD_TYPE);  					//闯动开关评判类型和方式
+			pFlash->cd.pin            		=     IapReadByte(FLASH_ADDR_CD_PIN);            	//闯动开关输入管脚位置
+			pFlash->cd.modle         			=     IapReadByte(FLASH_ADDR_CD_MODEL);         	//闯动开关输入模式
+			pFlash->cd.rising_ed      		=     IapReadByte(FLASH_ADDR_CD_RISING_ED);       //闯动开关上升沿消抖
+			pFlash->cd.falling_ed     		=     IapReadByte(FLASH_ADDR_CD_FALLING_ED);     	//闯动开关下降沿消抖
+			pFlash->cd.type     					=     IapReadByte(FLASH_ADDR_CD_TYPE);  					//闯动开关评判类型和方式
 			//座椅开关（压力）
-		  pSignalLine->zyyl.pin             =     IapReadByte(FLASH_ADDR_ZYYL_PIN);          	//座椅开关（压力）输入管脚位置
-			pSignalLine->zyyl.modle           =     IapReadByte(FLASH_ADDR_ZYYL_MODEL);       	//座椅开关（压力）输入模式
-			pSignalLine->zyyl.rising_ed       =     IapReadByte(FLASH_ADDR_ZYYL_RISING_ED);     //座椅开关（压力）上升沿消抖
-			pSignalLine->zyyl.falling_ed      =     IapReadByte(FLASH_ADDR_ZYYL_FALLING_ED);   	//座椅开关下降沿消抖
-			pSignalLine->zyyl.type     				=     IapReadByte(FLASH_ADDR_ZYYL_TYPE);  				//座椅开关评判类型和方式
+		  pFlash->zyyl.pin             	=     IapReadByte(FLASH_ADDR_ZYYL_PIN);          	//座椅开关（压力）输入管脚位置
+			pFlash->zyyl.modle           	=     IapReadByte(FLASH_ADDR_ZYYL_MODEL);       	//座椅开关（压力）输入模式
+			pFlash->zyyl.rising_ed       	=     IapReadByte(FLASH_ADDR_ZYYL_RISING_ED);     //座椅开关（压力）上升沿消抖
+			pFlash->zyyl.falling_ed      	=     IapReadByte(FLASH_ADDR_ZYYL_FALLING_ED);   	//座椅开关下降沿消抖
+			pFlash->zyyl.type     				=     IapReadByte(FLASH_ADDR_ZYYL_TYPE);  				//座椅开关评判类型和方式
 			//观察仪表盘
-		  pSignalLine->gcybp.pin            =     IapReadByte(FLASH_ADDR_GCYBP_PIN);          //观察仪表盘输入管脚位置
-			pSignalLine->gcybp.modle          =     IapReadByte(FLASH_ADDR_GCYBP_MODEL);       	//观察仪表盘输入模式
-			pSignalLine->gcybp.rising_ed      =     IapReadByte(FLASH_ADDR_GCYBP_RISING_ED);    //观察仪表盘上升沿消抖
-			pSignalLine->gcybp.falling_ed     =     IapReadByte(FLASH_ADDR_GCYBP_FALLING_ED);   //观察仪表盘下降沿消抖
-			pSignalLine->gcybp.type     			=     IapReadByte(FLASH_ADDR_GCYBP_TYPE);  				//观察仪表盘评判类型和方式
+		  pFlash->gcybp.pin            	=     IapReadByte(FLASH_ADDR_GCYBP_PIN);          //观察仪表盘输入管脚位置
+			pFlash->gcybp.modle          	=     IapReadByte(FLASH_ADDR_GCYBP_MODEL);       	//观察仪表盘输入模式
+			pFlash->gcybp.rising_ed      	=     IapReadByte(FLASH_ADDR_GCYBP_RISING_ED);    //观察仪表盘上升沿消抖
+			pFlash->gcybp.falling_ed     	=     IapReadByte(FLASH_ADDR_GCYBP_FALLING_ED);   //观察仪表盘下降沿消抖
+			pFlash->gcybp.type     				=     IapReadByte(FLASH_ADDR_GCYBP_TYPE);  				//观察仪表盘评判类型和方式
 			//转速
-			pSignalLine->zs.pin            		=     IapReadByte(FLASH_ADDR_ZS_PIN);         		 //转速输入管脚位置
-			pSignalLine->zs.min          			=     IapReadByte(FLASH_ADDR_ZS_IDLIN_MIN);        //转速怠速最小脉冲计数
-			pSignalLine->zs.bs      					=     IapReadByte(FLASH_ADDR_ZS_BS);    					 //转速脉冲计数放大倍数
-			pSignalLine->zs.sampling_time     =     IapReadByte(FLASH_ADDR_ZS_SAMPLING_TIME);    //转速脉冲采样时间
-			pSignalLine->zs.init_value     		=     IapReadByte(FLASH_ADDR_ZS_INIT_VALUE);			 //初始转速 0=默认0，1=默认800
+			pFlash->zs.pin            		=     IapReadByte(FLASH_ADDR_ZS_PIN);         		 //转速输入管脚位置
+			pFlash->zs.min          			=     IapReadByte(FLASH_ADDR_ZS_IDLIN_MIN);        //转速怠速最小脉冲计数
+			pFlash->zs.bs      						=     IapReadByte(FLASH_ADDR_ZS_BS);    					 //转速脉冲计数放大倍数
+			pFlash->zs.sampling_time     	=     IapReadByte(FLASH_ADDR_ZS_SAMPLING_TIME);    //转速脉冲采样时间
+			pFlash->zs.init_value     		=     IapReadByte(FLASH_ADDR_ZS_INIT_VALUE);			 //初始转速 0=默认0，1=默认800
 			//单边桥传感器
-			pSignalLine->dbq.pin1            	=     IapReadByte(FLASH_ADDR_DBQ_PIN1);         		//单边桥信号输入管脚位置1
-			pSignalLine->dbq.pin2          		=     IapReadByte(FLASH_ADDR_DBQ_PIN2);        			//单边桥信号输入管脚位置2
-			pSignalLine->dbq.pin3      				=     IapReadByte(FLASH_ADDR_DBQ_PIN3);    					//单边桥信号输入管脚位置3
-			pSignalLine->dbq.pin4     				=     IapReadByte(FLASH_ADDR_DBQ_PIN4);    					//单边桥信号输入管脚位置4
-			pSignalLine->dbq.pin5     				=     IapReadByte(FLASH_ADDR_DBQ_PIN5);			 				//单边桥信号输入管脚位置5
-			pSignalLine->dbq.pin6            	=     IapReadByte(FLASH_ADDR_DBQ_PIN6);         		//单边桥信号输入管脚位置6
-			pSignalLine->dbq.modle          	=     IapReadByte(FLASH_ADDR_DBQ_MODEL);        		//单边桥信号输入模式
-			pSignalLine->dbq.rising_ed      	=     IapReadByte(FLASH_ADDR_DBQ_RISING_ED);    		//单边桥信号输入上升沿消抖时间
-			pSignalLine->dbq.falling_ed    		=     IapReadByte(FLASH_ADDR_DBQ_FALLING_ED);    		//单边桥信号输入下降沿消抖时间
-			pSignalLine->dbq.type     				=     IapReadByte(FLASH_ADDR_DBQ_TYPE);			 				//单边桥信号输入传感器类型		
+			pFlash->dbq.pin1            	=     IapReadByte(FLASH_ADDR_DBQ_PIN1);         		//单边桥信号输入管脚位置1
+			pFlash->dbq.pin2          		=     IapReadByte(FLASH_ADDR_DBQ_PIN2);        			//单边桥信号输入管脚位置2
+			pFlash->dbq.pin3      				=     IapReadByte(FLASH_ADDR_DBQ_PIN3);    					//单边桥信号输入管脚位置3
+			pFlash->dbq.pin4     					=     IapReadByte(FLASH_ADDR_DBQ_PIN4);    					//单边桥信号输入管脚位置4
+			pFlash->dbq.pin5     					=     IapReadByte(FLASH_ADDR_DBQ_PIN5);			 				//单边桥信号输入管脚位置5
+			pFlash->dbq.pin6            	=     IapReadByte(FLASH_ADDR_DBQ_PIN6);         		//单边桥信号输入管脚位置6
+			pFlash->dbq.modle          		=     IapReadByte(FLASH_ADDR_DBQ_MODEL);        		//单边桥信号输入模式
+			pFlash->dbq.rising_ed      		=     IapReadByte(FLASH_ADDR_DBQ_RISING_ED);    		//单边桥信号输入上升沿消抖时间
+			pFlash->dbq.falling_ed    		=     IapReadByte(FLASH_ADDR_DBQ_FALLING_ED);    		//单边桥信号输入下降沿消抖时间
+			pFlash->dbq.type     					=     IapReadByte(FLASH_ADDR_DBQ_TYPE);			 				//单边桥信号输入传感器类型		
 #ifdef  STC15W4K48S4			
 			//摩托车头盔传感器
-		  pSignalLine->tk.pin             	=     	IapReadByte(FLASH_ADDR_TK_PIN);          			//摩托车头盔开关（压力）输入管脚位置
-			pSignalLine->tk.modle           	=     	IapReadByte(FLASH_ADDR_TK_MODEL);       			//摩托车头盔开关（压力）输入模式
-			pSignalLine->tk.rising_ed       	=     	IapReadByte(FLASH_ADDR_TK_RISING_ED);     		//摩托车头盔开关（压力）上升沿消抖
-			pSignalLine->tk.falling_ed      	=     	IapReadByte(FLASH_ADDR_TK_FALLING_ED);   			//摩托车头盔开关下降沿消抖
-			pSignalLine->tk.type     					=     	IapReadByte(FLASH_ADDR_TK_TYPE);  						//摩托车头盔开关评判类型和方式	
+		  pFlash->tk.pin             		=     	IapReadByte(FLASH_ADDR_TK_PIN);          			//摩托车头盔开关（压力）输入管脚位置
+			pFlash->tk.modle           		=     	IapReadByte(FLASH_ADDR_TK_MODEL);       			//摩托车头盔开关（压力）输入模式
+			pFlash->tk.rising_ed       		=     	IapReadByte(FLASH_ADDR_TK_RISING_ED);     		//摩托车头盔开关（压力）上升沿消抖
+			pFlash->tk.falling_ed      		=     	IapReadByte(FLASH_ADDR_TK_FALLING_ED);   			//摩托车头盔开关下降沿消抖
+			pFlash->tk.type     					=     	IapReadByte(FLASH_ADDR_TK_TYPE);  						//摩托车头盔开关评判类型和方式	
 			
 			//摩托车左把手传感器
-		  pSignalLine->zbs.pin             	=     	IapReadByte(FLASH_ADDR_ZBS_PIN);          		//摩托车左把手开关（压力）输入管脚位置
-			pSignalLine->zbs.modle           	=     	IapReadByte(FLASH_ADDR_ZBS_MODEL);       			//摩托车左把手开关（压力）输入模式
-			pSignalLine->zbs.rising_ed       	=     	IapReadByte(FLASH_ADDR_ZBS_RISING_ED);     		//摩托车左把手开关（压力）上升沿消抖
-			pSignalLine->zbs.falling_ed      	=     	IapReadByte(FLASH_ADDR_ZBS_FALLING_ED);   		//摩托车左把手开关下降沿消抖
-			pSignalLine->zbs.type     				=     	IapReadByte(FLASH_ADDR_ZBS_TYPE);  						//摩托车左把手开关评判类型和方式	
+		  pFlash->zbs.pin             	=     	IapReadByte(FLASH_ADDR_ZBS_PIN);          		//摩托车左把手开关（压力）输入管脚位置
+			pFlash->zbs.modle           	=     	IapReadByte(FLASH_ADDR_ZBS_MODEL);       			//摩托车左把手开关（压力）输入模式
+			pFlash->zbs.rising_ed       	=     	IapReadByte(FLASH_ADDR_ZBS_RISING_ED);     		//摩托车左把手开关（压力）上升沿消抖
+			pFlash->zbs.falling_ed      	=     	IapReadByte(FLASH_ADDR_ZBS_FALLING_ED);   		//摩托车左把手开关下降沿消抖
+			pFlash->zbs.type     					=     	IapReadByte(FLASH_ADDR_ZBS_TYPE);  						//摩托车左把手开关评判类型和方式	
 			
 			//摩托车右把手传感器
-		  pSignalLine->ybs.pin             	=     	IapReadByte(FLASH_ADDR_YBS_PIN);          		//摩托车右把手开关（压力）输入管脚位置
-			pSignalLine->ybs.modle           	=     	IapReadByte(FLASH_ADDR_YBS_MODEL);       			//摩托车右把手开关（压力）输入模式
-			pSignalLine->ybs.rising_ed       	=     	IapReadByte(FLASH_ADDR_YBS_RISING_ED);     		//摩托车右把手开关（压力）上升沿消抖
-			pSignalLine->ybs.falling_ed      	=     	IapReadByte(FLASH_ADDR_YBS_FALLING_ED);   		//摩托车右把手开关下降沿消抖
-			pSignalLine->ybs.type     				=     	IapReadByte(FLASH_ADDR_YBS_TYPE);  						//摩托车右把手开关评判类型和方式	
+		  pFlash->ybs.pin             	=     	IapReadByte(FLASH_ADDR_YBS_PIN);          		//摩托车右把手开关（压力）输入管脚位置
+			pFlash->ybs.modle           	=     	IapReadByte(FLASH_ADDR_YBS_MODEL);       			//摩托车右把手开关（压力）输入模式
+			pFlash->ybs.rising_ed       	=     	IapReadByte(FLASH_ADDR_YBS_RISING_ED);     		//摩托车右把手开关（压力）上升沿消抖
+			pFlash->ybs.falling_ed      	=     	IapReadByte(FLASH_ADDR_YBS_FALLING_ED);   		//摩托车右把手开关下降沿消抖
+			pFlash->ybs.type     					=     	IapReadByte(FLASH_ADDR_YBS_TYPE);  						//摩托车右把手开关评判类型和方式	
 			
 			//摩托车左踏板传感器
-		  pSignalLine->zjtb.pin             =     	IapReadByte(FLASH_ADDR_ZJTB_PIN);          		//摩托车左踏板开关（压力）输入管脚位置
-			pSignalLine->zjtb.modle           =     	IapReadByte(FLASH_ADDR_ZJTB_MODEL);       		//摩托车左踏板开关（压力）输入模式
-			pSignalLine->zjtb.rising_ed       =     	IapReadByte(FLASH_ADDR_ZJTB_RISING_ED);     	//摩托车左踏板开关（压力）上升沿消抖
-			pSignalLine->zjtb.falling_ed      =     	IapReadByte(FLASH_ADDR_ZJTB_FALLING_ED);   		//摩托车左踏板开关下降沿消抖
-			pSignalLine->zjtb.type     				=     	IapReadByte(FLASH_ADDR_ZJTB_TYPE);  					//摩托车左踏板开关评判类型和方式	
+		  pFlash->zjtb.pin             	=     	IapReadByte(FLASH_ADDR_ZJTB_PIN);          		//摩托车左踏板开关（压力）输入管脚位置
+			pFlash->zjtb.modle           	=     	IapReadByte(FLASH_ADDR_ZJTB_MODEL);       		//摩托车左踏板开关（压力）输入模式
+			pFlash->zjtb.rising_ed       	=     	IapReadByte(FLASH_ADDR_ZJTB_RISING_ED);     	//摩托车左踏板开关（压力）上升沿消抖
+			pFlash->zjtb.falling_ed      	=     	IapReadByte(FLASH_ADDR_ZJTB_FALLING_ED);   		//摩托车左踏板开关下降沿消抖
+			pFlash->zjtb.type     				=     	IapReadByte(FLASH_ADDR_ZJTB_TYPE);  					//摩托车左踏板开关评判类型和方式	
 			
 			//摩托车右踏板传感器
-		  pSignalLine->yjtb.pin             =     	IapReadByte(FLASH_ADDR_YJTB_PIN);          		//摩托车右踏板开关（压力）输入管脚位置
-			pSignalLine->yjtb.modle           =     	IapReadByte(FLASH_ADDR_YJTB_MODEL);       		//摩托车右踏板开关（压力）输入模式
-			pSignalLine->yjtb.rising_ed       =     	IapReadByte(FLASH_ADDR_YJTB_RISING_ED);     	//摩托车右踏板开关（压力）上升沿消抖
-			pSignalLine->yjtb.falling_ed      =     	IapReadByte(FLASH_ADDR_YJTB_FALLING_ED);   		//摩托车右踏板开关下降沿消抖
-			pSignalLine->yjtb.type     				=     	IapReadByte(FLASH_ADDR_YJTB_TYPE);  					//摩托车右踏板开关评判类型和方式	
+		  pFlash->yjtb.pin             	=     	IapReadByte(FLASH_ADDR_YJTB_PIN);          		//摩托车右踏板开关（压力）输入管脚位置
+			pFlash->yjtb.modle           	=     	IapReadByte(FLASH_ADDR_YJTB_MODEL);       		//摩托车右踏板开关（压力）输入模式
+			pFlash->yjtb.rising_ed       	=     	IapReadByte(FLASH_ADDR_YJTB_RISING_ED);     	//摩托车右踏板开关（压力）上升沿消抖
+			pFlash->yjtb.falling_ed      	=     	IapReadByte(FLASH_ADDR_YJTB_FALLING_ED);   		//摩托车右踏板开关下降沿消抖
+			pFlash->yjtb.type     				=     	IapReadByte(FLASH_ADDR_YJTB_TYPE);  					//摩托车右踏板开关评判类型和方式	
 			
 			//碰杆接收
-		  pSignalLine->pgjs.pin             =     	IapReadByte(FLASH_ADDR_PGJS_PIN);          		//碰杆项目管脚位置
-			pSignalLine->pgjs.modle           =     	IapReadByte(FLASH_ADDR_PGJS_MODEL);       		//碰杆项目输入模式
-			pSignalLine->pgjs.rising_ed       =     	IapReadByte(FLASH_ADDR_PGJS_RISING_ED);     	//碰杆项目上升沿消抖
-			pSignalLine->pgjs.falling_ed      =     	IapReadByte(FLASH_ADDR_PGJS_FALLING_ED);   		//碰杆项目下降沿消抖
-			pSignalLine->pgjs.type     				=     	IapReadByte(FLASH_ADDR_PGJS_TYPE);  					//碰杆项目评判类型和方式	
+		  pFlash->pgjs.pin             	=     	IapReadByte(FLASH_ADDR_PGJS_PIN);          		//碰杆项目管脚位置
+			pFlash->pgjs.modle          	=     	IapReadByte(FLASH_ADDR_PGJS_MODEL);       		//碰杆项目输入模式
+			pFlash->pgjs.rising_ed       	=     	IapReadByte(FLASH_ADDR_PGJS_RISING_ED);     	//碰杆项目上升沿消抖
+			pFlash->pgjs.falling_ed      	=     	IapReadByte(FLASH_ADDR_PGJS_FALLING_ED);   		//碰杆项目下降沿消抖
+			pFlash->pgjs.type     				=     	IapReadByte(FLASH_ADDR_PGJS_TYPE);  					//碰杆项目评判类型和方式	
 			
 			//碰杆项目1
-		  pSignalLine->bump[0].name           =     	IapReadByte(FLASH_ADDR_PGJS_1_NAME);          //碰杆项目名称
-			pSignalLine->bump[0].number         =     	IapReadByte(FLASH_ADDR_PGJS_1_N0);       			//碰杆项目编号
-			pSignalLine->bump[0].count       		=     	IapReadByte(FLASH_ADDR_PGJS_1_COUNT);     		//碰杆项目对应杆的数量
-			pSignalLine->bump[0].type       		=     	IapReadByte(FLASH_ADDR_PGJS_1_TYPE);     			//碰杆项目对应传感器类型
+		  pFlash->bump[0].name          =     	IapReadByte(FLASH_ADDR_PGJS_1_NAME);          //碰杆项目名称
+			pFlash->bump[0].number        =     	IapReadByte(FLASH_ADDR_PGJS_1_N0);       			//碰杆项目编号
+			pFlash->bump[0].count       	=     	IapReadByte(FLASH_ADDR_PGJS_1_COUNT);     		//碰杆项目对应杆的数量
+			pFlash->bump[0].type       		=     	IapReadByte(FLASH_ADDR_PGJS_1_TYPE);     			//碰杆项目对应传感器类型
 			
 			//碰杆项目2
-		  pSignalLine->bump[1].name           =     	IapReadByte(FLASH_ADDR_PGJS_2_NAME);          //碰杆项目名称
-			pSignalLine->bump[1].number         =     	IapReadByte(FLASH_ADDR_PGJS_2_N0);       			//碰杆项目编号
-			pSignalLine->bump[1].count       		=     	IapReadByte(FLASH_ADDR_PGJS_2_COUNT);     		//碰杆项目对应杆的数量
-			pSignalLine->bump[1].type       		=     	IapReadByte(FLASH_ADDR_PGJS_2_TYPE);     			//碰杆项目对应传感器类型
+		  pFlash->bump[1].name          =     	IapReadByte(FLASH_ADDR_PGJS_2_NAME);          //碰杆项目名称
+			pFlash->bump[1].number        =     	IapReadByte(FLASH_ADDR_PGJS_2_N0);       			//碰杆项目编号
+			pFlash->bump[1].count       	=     	IapReadByte(FLASH_ADDR_PGJS_2_COUNT);     		//碰杆项目对应杆的数量
+			pFlash->bump[1].type       		=     	IapReadByte(FLASH_ADDR_PGJS_2_TYPE);     			//碰杆项目对应传感器类型
 			
 			//碰杆项目3
-		  pSignalLine->bump[2].name           =     	IapReadByte(FLASH_ADDR_PGJS_3_NAME);          //碰杆项目名称
-			pSignalLine->bump[2].number         =     	IapReadByte(FLASH_ADDR_PGJS_3_N0);       			//碰杆项目编号
-			pSignalLine->bump[2].count       		=     	IapReadByte(FLASH_ADDR_PGJS_3_COUNT);     		//碰杆项目对应杆的数量
-			pSignalLine->bump[2].type       		=     	IapReadByte(FLASH_ADDR_PGJS_3_TYPE);     			//碰杆项目对应传感器类型
+		  pFlash->bump[2].name          =     	IapReadByte(FLASH_ADDR_PGJS_3_NAME);          //碰杆项目名称
+			pFlash->bump[2].number        =     	IapReadByte(FLASH_ADDR_PGJS_3_N0);       			//碰杆项目编号
+			pFlash->bump[2].count       	=     	IapReadByte(FLASH_ADDR_PGJS_3_COUNT);     		//碰杆项目对应杆的数量
+			pFlash->bump[2].type       		=     	IapReadByte(FLASH_ADDR_PGJS_3_TYPE);     			//碰杆项目对应传感器类型
 			
 			//碰杆项目4
-		  pSignalLine->bump[3].name           =     	IapReadByte(FLASH_ADDR_PGJS_4_NAME);          //碰杆项目名称
-			pSignalLine->bump[3].number         =     	IapReadByte(FLASH_ADDR_PGJS_4_N0);       			//碰杆项目编号
-			pSignalLine->bump[3].count       		=     	IapReadByte(FLASH_ADDR_PGJS_4_COUNT);     		//碰杆项目对应杆的数量
-			pSignalLine->bump[3].type       		=     	IapReadByte(FLASH_ADDR_PGJS_4_TYPE);     			//碰杆项目对应传感器类型
+		  pFlash->bump[3].name          =     	IapReadByte(FLASH_ADDR_PGJS_4_NAME);          //碰杆项目名称
+			pFlash->bump[3].number        =     	IapReadByte(FLASH_ADDR_PGJS_4_N0);       			//碰杆项目编号
+			pFlash->bump[3].count       	=     	IapReadByte(FLASH_ADDR_PGJS_4_COUNT);     		//碰杆项目对应杆的数量
+			pFlash->bump[3].type       		=     	IapReadByte(FLASH_ADDR_PGJS_4_TYPE);     			//碰杆项目对应传感器类型
 #endif
 }
 //========================================================================
@@ -264,9 +309,49 @@ void BSP_GetFlashConfig(SignalLineTypeDef *pSignalLine)
 void BSP_FlashWriteByte(u16 addr, u8 value)
 {
 
-	BSP_GetFlashConfig(&FlashCacheBuf);//缓存同扇区的数据
+	BSP_GetFlashConfig();//缓存flash数据
 	IapEraseSector(addr);//擦除扇区
 	//写入数据
+	
+	//主板与上位机的连接串口号
+	addr == FLASH_ADDR_UPLOAD_COM 				? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_UPLOAD_COM, FlashCacheBuf.upload.com);
+	addr == FLASH_ADDR_UPLOAD_BOTE 				? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_UPLOAD_BOTE, FlashCacheBuf.upload.bote);
+	
+	//主板与GPS连接串口号
+	addr == FLASH_ADDR_GPS_COM 						? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_GPS_COM, FlashCacheBuf.gps.com);
+	addr == FLASH_ADDR_GPS_BOTE 					? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_GPS_BOTE, FlashCacheBuf.gps.bote);
+	
+	//主板与高森碰杆传感器连接的串口
+	addr == FLASH_ADDR_BUMP_HS_COM 				? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_BUMP_HS_COM, FlashCacheBuf.bump_hs.com);
+	addr == FLASH_ADDR_BUMP_HS_BOTE 			? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_BUMP_HS_BOTE, FlashCacheBuf.bump_hs.bote);
+	
+	//主板与2.4G碰杆传感器连接的串口
+	addr == FLASH_ADDR_BUMP_24G_COM 			? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_BUMP_24G_COM, FlashCacheBuf.bump_24g.com);
+	addr == FLASH_ADDR_BUMP_24G_BOTE 			? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_BUMP_24G_BOTE, FlashCacheBuf.bump_24g.bote);
+		
+	//主板与倾角连接的串口（汇总后接入）
+	addr == FLASH_ADDR_TILT_ALL_COM 			? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_ALL_COM, FlashCacheBuf.titl_all.com);
+	addr == FLASH_ADDR_TILT_BOTE 					? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_BOTE, FlashCacheBuf.titl_all.bote);
+	
+	//主板与前轴倾角传感器的连接串口号（单传感器连接）
+	addr == FLASH_ADDR_TILT_Q_COM 				? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_Q_COM, FlashCacheBuf.titl_q.com);
+	addr == FLASH_ADDR_TILT_BOTE 					? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_BOTE, FlashCacheBuf.titl_q.bote);
+	
+	//主板与后轴倾角传感器的连接串口号（单传感器连接）
+	addr == FLASH_ADDR_TILT_H_COM 				? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_H_COM, FlashCacheBuf.titl_h.com);
+	addr == FLASH_ADDR_TILT_BOTE 					? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_BOTE, FlashCacheBuf.titl_h.bote);
+	
+	//主板与挂轴倾角传感器的连接串口号（单传感器连接）
+	addr == FLASH_ADDR_TILT_G_COM 				? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_G_COM, FlashCacheBuf.titl_g.com);
+	addr == FLASH_ADDR_TILT_BOTE 					? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_BOTE, FlashCacheBuf.titl_g.bote);
+	
+	//主板与二轮摩托车倾角传感器的连接串口号（单传感器连接）
+	addr == FLASH_ADDR_TILT_MTC_COM 			? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_MTC_COM, FlashCacheBuf.titl_mtc.com);
+	addr == FLASH_ADDR_TILT_BOTE 					? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_TILT_BOTE, FlashCacheBuf.titl_mtc.bote);
+	
+	//主板网口模块
+	addr == FLASH_ADDR_NETWORK_COM 				? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_NETWORK_COM, FlashCacheBuf.network.com);
+
 	//座椅开关（调节）
 	addr == FLASH_ADDR_ZYTJ_PIN 					? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYTJ_PIN, FlashCacheBuf.zytj.pin);
 	addr == FLASH_ADDR_ZYTJ_MODEL 				? IapWriteByte(addr,value) : IapWriteByte(FLASH_ADDR_ZYTJ_MODEL,FlashCacheBuf.zytj.modle);

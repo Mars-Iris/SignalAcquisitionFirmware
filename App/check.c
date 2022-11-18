@@ -388,7 +388,7 @@ xdata u8 localid[ID_LENTH];//本机ID。
 #elif(BOARD_NO	==	GZ_QNZ_CS_KM2) 	    //贵州省黔南州长顺驾校科目二考场   195
 	
 	char code Serial_id[]	=	"D17E01D341E899,D17E01D341E873,D17E01F441E8B7,D17E013907F6EB,D17E01391CF420,\
-													D17EC5F3044F32,F527C48911A363";
+													D17EC5F3044F32,F527C48911A363,F527448900F162";
 
 #elif(BOARD_NO	==	GZ_QNZ_HSXS_KM3) 	  	//贵州省黔南惠水鑫盛科目三   196
 	
@@ -617,6 +617,12 @@ void Check_Serial_Id(void)	 //校验ID信息
 					while(1)	//序列号不匹配在此处死循环
 					{
 						printf("SN = %s\r\n",strid);
+						USART_Sendbuffer(DEBUG_USART,strid,strlen(strid));
+						USART_Sendbuffer(DEBUG_USART,"\r\n",2);
+						#ifdef  STC15W4K48S4
+						USART_Sendbuffer(NETWORK_USART,strid,strlen(strid));
+						USART_Sendbuffer(NETWORK_USART,"\r\n",2);
+						#endif
 						delay_ms(1000);
 					}
 				

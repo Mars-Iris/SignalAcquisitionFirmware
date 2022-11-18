@@ -24,9 +24,9 @@ typedef struct
 
 
 
-void SignalLine_Init(void);
+void GetFlashConfig(void);
 void GetBaseBoardDataPack(u8 pDatabuf[], u16 lenth);
-void Cmd_Start_Callback(void);
+void GetTilt_Adjust_vaule(void); //获取二轮摩托车倾角传感器校准值
 #ifdef  STC15W4K48S4	
 
 

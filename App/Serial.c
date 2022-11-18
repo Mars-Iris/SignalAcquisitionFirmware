@@ -30,6 +30,7 @@ xdata volatile u8 start = FALSE;//¿ªÊ¼Ö¸Áî
 
 
 xdata	u8 Buffer[BUF_LENTH];	//½ÓÊÕ»º³å
+//xdata	u8 CMD_Buffer[64];	//½ÓÊÕ»º³å
 
 u8 code CMD_start[]	=	{0x55,0xaa,0x00,0x00,0x11,0x11};//¿ªÊ¼²É¼¯Ö¸Áî
 u8 code CMD_stop[]	=	{0x55,0xaa,0x00,0x00,0x00,0x00};//Í£Ö¹²É¼¯Ö¸Áî
@@ -53,19 +54,15 @@ u8 code CMD_get_gpsbasepos[]	=	{0x55,0xAA,0x49,0x4F,0xff,0xfc};			//»ñÈ¡GPS»ù×¼Õ
 //========================================================================
 static void InsertBaseboardData(u8 gps_usart,u8 upload_usart)
 {
-#if GPS_USART
 	 static u8 timeout = 0;//Á¬Ğø5´Î¶ÁÈ¡²»µ½VTGÊı¾İ£¬×Ô¶¯ÉÏ´«µ¥Ö÷°åÊı¾İ
 	 xdata u8 *pvtg = NULL;
 	 xdata u8 *pOut = (u8 *)Buffer;//Ö¸ÏòÊı¾İµÄ³ö¿Ú
 	 xdata u16 lenth = 0;
 	 xdata u8 cutstr[] ="\n";
 	 xdata u8 i = 0;
-#endif
 	 static u8 vtg_flag = 0;//Á¬Ğø5´Î¶ÁÈ¡²»µ½VTGÊı¾İ£¬×Ô¶¯ÉÏ´«µ¥Ö÷°åÊı¾İ	
 	
-	
-	
-		if(vtg_flag == 0)//³öÏÖvtgÒ»´Î×ö²ÉÑù1´Î
+	 if(vtg_flag == 0)//³öÏÖvtgÒ»´Î×ö²ÉÑù1´Î
 		{
 			  vtg_flag = 1;
 			
@@ -74,70 +71,73 @@ static void InsertBaseboardData(u8 gps_usart,u8 upload_usart)
 
 				memset(OBDstrbuffer,0,sizeof(OBDstrbuffer));	//Çå¿ÕÖ÷°åÊı¾İ»º´æ
 				HextoStr(BaseBoardBuffer,OBDstrbuffer,sizeof(BaseBoardBuffer));//Êı¾İ×ª»»	
-		}
-#if GPS_USART
-		
-		memset(Buffer,0,sizeof(Buffer));	//Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
-		lenth = BSP_GetFormatRxBuffer(gps_usart,Buffer,sizeof(Buffer),cutstr,strlen(cutstr));//¶ÁÈ¡µÄ»º´æÊı¾İ
+		}	
+	 if(gps_usart != DISABLE)
+	 {		
+				memset(Buffer,0,sizeof(Buffer));	//Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
+		 
+				lenth = BSP_GetFormatRxBuffer(gps_usart,Buffer,sizeof(Buffer),cutstr,strlen(cutstr));//¶ÁÈ¡µÄ»º´æÊı¾İ
 
-		
-		if (lenth > 0)  //»º´æ²»Îª¿Õ
-		{ 
-			timeout = 0;//OBDÄ£Ê½
 				
-			pvtg = strstr((char *)pOut,"VTG");//²éÕÒ×Ö·û´®
-			
-			while(pvtg != NULL)
-			{
-				pvtg = (u8 *)(pvtg - 3);//$GPVTG²éÕÒµ½VTGºóÍùÇ°ÒÆ¶¯3·Ö×Ö·û£¬Ö¸Ïò$·ûºÅ
-		
-				USART_Sendbuffer(upload_usart,(u8 *)pOut,(u16)(pvtg - pOut));//½«VTGÇ°ÃæµÄÊı¾İÏÈ·¢ËÍÍê
+				if (lenth > 0)  //»º´æ²»Îª¿Õ
+				{ 
+					timeout = 0;//OBDÄ£Ê½
+						
+					pvtg = strstr((char *)pOut,"VTG");//²éÕÒ×Ö·û´®
+					
+					while(pvtg != NULL)
+					{
+						pvtg = (u8 *)(pvtg - 3);//$GPVTG²éÕÒµ½VTGºóÍùÇ°ÒÆ¶¯3·Ö×Ö·û£¬Ö¸Ïò$·ûºÅ
 				
-				vtg_flag = 0;//´ò¿ªÖ÷°å²ÉÑù
-				
-				USART_Sendbuffer(upload_usart,OBDHandbuffer,sizeof(OBDHandbuffer)-1);//²åÈëÖ÷°å×ÖÍ·Êı¾İ
-				
-				USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//²åÈëÖ÷°åÊı¾İ	
-				
-				pOut = pvtg;
-				
-				pvtg = pvtg + 6;//Ìø¹ıvtg²éÕÒÏÂÒ»¸ö
-				
-				pvtg = strstr((char *)pvtg,"VTG");//²éÕÒ×Ö·û´®//²éÕÒÏÂÒ»ÌõÊı¾İ
-		  }
-			
-			USART_Sendbuffer(upload_usart,(u8 *)pOut,(lenth-(u16)(pOut-Buffer)));//ÉÏ´«Ê£ÓàÊı¾İ
+						USART_Sendbuffer(upload_usart,(u8 *)pOut,(u16)(pvtg - pOut));//½«VTGÇ°ÃæµÄÊı¾İÏÈ·¢ËÍÍê
+						
+						vtg_flag = 0;//´ò¿ªÖ÷°å²ÉÑù
+						
+						USART_Sendbuffer(upload_usart,OBDHandbuffer,sizeof(OBDHandbuffer)-1);//²åÈëÖ÷°å×ÖÍ·Êı¾İ
+						
+						USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//²åÈëÖ÷°åÊı¾İ	
+						
+						pOut = pvtg;
+						
+						pvtg = pvtg + 6;//Ìø¹ıvtg²éÕÒÏÂÒ»¸ö
+						
+						pvtg = strstr((char *)pvtg,"VTG");//²éÕÒ×Ö·û´®//²éÕÒÏÂÒ»ÌõÊı¾İ
+					}
+					
+					USART_Sendbuffer(upload_usart,(u8 *)pOut,(lenth-(u16)(pOut-Buffer)));//ÉÏ´«Ê£ÓàÊı¾İ
 
-		}
-		else
-		{
+				}
+				else
+				{
 
-			if(timeout >= 10)
-			{	
-				 vtg_flag = 0;//´ò¿ªÖ÷°å²ÉÑù
-				
-				USART_Sendbuffer(upload_usart,Handbuffer,sizeof(Handbuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
-				
-				USART_Sendbuffer(upload_usart,BaseBoardBuffer,sizeof(BaseBoardBuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
-				
-			  //USART_Sendbuffer(upload_usart,OBDHandbuffer,sizeof(OBDHandbuffer)-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½
-				
-				
-				//USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½	
-				
-				delay_ms(100);//¼ä¸ô100ºÁÃë
-				
-			}
-			else
-			{
-				timeout++;
-				delay_ms(100);//¼ä¸ô100ºÁÃë
-			}
-			
-		}
-#else 
-				gps_usart = gps_usart;//½ö×÷ÎªÏû³ı±àÒëÆ÷¾¯¸æ
-			
+					if(timeout >= 10)
+					{	
+						 vtg_flag = 0;//´ò¿ªÖ÷°å²ÉÑù
+						
+						//printf("InsertBaseboardData\r\n");
+						
+						//USART_Sendbuffer(upload_usart,Handbuffer,sizeof(Handbuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
+						
+						//USART_Sendbuffer(upload_usart,BaseBoardBuffer,sizeof(BaseBoardBuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
+						
+						USART_Sendbuffer(upload_usart,OBDHandbuffer,sizeof(OBDHandbuffer)-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½
+						
+						
+						USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½	
+						
+						delay_ms(100);//¼ä¸ô100ºÁÃë
+						
+					}
+					else
+					{
+						timeout++;
+						delay_ms(100);//¼ä¸ô100ºÁÃë
+					}
+					
+				}
+	}
+	else 
+	{	
 		    vtg_flag = 0;//´ò¿ªÖ÷°å²ÉÑù
 				
 				USART_Sendbuffer(upload_usart,Handbuffer,sizeof(Handbuffer));//µ¥Ö÷°åÊı¾İ¶ş½øÖÆ¸ñÊ½
@@ -148,8 +148,9 @@ static void InsertBaseboardData(u8 gps_usart,u8 upload_usart)
 				
 				//USART_Sendbuffer(upload_usart,OBDstrbuffer,OBD_LENTH-1);//µ¥Ö÷°åÊı¾İ×Ö·û´®¸ñÊ½	
 				
-				delay_ms(100);//¼ä¸ô100ºÁÃë		
-#endif
+				delay_ms(100);//¼ä¸ô100ºÁÃë	
+	 }		 
+
 		
 }
 #endif
@@ -177,7 +178,7 @@ void SerialDataUpload(u8 upload_usart)
 			#endif
 		
 			#ifdef  STC15W4K48S4
-		
+		  
 			InsertBaseboardData(GPS_USART,upload_usart);//²åÈëÖ÷°åÊı¾İÉÏ´«		
 
 			#endif
@@ -215,9 +216,8 @@ u8 Serial_TiltSensor_Analy(u8 Tilt_usart,TiltSensorTypeDef *Tilt)
 		while(pOut != NULL)
 		{
 				//55 53 00 00 01 01 00 00 02 02 00 00 03 03 00 00 00 00 00 00 00 
-				#if TILT_ALL_USART//ËùÓĞµÄ´«¸ĞÆ÷»ã×ÜºóÍ³Ò»Êä³öµ½Ö÷°å  
+				if (TILT_ALL_USART != DISABLE)//ËùÓĞµÄ´«¸ĞÆ÷»ã×ÜºóÍ³Ò»Êä³öµ½Ö÷°å  
 				{
-					
 					i= 0;
 					j = 0;
 					while(j<20)
@@ -264,7 +264,7 @@ u8 Serial_TiltSensor_Analy(u8 Tilt_usart,TiltSensorTypeDef *Tilt)
 					}	
 					ret = TURE;
 				}
-				#else   //55 53 01 02 02 02 01 01 00 00 00  
+				else   //55 53 01 02 02 02 01 01 00 00 00  
 				{
 						Tilt->RollL = *(pOut + 2);			//XÖá½Ç¶ÈµÍ×Ö½Ú
 						Tilt->RollH = *(pOut + 3);			//XÖá½Ç¶È¸ß×Ö½Ú
@@ -319,7 +319,6 @@ u8 Serial_TiltSensor_Analy(u8 Tilt_usart,TiltSensorTypeDef *Tilt)
 					 ret = TURE;							
 				
 				}
-				#endif
 			 pOut = pOut +1;//Ö¸ÕëºóÒÆ£¬È¡ÏÂÒ»×éÊı¾İ
 						 
 			 pOut = ByteArrayCompar(pOut,lenth,cutstr,sizeof(cutstr));//»ñÈ¡×ÖÍ·µÄÎ»ÖÃ
@@ -331,13 +330,13 @@ u8 Serial_TiltSensor_Analy(u8 Tilt_usart,TiltSensorTypeDef *Tilt)
 }
 
 //========================================================================
-// º¯Êı:HighSensorShock_Analy(u8 bump_usart,SignalLineTypeDef *pole)
+// º¯Êı:HighSensorShock_Analy(u8 bump_usart,FlashParameterTypeDef *pole)
 // ÃèÊö: °´ÕÕÍ¨Ñ¶Ğ­Òé½âÎöÅö¸Ë´«¸ĞÆ÷´«¸ĞÆ÷µÄÊı¾İ,½«½âÎöºÃµÄÊı¾İ±£´æµ½poleÖ¸ÏòµÄÄÚ´æÖĞ
-// ²ÎÊı£ºUSRATxÊı¾İÍ¨Ñ¶µÄ¶Ë¿ÚºÅ£¬SignalLineTypeDef *poleÅö¸ËµÄÊı¾İÀàĞÍÖ¸Õë
+// ²ÎÊı£ºUSRATxÊı¾İÍ¨Ñ¶µÄ¶Ë¿ÚºÅ£¬FlashParameterTypeDef *poleÅö¸ËµÄÊı¾İÀàĞÍÖ¸Õë
 // ·µ»Ø£º»ñÈ¡µ½´®¿ÚÊı¾İ·µ»ØTURE£¬·ñÕß·µ»ØFALSE
 // °æ±¾: V1.0, 2022-10-17
 //========================================================================
-u8 Serial_HighSensorShock_Analy(u8 bump_usart,SignalLineTypeDef *pole) //¸ßÉ­Õğ¶¯´«¸ĞÆ÷Êı¾İ½âÎö
+u8 Serial_HighSensorShock_Analy(u8 bump_usart) //¸ßÉ­Õğ¶¯´«¸ĞÆ÷Êı¾İ½âÎö
 {
 	 //$HS-MOTION,15,0000000000.0000100000*03
 	 xdata u8 *phand = NULL;//Ö¸ÏòÊı¾İµÄ³ö¿Ú
@@ -350,13 +349,16 @@ u8 Serial_HighSensorShock_Analy(u8 bump_usart,SignalLineTypeDef *pole) //¸ßÉ­Õğ¶
 	 xdata u8 i = 0;
 	 xdata u8 cutstr[] ="\n";
 
-
+   if(bump_usart == DISABLE) return 0;
+	
 	 memset(Buffer,0,sizeof(Buffer));	//Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
 
 	 lenth = BSP_GetFormatRxBuffer(bump_usart,Buffer,sizeof(Buffer),cutstr,strlen(cutstr));//¶ÁÈ¡µÄ»º´æÊı¾İ	
 	
 	  if (lenth > 0)  //»º´æ²»Îª¿Õ
 		{ 	
+			//printf("lenth = %h04d\r\n",lenth);
+			//USART_Sendbuffer(USART1,Buffer,lenth);
 			
 			phand = strstr((char *)Buffer,"$HS-MOTION");//²éÕÒ×Ö·û´®
 			
@@ -380,23 +382,23 @@ u8 Serial_HighSensorShock_Analy(u8 bump_usart,SignalLineTypeDef *pole) //¸ßÉ­Õğ¶
 				
 				//printf("pOut = %p\r\n",pOut);
 				
-				for (group_i = 0; group_i < sizeof(pole->bump)/sizeof(pole->bump[0]);group_i++)
+				for (group_i = 0; group_i < sizeof(pFlash->bump)/sizeof(pFlash->bump[0]);group_i++)
 				{
-					 // printf("group_i = %b02d\r\n",group_i);
+					  //printf("group_i = %b02d\r\n",group_i);
 					
-						if(pole->bump[group_i].name != 0)					//Åö¸ËÏîÄ¿ÒÑ¾­ÅäÖÃ
+						if(pFlash->bump[group_i].name != 0)					//Åö¸ËÏîÄ¿ÒÑ¾­ÅäÖÃ
 						{
 							
-							if( (pOut + pole->bump[group_i].count) > pEnd)					//Êı¾İ³¤¶È²»ºÏ·¨£¬ÍË³ö
+							if( (pOut + pFlash->bump[group_i].count) > pEnd)					//Êı¾İ³¤¶È²»ºÏ·¨£¬ÍË³ö
 							{
 
-								//printf("pOut + pole->bump[group_i].count) > pEnd\r\n");
+								//printf("pOut + pFlash->bump[group_i].count) > pEnd\r\n");
 								break;
 							}		
 							
-							pole->bump[group_i].value = 0;//ÇåÁã£¬ÓÃÓÚ¸³Öµ
+							pFlash->bump[group_i].value = 0;//ÇåÁã£¬ÓÃÓÚ¸³Öµ
 							
-							for (i = 0; i< pole->bump[group_i].count; i++)//È¡¸Ã×éµÄÅö¸Ë×´Ì¬
+							for (i = 0; i< pFlash->bump[group_i].count; i++)//È¡¸Ã×éµÄÅö¸Ë×´Ì¬
 							{
 				
 								temp = (*pOut - '0');					//È¡Åö¸Ë×´Ì¬
@@ -410,10 +412,10 @@ u8 Serial_HighSensorShock_Analy(u8 bump_usart,SignalLineTypeDef *pole) //¸ßÉ­Õğ¶
 										
 								temp = temp << i;
 											
-								pole->bump[group_i].value |= temp;//½«´«¸ĞÆ÷µÄ×´Ì¬°´Ë³ĞòĞ´Èë·µ»ØÖµ
+								pFlash->bump[group_i].value |= temp;//½«´«¸ĞÆ÷µÄ×´Ì¬°´Ë³ĞòĞ´Èë·µ»ØÖµ
 								
 							}
-							//printf("value = %h04d\r\n",pole->bump[group_i].value);
+							//printf("value = %h04d\r\n",pFlash->bump[group_i].value);
 						}
 						else
 							{
@@ -452,6 +454,8 @@ void Serial_Sensor24GShock_Analy(u8 bump24g_usart,PengganTypeDef *pole) //2.4GÕğ
 	 xdata u16 lenth = 0;
 	 xdata u8 cutstr[] ={0x53};
 
+	 if(bump24g_usart == DISABLE) return;
+	 
 	 memset(Buffer,0,sizeof(Buffer));	//Çå¿Õ´®¿Ú½ÓÊÕ»º´æ
 
 	 lenth = BSP_GetFormatRxBuffer(bump24g_usart,Buffer,sizeof(Buffer),cutstr,sizeof(cutstr));//¶ÁÈ¡µÄ»º´æÊı¾İ	
@@ -498,9 +502,6 @@ u8 Serial_CMD_Analy(u8 USRATx,u8 *RxBuffer,u16 lenth)
 		#endif
 		Cmd_Start_Callback();
 		start = TURE;
-		#if GPS_USART
-		S1_USE_P16P17();//ÇĞ»»´®¿Ú1µ½GPS´®¿Ú
-		#endif
 		return	TURE;
 	}
 
@@ -512,6 +513,7 @@ u8 Serial_CMD_Analy(u8 USRATx,u8 *RxBuffer,u16 lenth)
 		printf("received data: 55 AA 00 00 00 00\r\n");
 		#endif
 		start = FALSE;
+		Cmd_Stop_Callback();
 		return	TURE;
 	}
 
@@ -566,43 +568,44 @@ u8 Serial_CMD_Analy(u8 USRATx,u8 *RxBuffer,u16 lenth)
 		return TURE;
 	}
 	#ifdef  STC15W4K48S4
-	#if GPS_USART
-	//½øÈëGPSÒÆ¶¯Õ¾ÅäÖÃ 0x55 0xAA 0x49 0x4F 0xff 0xff
-	pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_conf_gpssmobile,sizeof(CMD_conf_gpssmobile));//±È½ÏÖ¸Áî
-	
-	if (NULL != pfirst) //ÊÕµ½GPSÒÆ¶¯Õ¾ÅäÖÃÖ¸Áî
+	if (GPS_USART != DISABLE)
 	{
-		start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ĞÅºÅ
-		
-		GPS_EnterConfiguration(MOBILESTATION);//½øÈëGPS»ù×¼Õ¾ÅäÖÃ
+			//½øÈëGPSÒÆ¶¯Õ¾ÅäÖÃ 0x55 0xAA 0x49 0x4F 0xff 0xff
+			pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_conf_gpssmobile,sizeof(CMD_conf_gpssmobile));//±È½ÏÖ¸Áî
 			
-		return TURE;
-	}
-	
-	//½øÈëGPS»ù×¼Õ¾ÅäÖÃ 0x55 0xAA 0x49 0x4F 0xff 0xfe
-	pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_conf_gpsbase,sizeof(CMD_conf_gpsbase));//±È½ÏÖ¸Áî
-	
-	if (NULL != pfirst) //ÊÕµ½GPSÒÆ¶¯Õ¾ÅäÖÃÖ¸Áî
-	{
-		start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ĞÅºÅ
-		
-		GPS_EnterConfiguration(BASESTATION);//½øÈëGPS»ù×¼Õ¾ÅäÖÃ
+			if (NULL != pfirst) //ÊÕµ½GPSÒÆ¶¯Õ¾ÅäÖÃÖ¸Áî
+			{
+				start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ĞÅºÅ
+				
+				GPS_EnterConfiguration(MOBILESTATION);//½øÈëGPS»ù×¼Õ¾ÅäÖÃ
+					
+				return TURE;
+			}
+			
+			//½øÈëGPS»ù×¼Õ¾ÅäÖÃ 0x55 0xAA 0x49 0x4F 0xff 0xfe
+			pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_conf_gpsbase,sizeof(CMD_conf_gpsbase));//±È½ÏÖ¸Áî
+			
+			if (NULL != pfirst) //ÊÕµ½GPSÒÆ¶¯Õ¾ÅäÖÃÖ¸Áî
+			{
+				start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ĞÅºÅ
+				
+				GPS_EnterConfiguration(BASESTATION);//½øÈëGPS»ù×¼Õ¾ÅäÖÃ
 
-		return TURE;
-	}	
-	
-  //¶ÁÈ¡GPS»ù×¼Õ¾×ø±êÖ¸Áî0x55 0xAA 0x49 0x4F 0xff 0xfc
-	pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_get_gpsbasepos,sizeof(CMD_get_gpsbasepos));//±È½ÏÖ¸Áî
-	
-	if (NULL != pfirst) //ÊÕµ½GPSÒÆ¶¯Õ¾ÅäÖÃÖ¸Áî
-	{
-		start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ĞÅºÅ
-		
-		GetBaseStationPos();//»ñÈ¡»ù×¼Õ¾×ø±ê
+				return TURE;
+			}	
 			
-		return TURE;
-	}		
-	#endif
+			//¶ÁÈ¡GPS»ù×¼Õ¾×ø±êÖ¸Áî0x55 0xAA 0x49 0x4F 0xff 0xfc
+			pfirst = ByteArrayCompar(RxBuffer,lenth,CMD_get_gpsbasepos,sizeof(CMD_get_gpsbasepos));//±È½ÏÖ¸Áî
+			
+			if (NULL != pfirst) //ÊÕµ½GPSÒÆ¶¯Õ¾ÅäÖÃÖ¸Áî
+			{
+				start = FALSE;//Í£Ö¹²É¼¯³µÁ¾ĞÅºÅ
+				
+				GetBaseStationPos();//»ñÈ¡»ù×¼Õ¾×ø±ê
+					
+				return TURE;
+			}		
+	}
 	#endif
 	return FALSE;
 		
@@ -620,20 +623,23 @@ void SerialHandle(u8 USARTx)
 
 	xdata u16 lenth = 0;        
 	memset(Buffer,0,sizeof(Buffer));//ÇåÀí»º´æÇø
+//#ifdef  STC15W4K48S4	
+//	if(NETWORK_STATE == 16) return;//Íø¿Ú±»½ûÓÃ£¬16Îª×Ô¶¨Òå·ÀÖ¹¸Ä²ÎÊıÊ±Îó²Ù×÷
+//#endif
+#ifdef  STC15W4K48S4			
+	if(USARTx == GPS_USART) return;//Èçµ÷ÊÔ´®¿Ú±»GPSÕ¼ÓÃ£¬µ÷ÊÔ¹¦ÄÜÊ§Ğ§£¬Ö»ÄÜÊ¹ÓÃÍø¿Ú½øĞĞĞŞ¸Ä²ÎÊı
+#endif
 	
-	if(USARTx == UPLOAD_USART)
-	{			
-			lenth = BSP_GetUsartRxBuffer(USARTx,Buffer,sizeof(Buffer));//¶ÁÈ¡»º´æÊı¾İ		
-			if (lenth > 0)
-			{
-				if(Serial_CMD_Analy(USARTx,Buffer,lenth) == TURE)
-				{
-					 BSP_ClearUsartRxBuffer(USARTx);	//½âÎö³É¹¦ºóÇå¿Õ´®¿Ú»º´æÇøÓò
-					
-				}
-				
-			}	
-	}
+	lenth = BSP_GetUsartRxBuffer(USARTx,Buffer,sizeof(Buffer));//¶ÁÈ¡»º´æÊı¾İ		
+	if (lenth > 0)
+	{
+		if(Serial_CMD_Analy(USARTx,Buffer,lenth) == TURE)
+		{
+			 BSP_ClearUsartRxBuffer(USARTx);	//½âÎö³É¹¦ºóÇå¿Õ´®¿Ú»º´æÇøÓò
+			
+		}
+		
+	}	
 		
 
 }
